@@ -1,0 +1,36 @@
+PCircle{Name:Circle 2275;Mass:1000000.0;CenterPoint:406.0 684.0;Velocity:0.0 -10.0;Angle:0.0;Is Moveable:true;Radius:118.6086000254619;}
+PPolygon{Name:Polygon 111;Mass:1.0;CenterPoint:374.0 214.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:365.0 224.0,366.0 201.0,380.0 203.0,383.0 227.0}
+PPolygon{Name:Polygon 1269;Mass:1.0;CenterPoint:417.0 187.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:400.0 179.0,434.0 202.0,432.0 175.0,402.0 172.0}
+PPolygon{Name:Polygon 1531;Mass:1.0;CenterPoint:480.5 188.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:470.0 201.0,468.0 172.0,489.0 172.0,493.0 204.0}
+PPolygon{Name:Polygon 1810;Mass:1.0;CenterPoint:449.5 184.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:438.0 203.0,439.0 165.0,456.0 168.0,461.0 201.0}
+PPolygon{Name:Polygon 2155;Mass:1.0;CenterPoint:248.5 156.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:232.0 168.0,232.0 138.0,263.0 141.0,265.0 175.0}
+PPolygon{Name:Polygon 2710;Mass:1.0;CenterPoint:287.5 118.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:303.0 101.0,273.0 102.0,272.0 133.0,302.0 135.0}
+PPolygon{Name:Polygon 2725;Mass:1.0;CenterPoint:248.0 194.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:233.0 203.0,233.0 179.0,261.0 183.0,263.0 209.0}
+PPolygon{Name:Polygon 2788;Mass:1.0;CenterPoint:288.5 224.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:308.0 238.0,269.0 210.0,308.0 215.0}
+PPolygon{Name:Polygon 3033;Mass:1.0;CenterPoint:337.5 214.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:316.0 225.0,317.0 207.0,355.0 201.0,359.0 228.0}
+PPolygon{Name:Polygon 311;Mass:1.0;CenterPoint:515.5 227.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:496.0 248.0,490.0 206.0,541.0 239.0}
+PPolygon{Name:Polygon 3236;Mass:1.0;CenterPoint:365.0 110.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:350.5 126.0,379.5 124.0,378.5 94.0,355.5 96.0}
+PPolygon{Name:Polygon 348;Mass:1.0;CenterPoint:375.0 56.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Vertices:10.0 97.0,740.0 92.0,740.0 21.0,13.0 16.0}
+PPolygon{Name:Polygon 4218;Mass:1.0;CenterPoint:394.0 225.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:383.0 230.0,387.0 228.0,389.0 207.0,405.0 210.0,404.0 244.0}
+PPolygon{Name:Polygon 4234;Mass:1.0;CenterPoint:371.0 181.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:362.0 191.0,359.0 169.0,377.0 169.0,383.0 194.0}
+PPolygon{Name:Polygon 4299;Mass:1.0;CenterPoint:368.0 143.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:354.0 154.5,383.0 154.5,383.0 131.5,353.0 135.5}
+PPolygon{Name:Polygon 432;Mass:1.0;CenterPoint:326.0 115.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:341.0 127.0,311.0 128.0,312.0 103.0,334.0 104.0}
+PPolygon{Name:Polygon 4739;Mass:1.0;CenterPoint:451.0 218.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:439.0 224.0,439.0 205.0,460.0 209.0,463.0 232.0}
+PPolygon{Name:Polygon 5694;Mass:1.0;CenterPoint:404.5 189.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:387.0 195.0,389.0 175.0,422.0 203.0}
+PPolygon{Name:Polygon 5976;Mass:1.0;CenterPoint:286.5 196.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:268.0 210.0,305.0 208.0,300.0 183.0,268.0 183.0}
+PPolygon{Name:Polygon 6176;Mass:1.0;CenterPoint:425.0 223.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:414.0 231.0,415.0 211.0,432.0 212.0,436.0 236.0}
+PPolygon{Name:Polygon 6474;Mass:1.0;CenterPoint:446.0 143.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:452.5 156.0,460.5 129.0,431.5 127.0,433.5 159.0}
+PPolygon{Name:Polygon 6579;Mass:1.0;CenterPoint:286.0 158.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:303.0 141.0,304.0 174.0,268.0 175.0,270.0 145.0}
+PPolygon{Name:Polygon 6750;Mass:1.0;CenterPoint:334.5 177.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:317.0 194.0,315.0 161.0,349.0 169.0,354.0 190.0}
+PPolygon{Name:Polygon 6942;Mass:1.0;CenterPoint:248.0 117.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:263.0 131.0,263.0 103.0,233.0 105.0,233.0 129.0,258.0 131.0}
+PPolygon{Name:Polygon 7011;Mass:1.0;CenterPoint:522.0 205.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:507.0 212.0,504.0 184.0,532.0 183.0,540.0 228.0}
+PPolygon{Name:Polygon 7102;Mass:1.0;CenterPoint:326.0 148.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:316.0 155.0,314.0 136.0,338.0 136.0,338.0 161.0}
+PPolygon{Name:Polygon 7151;Mass:1.0;CenterPoint:441.0 110.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:427.5 120.0,426.5 93.0,455.5 95.0,454.5 127.0}
+PPolygon{Name:Polygon 716;Mass:1.0;CenterPoint:517.0 163.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:502.0 178.0,532.0 178.0,530.0 153.0,504.0 149.0}
+PPolygon{Name:Polygon 7383;Mass:1.0;CenterPoint:474.0 145.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:460.0 160.5,490.0 159.5,489.0 129.5,458.0 131.5}
+PPolygon{Name:Polygon 8131;Mass:1.0;CenterPoint:475.0 114.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:457.0 125.5,463.0 95.5,490.0 97.5,493.0 132.5}
+PPolygon{Name:Polygon 849;Mass:1.0;CenterPoint:403.0 112.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:386.5 122.5,383.5 96.5,422.5 96.5,421.5 127.5}
+PPolygon{Name:Polygon 9056;Mass:1.0;CenterPoint:408.0 143.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:391.0 159.5,425.0 159.5,417.0 126.5,391.0 133.5}
+PPolygon{Name:Polygon 91;Mass:1.0;CenterPoint:480.5 226.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:488.0 208.0,470.0 205.0,473.0 247.0,491.0 247.0}
+PPolygon{Name:Polygon 9294;Mass:1.0;CenterPoint:289.5 228.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:276.0 237.0,271.0 217.0,308.0 239.0}
+PPolygon{Name:Polygon 9826;Mass:1.0;CenterPoint:518.5 121.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:504.0 142.0,537.0 144.0,537.0 100.0,500.0 98.0}

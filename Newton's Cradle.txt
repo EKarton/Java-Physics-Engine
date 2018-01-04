@@ -1,0 +1,28 @@
+PCircle{Name:Circle 1081;Mass:1.0;CenterPoint:380.0 520.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Radius:1.0;}
+PCircle{Name:Circle 1181;Mass:1.0;CenterPoint:400.0 520.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Radius:1.0;}
+PCircle{Name:Circle 2094;Mass:1.0;CenterPoint:420.0 480.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Radius:14.0;}
+PCircle{Name:Circle 2181;Mass:1.0;CenterPoint:420.0 520.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Radius:1.0;}
+PCircle{Name:Circle 3094;Mass:1.0;CenterPoint:440.0 480.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Radius:14.0;}
+PCircle{Name:Circle 3181;Mass:1.0;CenterPoint:440.0 520.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Radius:1.0;}
+PCircle{Name:Circle 4094;Mass:1.0;CenterPoint:460.0 480.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Radius:14.0;}
+PCircle{Name:Circle 4181;Mass:1.0;CenterPoint:460.0 520.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Radius:1.0;}
+PCircle{Name:Circle 5094;Mass:1.0;CenterPoint:480.0 480.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Radius:14.0;}
+PCircle{Name:Circle 5181;Mass:1.0;CenterPoint:480.0 520.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Radius:1.0;}
+PCircle{Name:Circle 6094;Mass:1.0;CenterPoint:500.0 480.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Radius:14.0;}
+PCircle{Name:Circle 6181;Mass:1.0;CenterPoint:500.0 520.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Radius:1.0;}
+PCircle{Name:Circle 7094;Mass:1.0;CenterPoint:520.0 480.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Radius:14.0;}
+PCircle{Name:Circle 7181;Mass:1.0;CenterPoint:520.0 520.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Radius:1.0;}
+PCircle{Name:Circle 8094;Mass:1.0;CenterPoint:540.0 480.0;Velocity:2.0 0.0;Angle:0.0;Is Moveable:true;Radius:14.0;}
+PCircle{Name:Circle 8181;Mass:1.0;CenterPoint:540.0 520.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Radius:1.0;}
+PCircle{Name:Circle 9094;Mass:1.0;CenterPoint:400.0 480.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Radius:14.0;}
+PCircle{Name:Circle 9194;Mass:1.0;CenterPoint:380.0 480.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Radius:14.0;}
+PPolygon{Name:Polygon 8847;Mass:1.0;CenterPoint:510.0 69.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Vertices:16.0 18.0,1002.0 20.0,1005.0 111.0,15.0 120.0}
+PSpring{BodiesAttached:[Circle 9094][Circle 1181];KValue:20.0;Length:50.0;}
+PSpring{BodiesAttached:[Circle 9194][Circle 1081];KValue:20.0;Length:50.0;}
+PSpring{BodiesAttached:[Circle 2094][Circle 2181];KValue:20.0;Length:50.0;}
+PSpring{BodiesAttached:[Circle 3094][Circle 3181];KValue:20.0;Length:50.0;}
+PSpring{BodiesAttached:[Circle 4094][Circle 4181];KValue:20.0;Length:50.0;}
+PSpring{BodiesAttached:[Circle 5094][Circle 5181];KValue:20.0;Length:50.0;}
+PSpring{BodiesAttached:[Circle 6094][Circle 6181];KValue:20.0;Length:50.0;}
+PSpring{BodiesAttached:[Circle 7094][Circle 7181];KValue:20.0;Length:50.0;}
+PSpring{BodiesAttached:[Circle 8094][Circle 8181];KValue:20.0;Length:50.0;}

@@ -1,0 +1,3 @@
+PCircle{Name:Circle 6523;Mass:1.0;CenterPoint:844.0 704.0;Velocity:5.0 0.0;Angle:0.0;Is Moveable:true;Radius:79.64923100695951;}
+PPolygon{Name:Polygon 9693;Mass:1.0;CenterPoint:463.5 392.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:133.0 617.0,651.0 597.0,794.0 309.0,303.0 167.0}
+PSpring{BodiesAttached:[Polygon 9693][Circle 6523];Length:50.0;KValue:100.0}

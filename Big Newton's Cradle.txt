@@ -1,0 +1,9 @@
+PCircle{Name:Circle 1921;Mass:10.0;CenterPoint:400.0 500.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Radius:1.0;}
+PCircle{Name:Circle 1950;Mass:10.0;CenterPoint:400.0 250.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Radius:100.0;}
+PCircle{Name:Circle 2921;Mass:10.0;CenterPoint:600.0 500.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Radius:1.0;}
+PCircle{Name:Circle 2950;Mass:10.0;CenterPoint:600.0 250.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Radius:100.0;}
+PCircle{Name:Circle 3921;Mass:10.0;CenterPoint:800.0 500.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Radius:1.0;}
+PCircle{Name:Circle 3950;Mass:10.0;CenterPoint:800.0 250.0;Velocity:-10.0 0.0;Angle:0.0;Is Moveable:true;Radius:100.0;}
+PSpring{BodiesAttached:[Circle 1950][Circle 1921];KValue:100.0;Length:10.0;}
+PSpring{BodiesAttached:[Circle 2950][Circle 2921];KValue:100.0;Length:10.0;}
+PSpring{BodiesAttached:[Circle 3950][Circle 3921];KValue:100.0;Length:10.0;}

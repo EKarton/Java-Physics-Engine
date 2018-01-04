@@ -1,0 +1,11 @@
+PCircle{Name:Circle 2523;Mass:1.0E-4;CenterPoint:169.0 406.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Radius:152.43359209832983;}
+PPolygon{Name:Polygon 193;Mass:1.0;CenterPoint:984.5 427.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Vertices:940.0 590.0,955.0 237.0,1020.0 246.0,1029.0 618.0}
+PPolygon{Name:Polygon 231;Mass:1.0;CenterPoint:100.5 598.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Vertices:199.0 694.0,2.0 468.0,105.0 729.0}
+PPolygon{Name:Polygon 3196;Mass:1.0;CenterPoint:623.5 709.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Vertices:246.0 742.0,260.0 691.0,987.0 635.0,1001.0 784.0}
+PPolygon{Name:Polygon 3198;Mass:1.0;CenterPoint:29.0 345.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Vertices:52.0 249.0,5.0 452.0,12.0 239.0,53.0 244.0}
+PPolygon{Name:Polygon 3352;Mass:1.0;CenterPoint:777.5 142.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Vertices:599.0 60.0,491.0 90.0,1064.0 228.0,968.0 57.0}
+PPolygon{Name:Polygon 7164;Mass:1.0;CenterPoint:255.0 149.0;Velocity:0.0 0.0;Angle:0.0;Is Moveable:false;Vertices:23.0 228.0,487.0 91.0,40.0 70.0}
+PPolygon{Name:Polygon 7444;Mass:100.0;CenterPoint:697.0 358.5;Velocity:0.0 0.0;Angle:0.0;Is Moveable:true;Vertices:513.0 398.0,643.0 536.0,854.0 469.0,881.0 284.0,651.0 181.0}
+PSpring{BodiesAttached:[Circle 2523][Polygon 7444];Length:50.0;KValue:100.0}
+PSpring{BodiesAttached:[Polygon 3196][Circle 2523];Length:50.0;KValue:100.0}
+PSpring{BodiesAttached:[Polygon 3196][Polygon 7444];Length:50.0;KValue:100.0}
