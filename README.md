@@ -44,7 +44,7 @@ To help users create their objects, a snapping tool is used to snap the cursor t
 After creating an object, users are able to edit their object properties. The tabs correspond to the names of their object, and selecting different tabs will display the properties for each corresponding object. After editing an object property, users must type the Enter key to save the changes. Note: every object name must be unique and it is strictly enforced by the app.
 <div width="100%">
     <p align="center">
-    <img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/master/Documents/Images/PropertiesTab.PNG" width="600px"/>
+    <img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/master/Documents/Images/PropertiesTab2.PNG" width="600px"/>
     </p>
 </div>
 
