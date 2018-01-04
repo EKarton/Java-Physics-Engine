@@ -78,7 +78,7 @@ Furthermore, Users are able to render the objects by navigating to Run -> Run Si
 Please note that this project is used for educational purposes and is not intended to be used commercially. We are not liable for any damages/changes done by this project.
 
 ### Credits
-Emilio Kartono, who made the entire project.
+EKarton
 
 ### License
 This project is protected under the GNU licence. Please refer to the Licence.txt for more information.
