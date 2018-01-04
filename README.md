@@ -58,7 +58,7 @@ In addition, users can generate the API code neede to implement their objects in
 Furthermore, Users are able to render the objects by navigating to Run -> Run Simulation. A new window will appear, simulating the objects in real time.
 <div width="100%">
     <p align="center">
-        <img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/master/Documents/Images/SimulationWindow.PNG" width="600px"/>
+        <img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/master/Documents/Images/GeneratedAPICode.PNG" width="600px"/>
     </p>
 </div>
 
