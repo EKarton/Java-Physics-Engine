@@ -16,7 +16,7 @@ The Java Physics Engine is a project made during my final year in high school. T
 This project consists of several components, each responsible for performing a certain task. The image below illustrates the system architecture of the project.
 <div width="100%">
     <p align="center">
-<img src="https://raw.githubusercontent.com/EKarton/UofT-Timetable-Generator/master/docs/images/System%20Architecture.PNG" width="600px"/>
+<img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/master/Documents/Images/SystemArchitecture.PNG" width="600px"/>
     </p>
 </div>
 
