@@ -20,13 +20,6 @@ This project consists of several components, each responsible for performing a c
     </p>
 </div>
 
-Users will be using the Java Physics Engine GUI editor to generate API code from the objects made in the editor. 
-<div width="100%">
-    <p align="center">
-<img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/master/Documents/Images/Physics%20Engine%20PIC.PNG" width="600px"/>
-    </p>
-</div>
-
 Using the Object Creation Toolbar, users are able to create various objects.
 <div width="100%">
     <p align="center">
@@ -45,6 +38,13 @@ After creating an object, users are able to edit their object properties. The ta
 <div width="100%">
     <p align="center">
     <img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/master/Documents/Images/PropertiesTab2.PNG" width="600px"/>
+    </p>
+</div>
+
+Users will be using the Java Physics Engine GUI editor to generate API code from the objects made in the editor. 
+<div width="100%">
+    <p align="center">
+<img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/master/Documents/Images/GeneratedAPICode.PNG" width="600px"/>
     </p>
 </div>
 
