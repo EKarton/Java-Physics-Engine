@@ -146,6 +146,50 @@ public abstract class PBody {
         return angle;
     }
 
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+
+    /**
+     * Determines if the body is movable
+     * @return {@code true} if the body is movable; else {@code false}
+     */
+    public boolean isMoving() {
+        return isMoving;
+    }
+
+    public void setMoving(boolean moving) {
+        isMoving = moving;
+    }
+
+    /**
+     * Sets whether the body can be moveable or not
+     * @param isMoving {@code true} if the body will be moving; else {@code false}
+     */
+    public void setMoveable(boolean isMoving) {
+        this.setMoving(isMoving);
+    }
+
+    /**
+     * Move the body to a new point such that the point is its new center point
+     * @param newCenterPt The new center point
+     */
+    public abstract void move(Vector newCenterPt);
+
+    /**
+     * Rotate the body to a certain angle
+     * @param newAngle The angle of the body
+     */
+    public abstract void rotate(double newAngle);
+
+    /**
+     * Move the body based on a displacement
+     * @param displacement The displacement to move the body by a certain amount
+     */
+    public abstract void translate(Vector displacement);
+
+    // ========================================================================================================
+
     /**
      * Returns the fill color of the body
      * @return The fill color of the body
@@ -177,40 +221,6 @@ public abstract class PBody {
     public void setOutlineColor(Color color) {
         this.outlineColor = color;
     }
-
-    /**
-     * Determines if the body is movable
-     * @return {@code true} if the body is movable; else {@code false}
-     */
-    public boolean isMoving() {
-        return isMoving;
-    }
-
-    /**
-     * Sets whether the body can be moveable or not
-     * @param isMoving {@code true} if the body will be moving; else {@code false}
-     */
-    public void setMoveable(boolean isMoving) {
-        this.setMoving(isMoving);
-    }
-
-    /**
-     * Move the body to a new point such that the point is its new center point
-     * @param newCenterPt The new center point
-     */
-    public abstract void move(Vector newCenterPt);
-
-    /**
-     * Rotate the body to a certain angle
-     * @param newAngle The angle of the body
-     */
-    public abstract void rotate(double newAngle);
-
-    /**
-     * Move the body based on a displacement
-     * @param displacement The displacement to move the body by a certain amount
-     */
-    public abstract void translate(Vector displacement);
 
     /**
      * Draws the outline of the center point
@@ -253,13 +263,5 @@ public abstract class PBody {
         return "Name:" + getName() + ";Mass:" + getMass() + ";CenterPoint:" + getCenterPt().getX() + " " + getCenterPt().getY() +
                 ";Velocity:" + getVelocity().getX() + " " + getVelocity().getY() + ";Angle:" + getAngle() +
                 ";Is Moveable:" + isMoving() + ";";
-    }
-
-    public void setAngle(double angle) {
-        this.angle = angle;
-    }
-
-    public void setMoving(boolean moving) {
-        isMoving = moving;
     }
 }
