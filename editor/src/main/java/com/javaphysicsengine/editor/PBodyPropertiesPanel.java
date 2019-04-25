@@ -31,7 +31,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class PBodyPropertiesTab extends JPanel implements ActionListener {
+public class PBodyPropertiesPanel extends JPanel implements ActionListener {
     private JPanel colorPanel = new JPanel();  // A panel used to host the color picker
     private JTabbedPane tabbedPane;
     private PEditorPanel editorPanel;
@@ -39,13 +39,13 @@ public class PBodyPropertiesTab extends JPanel implements ActionListener {
     private PBody body;
 
     /*
-     Post-condition: Creates a PBodyPropertiesTab object tied to a specific object
+     Post-condition: Creates a PBodyPropertiesPanel object tied to a specific object
      Pre-condition: The "body", "currentPane", and "editorPanel" must not be null values
      @param body The PBody object that will have its properties modified throug GUI components
      @param currentPane The JTabbedPane that will contain this object
      @param editorPanel The PEditorPanel that created this object
      */
-    public PBodyPropertiesTab(PBody body, JTabbedPane currentPane, PEditorPanel editorPanel) {
+    public PBodyPropertiesPanel(PBody body, JTabbedPane currentPane, PEditorPanel editorPanel) {
         super();
         this.body = body;
         this.tabbedPane = currentPane;

@@ -183,7 +183,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     public void addBody(PBody body) {
         // Add the body to the end of the list and show its properties pane
         createdBodies.add(body);
-        propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesTab(body, propertiesPane, this)));
+        propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, this)));
 
         sortBodyByName();
     }
@@ -507,7 +507,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
             }
 
             // Create a properties tab for that body
-            propertiesPane.add(selectedBody.getName(), new JScrollPane(new PBodyPropertiesTab(selectedBody, propertiesPane, this)));
+            propertiesPane.add(selectedBody.getName(), new JScrollPane(new PBodyPropertiesPanel(selectedBody, propertiesPane, this)));
         }
 
         // If selected a body to connect to spring
