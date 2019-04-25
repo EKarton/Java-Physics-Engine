@@ -18,7 +18,7 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class JSimulationPanel extends JPanel implements ActionListener {
+public class PSimulationPanel extends JPanel implements ActionListener {
     private PWorld world;
     private double frameRate;
     private boolean isShapeFillVisible = true;
@@ -28,14 +28,14 @@ public class JSimulationPanel extends JPanel implements ActionListener {
 
     /**
      * Pre-condition: "world" must not be null. Frame rate must be greater than 0
-     * Post-condition: Creates a JSimulationPanel
+     * Post-condition: Creates a PSimulationPanel
      * @param world The PWorld object that contains all the objects to be simulated
      * @param frameRate The FPS for rendering and simulating the bodies
      * @param isShapeFillVisible Determines whether the bodies should have its shape fill rendered
      * @param isShapeOutlineVisible Determines whether the bodies should have its shape outlines rendered
      * @param isAntiAliasingToggled Determines whether AntiAliasing is turned on or off
      */
-    public JSimulationPanel(PWorld world, double frameRate, boolean isShapeFillVisible, boolean isShapeOutlineVisible, boolean isAntiAliasingToggled) {
+    public PSimulationPanel(PWorld world, double frameRate, boolean isShapeFillVisible, boolean isShapeOutlineVisible, boolean isAntiAliasingToggled) {
         super();
         this.world = world;
         this.frameRate = frameRate;

@@ -12,7 +12,7 @@ import com.javaphysicsengine.api.PWorld;
 import javax.swing.JFrame;
 
 class PSimulationWindow extends JFrame {
-    private JSimulationPanel panel;
+    private PSimulationPanel panel;
 
     /**
      * Creates a PSimulationWindow object
@@ -25,7 +25,7 @@ class PSimulationWindow extends JFrame {
      */
     public PSimulationWindow(PWorld world, double frameRate, boolean isShapeFillVisible, boolean isShapeOutlineVisible, boolean isAntiAliasingToggled) {
         super("Simulation Window");
-        panel = new JSimulationPanel(world, frameRate, isShapeFillVisible, isShapeOutlineVisible, isAntiAliasingToggled);
+        panel = new PSimulationPanel(world, frameRate, isShapeFillVisible, isShapeOutlineVisible, isAntiAliasingToggled);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         // Add the simulation panel to the window and make the window visible
