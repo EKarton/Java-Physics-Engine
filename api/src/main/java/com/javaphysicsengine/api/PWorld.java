@@ -5,9 +5,10 @@
   @version January 15 2016
 */
 
-package PhysicsEngine;
+package com.javaphysicsengine.api;
 
-import ToolBox.*;
+import com.javaphysicsengine.utils.Vector;
+
 import java.util.ArrayList;
 import java.awt.Graphics;
 import java.awt.Color;

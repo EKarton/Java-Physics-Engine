@@ -4,7 +4,7 @@
  * Date modified: June 8, 2015
 */
 
-package ToolBox;
+package com.javaphysicsengine.utils;
 
 import java.util.Scanner;
 import java.io.FileReader;

@@ -5,9 +5,7 @@
   @version January 15 2016
 */
 
-package PhysicsEngine;
-
-import PhysicsEngine.PBoundingBox;
+package com.javaphysicsengine.api;
 
 class PBoxBoxCollision
 {

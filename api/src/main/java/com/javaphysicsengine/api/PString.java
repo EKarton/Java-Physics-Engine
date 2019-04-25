@@ -1,8 +1,9 @@
-package PhysicsEngine;
+package com.javaphysicsengine.api;
 
-import ToolBox.Vector;
-import java.awt.Graphics;
+import com.javaphysicsengine.utils.Vector;
+
 import java.awt.Color;
+import java.awt.Graphics;
 
 public class PString extends PConstraints
 {  

@@ -5,9 +5,10 @@
   @version January 15 2016
 */
 
-package PhysicsEngine;
+package com.javaphysicsengine.api;
 
-import ToolBox.Vector;
+import com.javaphysicsengine.utils.Vector;
+
 import java.awt.Color;
 import java.awt.Graphics;
 
@@ -16,7 +17,7 @@ public abstract class PBody
   // The basic properties of a physical object
   protected double mass = 1;  // In kg
   protected Vector centerPt = new Vector(0, 0);  // <- This represents the center of mass
-  private String name = "";
+  private String name;
   
   // The kinematic properties of the physical object
   protected Vector netForce = new Vector(0, 0);

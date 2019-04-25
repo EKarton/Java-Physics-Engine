@@ -6,7 +6,9 @@
   @version December 21, 2015
 */
 
-package PhysicsEngine;
+package com.javaphysicsengine.api;
+
+import com.javaphysicsengine.utils.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -17,9 +19,8 @@ import java.awt.RenderingHints;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import ToolBox.Vector;
 
-class PhysicsDebuggerPanel extends JPanel implements ActionListener
+public class PhysicsDebuggerPanel extends JPanel implements ActionListener
 {
   // Fields controlling the animation and graphics of the JPanel
   private static final int WIDTH = 1000;

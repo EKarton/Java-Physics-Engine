@@ -1,10 +1,10 @@
-package PhysicsEngine;
+package com.javaphysicsengine.api;
 
-import java.util.ArrayList;
+import com.javaphysicsengine.utils.Trigonometry;
+import com.javaphysicsengine.utils.Vector;
+
 import java.awt.Graphics;
-import java.awt.Color;
-import ToolBox.Vector;
-import ToolBox.Trigonometry;
+import java.util.ArrayList;
 
 public class PPolygon extends PBody
 {
@@ -83,7 +83,7 @@ public class PPolygon extends PBody
       
       // Getting the angle made by the vertex and the origin
       double betaAngle = Math.abs(Trigonometry.inverseOfTan(vertex.getY() / vertex.getX()));
-      double alphaAngle = Trigonometry.convertBetaToThetaAngle(vertex.getX(), vertex.getY(), betaAngle);       
+      double alphaAngle = Trigonometry.convertBetaToThetaAngle(vertex.getX(), vertex.getY(), betaAngle);
       
       // Getting the new rotated x and y coordinates based on the unit circle
       double angleToRotateBy = alphaAngle - angle + newAngle;      

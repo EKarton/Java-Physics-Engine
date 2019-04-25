@@ -5,11 +5,11 @@
   @version January 15 2016
 */
 
-package PhysicsEngine;
+package com.javaphysicsengine.api;
 
-import ToolBox.Vector;
+import com.javaphysicsengine.utils.Vector;
+
 import java.awt.Graphics;
-import java.awt.Color;
 
 public class PCircle extends PBody
 {
@@ -68,7 +68,7 @@ public class PCircle extends PBody
      Post-condition: Moves the circle based on a certain displacement
      @param displacement The amount to move the circle by
   */  
-  public void translate(Vector displacement) 
+  public void translate(Vector displacement)
   {
     centerPt.setY(centerPt.getY() + displacement.getY());
     centerPt.setX(centerPt.getX() + displacement.getX());

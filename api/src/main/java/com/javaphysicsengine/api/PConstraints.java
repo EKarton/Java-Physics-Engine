@@ -5,9 +5,8 @@
   @version January 15 2016
 */
 
-package PhysicsEngine;
+package com.javaphysicsengine.api;
 
-import ToolBox.Vector;
 import java.awt.Graphics;
 
 public abstract class PConstraints

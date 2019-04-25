@@ -5,11 +5,11 @@
   @version January 15 2016
 */
 
-package PhysicsEngine;
+package com.javaphysicsengine.api;
+
+import com.javaphysicsengine.utils.Vector;
 
 import java.util.ArrayList;
-import PhysicsEngine.PPolygon;
-import ToolBox.Vector;
 
 class PPolyPolyCollision
 {

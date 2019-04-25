@@ -5,7 +5,7 @@
   @version December 21, 2015
 */
 
-package ToolBox;
+package com.javaphysicsengine.utils;
 
 public class Trigonometry
 {

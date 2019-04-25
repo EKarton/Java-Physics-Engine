@@ -5,12 +5,12 @@
   @version January 15 2016
 */
 
-package PhysicsEngine;
+package com.javaphysicsengine.api;
 
-import ToolBox.Vector;
+import com.javaphysicsengine.utils.Vector;
+
+import java.awt.*;
 import java.util.ArrayList;
-import java.awt.Graphics;
-import java.awt.Color;
 
 class PBoundingBox
 {
