@@ -14,15 +14,15 @@ import java.awt.Graphics;
 public abstract class PBody {
     // The basic properties of a physical object
 
-    protected double mass = 1;  // In kg
+    private double mass = 1;  // In kg
 
-    protected Vector centerPt = new Vector(0, 0);  // The center of mass
+    private Vector centerPt = new Vector(0, 0);  // The center of mass
 
     // The kinematic properties of the physical object
 
-    protected Vector netForce = new Vector(0, 0);
-    protected Vector velocity = new Vector(0, 0);
-    protected double angle = 0;
+    private Vector netForce = new Vector(0, 0);
+    private Vector velocity = new Vector(0, 0);
+    private double angle = 0;
 
     private String name;
     private boolean isMoving = true;
@@ -37,7 +37,7 @@ public abstract class PBody {
      * @param bodyName The name of the body
      */
     public PBody(String bodyName) {
-        this.name = bodyName;
+        this.setName(bodyName);
     }
 
     /**
@@ -46,15 +46,15 @@ public abstract class PBody {
      * @param existingBody An already existing body
      */
     public PBody(PBody existingBody) {
-        this.mass = existingBody.mass;
-        this.centerPt = new Vector(existingBody.centerPt.getX(), existingBody.centerPt.getY());
-        this.name = existingBody.name;
-        this.netForce = new Vector(existingBody.netForce.getX(), existingBody.netForce.getY());
-        this.velocity = new Vector(existingBody.velocity.getX(), existingBody.velocity.getY());
-        this.angle = existingBody.angle;
-        this.isMoving = existingBody.isMoving;
-        this.outlineColor = new Color(existingBody.outlineColor.getRed(), existingBody.outlineColor.getGreen(), existingBody.outlineColor.getBlue(), existingBody.outlineColor.getAlpha());
-        this.fillColor = new Color(existingBody.fillColor.getRed(), existingBody.fillColor.getGreen(), existingBody.fillColor.getBlue(), existingBody.fillColor.getAlpha());
+        this.setMass(existingBody.getMass());
+        this.setCenterPt(new Vector(existingBody.getCenterPt().getX(), existingBody.getCenterPt().getY()));
+        this.setName(existingBody.getName());
+        this.setNetForce(new Vector(existingBody.getNetForce().getX(), existingBody.getNetForce().getY()));
+        this.setVelocity(new Vector(existingBody.getVelocity().getX(), existingBody.getVelocity().getY()));
+        this.setAngle(existingBody.getAngle());
+        this.setMoving(existingBody.isMoving());
+        this.setOutlineColor(new Color(existingBody.getOutlineColor().getRed(), existingBody.getOutlineColor().getGreen(), existingBody.getOutlineColor().getBlue(), existingBody.getOutlineColor().getAlpha()));
+        this.setFillColor(new Color(existingBody.getFillColor().getRed(), existingBody.getFillColor().getGreen(), existingBody.getFillColor().getBlue(), existingBody.getFillColor().getAlpha()));
     }
 
     /**
@@ -191,7 +191,7 @@ public abstract class PBody {
      * @param isMoving {@code true} if the body will be moving; else {@code false}
      */
     public void setMoveable(boolean isMoving) {
-        this.isMoving = isMoving;
+        this.setMoving(isMoving);
     }
 
     /**
@@ -219,7 +219,7 @@ public abstract class PBody {
      * @param windowHeight The height of the window containing the body being displayed
      */
     public void drawOutline(Graphics g, int windowHeight) {
-        g.drawOval((int) centerPt.getX() - 2, windowHeight - (int) centerPt.getY() - 2, 4, 4);
+        g.drawOval((int) getCenterPt().getX() - 2, windowHeight - (int) getCenterPt().getY() - 2, 4, 4);
     }
 
     /**
@@ -229,7 +229,7 @@ public abstract class PBody {
      * @param windowHeight The height of the window containing the body being displayed
      */
     public void drawFill(Graphics g, int windowHeight) {
-        g.fillOval((int) centerPt.getX() - 2, windowHeight - (int) centerPt.getY() - 2, 4, 4);
+        g.fillOval((int) getCenterPt().getX() - 2, windowHeight - (int) getCenterPt().getY() - 2, 4, 4);
     }
 
     /**
@@ -240,7 +240,7 @@ public abstract class PBody {
      */
     public void drawBoundingBox(Graphics g, int windowHeight) {
         // Draw the bounding box of the center of mass
-        g.drawRect((int) centerPt.getX() - 2, windowHeight - (int) centerPt.getY() - 2, 4, 4);
+        g.drawRect((int) getCenterPt().getX() - 2, windowHeight - (int) getCenterPt().getY() - 2, 4, 4);
     }
 
     /**
@@ -250,8 +250,16 @@ public abstract class PBody {
      */
     @Override
     public String toString() {
-        return "Name:" + name + ";Mass:" + mass + ";CenterPoint:" + centerPt.getX() + " " + centerPt.getY() +
-                ";Velocity:" + velocity.getX() + " " + velocity.getY() + ";Angle:" + angle +
-                ";Is Moveable:" + isMoving + ";";
+        return "Name:" + getName() + ";Mass:" + getMass() + ";CenterPoint:" + getCenterPt().getX() + " " + getCenterPt().getY() +
+                ";Velocity:" + getVelocity().getX() + " " + getVelocity().getY() + ";Angle:" + getAngle() +
+                ";Is Moveable:" + isMoving() + ";";
+    }
+
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+
+    public void setMoving(boolean moving) {
+        isMoving = moving;
     }
 }

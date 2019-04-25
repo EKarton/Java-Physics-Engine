@@ -53,7 +53,7 @@ public class PCircle extends PBody {
      * @param newAngle The angle of the body
      */
     public void rotate(double newAngle) {
-        super.angle = newAngle;
+        super.setAngle(newAngle);
     }
 
     /**
@@ -61,7 +61,7 @@ public class PCircle extends PBody {
      * @param newCenterPt The new center point
      */
     public void move(Vector newCenterPt) {
-        centerPt = newCenterPt;
+        setCenterPt(newCenterPt);
     }
 
     /**
@@ -69,8 +69,8 @@ public class PCircle extends PBody {
      * @param displacement The displacement to move the body by a certain amount
      */
     public void translate(Vector displacement) {
-        centerPt.setY(centerPt.getY() + displacement.getY());
-        centerPt.setX(centerPt.getX() + displacement.getX());
+        getCenterPt().setY(getCenterPt().getY() + displacement.getY());
+        getCenterPt().setX(getCenterPt().getX() + displacement.getX());
     }
 
     /**
@@ -82,8 +82,8 @@ public class PCircle extends PBody {
     @Override
     public void drawFill(Graphics g, int windowHeight) {
         // Draws a circle in middle of coordinate
-        int topLeftX = (int) (centerPt.getX() - radius);
-        int topLeftY = windowHeight - (int) (centerPt.getY() + radius);
+        int topLeftX = (int) (getCenterPt().getX() - radius);
+        int topLeftY = windowHeight - (int) (getCenterPt().getY() + radius);
         g.setColor(getFillColor());
         g.fillOval(topLeftX, topLeftY, (int) (radius * 2), (int) (radius * 2));
 
@@ -100,8 +100,8 @@ public class PCircle extends PBody {
     @Override
     public void drawOutline(Graphics g, int windowHeight) {
         // Draws a circle in middle of coordinate
-        int topLeftX = (int) (centerPt.getX() - radius);
-        int topLeftY = windowHeight - (int) (centerPt.getY() + radius);
+        int topLeftX = (int) (getCenterPt().getX() - radius);
+        int topLeftY = windowHeight - (int) (getCenterPt().getY() + radius);
         g.setColor(getOutlineColor());
         g.drawOval(topLeftX, topLeftY, (int) (radius * 2), (int) (radius * 2));
 

@@ -71,8 +71,8 @@ public class PPolygon extends PBody {
             if (vertex.getY() > maxY) maxY = vertex.getY();
         }
 
-        centerPt.setX((minX + maxX) / 2);
-        centerPt.setY((minY + maxY) / 2);
+        getCenterPt().setX((minX + maxX) / 2);
+        getCenterPt().setY((minY + maxY) / 2);
 
         boundingBox = new PBoundingBox(vertices);
     }
@@ -89,8 +89,8 @@ public class PPolygon extends PBody {
         }
 
         // Move the centerPt
-        centerPt.setX(centerPt.getX() + displacement.getX());
-        centerPt.setY(centerPt.getY() + displacement.getY());
+        getCenterPt().setX(getCenterPt().getX() + displacement.getX());
+        getCenterPt().setY(getCenterPt().getY() + displacement.getY());
 
         // Move the bounding box
         boundingBox.setMinX(boundingBox.getMinX() + displacement.getX());
@@ -108,22 +108,22 @@ public class PPolygon extends PBody {
         // Rotate all the vertices around its center of mass
         for (Vector vertex : vertices) {
             // Shifting the vertex so that the centerPt is (0, 0)
-            vertex.setX(vertex.getX() - centerPt.getX());
-            vertex.setY(vertex.getY() - centerPt.getY());
+            vertex.setX(vertex.getX() - getCenterPt().getX());
+            vertex.setY(vertex.getY() - getCenterPt().getY());
 
             // Getting the angle made by the vertex and the origin
             double betaAngle = Math.abs(Trigonometry.inverseOfTan(vertex.getY() / vertex.getX()));
             double alphaAngle = Trigonometry.convertBetaToThetaAngle(vertex.getX(), vertex.getY(), betaAngle);
 
             // Getting the new rotated x and y coordinates based on the unit circle
-            double angleToRotateBy = alphaAngle - angle + newAngle;
-            vertex.setY(Trigonometry.sin(angleToRotateBy) * vertex.getLength() + centerPt.getY());
-            vertex.setX(Trigonometry.cos(angleToRotateBy) * vertex.getLength() + centerPt.getX());
+            double angleToRotateBy = alphaAngle - getAngle() + newAngle;
+            vertex.setY(Trigonometry.sin(angleToRotateBy) * vertex.getLength() + getCenterPt().getY());
+            vertex.setX(Trigonometry.cos(angleToRotateBy) * vertex.getLength() + getCenterPt().getX());
         }
 
         if (boundingBox != null)
             boundingBox.recomputeBoundaries(vertices);
-        super.angle = newAngle;
+        super.setAngle(newAngle);
     }
 
     /**
@@ -132,7 +132,7 @@ public class PPolygon extends PBody {
      */
     public void move(Vector newCenterPt) {
         // Compute the displacement from the old centerPt to the new centerPt and call the translate()
-        Vector displacement = Vector.subtract(newCenterPt, centerPt);
+        Vector displacement = Vector.subtract(newCenterPt, getCenterPt());
         translate(displacement);
     }
 

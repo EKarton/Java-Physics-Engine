@@ -43,27 +43,27 @@ public class PString extends PConstraints {
         if (bodies[0].isMoving() == false || bodies[1].isMoving() == false)
             lengthPerBody = getLength();
 
-        double equilPt_X = (bodies[0].centerPt.getX() + bodies[1].centerPt.getX()) / 2;
-        double equilPt_Y = (bodies[0].centerPt.getY() + bodies[1].centerPt.getY()) / 2;
+        double equilPt_X = (bodies[0].getCenterPt().getX() + bodies[1].getCenterPt().getX()) / 2;
+        double equilPt_Y = (bodies[0].getCenterPt().getY() + bodies[1].getCenterPt().getY()) / 2;
         if (bodies[0].isMoving() == false) {
-            equilPt_X = bodies[0].centerPt.getX();
-            equilPt_Y = bodies[0].centerPt.getY();
+            equilPt_X = bodies[0].getCenterPt().getX();
+            equilPt_Y = bodies[0].getCenterPt().getY();
         } else if (bodies[1].isMoving() == false) {
-            equilPt_X = bodies[1].centerPt.getX();
-            equilPt_Y = bodies[1].centerPt.getY();
+            equilPt_X = bodies[1].getCenterPt().getX();
+            equilPt_Y = bodies[1].getCenterPt().getY();
         }
 
         System.out.println("L:" + lengthPerBody + " EX:" + equilPt_X + " EY:" + equilPt_Y);
 
         for (PBody body : bodies) {
-            double distX = equilPt_X - body.centerPt.getX();
-            double distY = equilPt_Y - body.centerPt.getY();
+            double distX = equilPt_X - body.getCenterPt().getX();
+            double distY = equilPt_Y - body.getCenterPt().getY();
             double distance = Math.sqrt((distX * distX) + (distY * distY));
 
             System.out.println("DistX:" + distX + " DistY:" + distY + " DIST:" + distance);
 
             if (distance > lengthPerBody) {
-                double centripetalForce_Scalar = body.mass * Math.pow(body.velocity.getLength(), 2) / lengthPerBody;
+                double centripetalForce_Scalar = body.getMass() * Math.pow(body.getVelocity().getLength(), 2) / lengthPerBody;
                 Vector centripetalForce_Vector = new Vector(-distX, -distY);
                 centripetalForce_Vector.setLength(centripetalForce_Scalar);
                 System.out.println("CF:" + centripetalForce_Vector);

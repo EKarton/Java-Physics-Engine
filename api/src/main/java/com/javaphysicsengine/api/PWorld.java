@@ -74,16 +74,16 @@ public class PWorld {
                 continue;
 
             // Getting the acceleration from force ( Force = mass * acceleration )
-            double accelerationX = body.netForce.getX() / body.getMass();
-            double accelerationY = body.netForce.getY() / body.getMass();
+            double accelerationX = body.getNetForce().getX() / body.getMass();
+            double accelerationY = body.getNetForce().getY() / body.getMass();
 
             // Calculating the new velocity ( V2 = V1 + at)
-            body.velocity.setX(body.velocity.getX() + accelerationX * timeEllapsed);
-            body.velocity.setY(body.velocity.getY() + accelerationY * timeEllapsed);
+            body.getVelocity().setX(body.getVelocity().getX() + accelerationX * timeEllapsed);
+            body.getVelocity().setY(body.getVelocity().getY() + accelerationY * timeEllapsed);
 
             // Getting the amount to translate by (Velocity = displacement / time)
-            double dx = body.velocity.getX() * timeEllapsed * scale;
-            double dy = body.velocity.getY() * timeEllapsed * scale;
+            double dx = body.getVelocity().getX() * timeEllapsed * scale;
+            double dy = body.getVelocity().getY() * timeEllapsed * scale;
 
             // Translate the body
             body.translate(new Vector(dx, dy));
