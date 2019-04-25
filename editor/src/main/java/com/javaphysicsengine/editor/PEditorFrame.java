@@ -161,8 +161,11 @@ public class PEditorFrame extends JFrame implements ActionListener {
       Post-condition: Loads all the bodies stored in a ".txt" file (Will be asked to user VIA JOptionPane)
    */
     private void loadBodiesFromFile() {
+        // Get the file path from user
+        String filePath = JOptionPane.showInputDialog("Enter File Path");
+
         PBodyFileReader fileReader = new PBodyFileReader();
-        Pair<List<PBody>, List<PConstraints>> results = fileReader.loadBodiesFromFile();
+        Pair<List<PBody>, List<PConstraints>> results = fileReader.loadBodiesFromFile(filePath);
         List<PBody> bodies = results.fst;
         List<PConstraints> constraints = results.snd;
 

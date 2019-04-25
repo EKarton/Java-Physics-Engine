@@ -1,7 +1,7 @@
 /*
  * Reads in the bodies from a file.
  * @author Emilio Kartono
- * @version April 24 2018
+ * @version January 15 2016
  */
 package com.javaphysicsengine.editor;
 
@@ -11,17 +11,15 @@ import com.javaphysicsengine.utils.Vector;
 import com.sun.tools.javac.util.Pair;
 
 import javax.swing.JOptionPane;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 public class PBodyFileReader {
 
-    public Pair<List<PBody>, List<PConstraints>> loadBodiesFromFile() {
+    public Pair<List<PBody>, List<PConstraints>> loadBodiesFromFile(String filePath) {
         PBodyFileReader fileReader = new PBodyFileReader();
-
-        // Get the file path from user
-        String filePath = JOptionPane.showInputDialog("Enter File Path");
 
         // Start storing the bodies and constraints coming from the text file
         List<PBody> bodies = new ArrayList<>();
