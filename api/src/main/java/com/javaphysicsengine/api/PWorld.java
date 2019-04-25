@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class PWorld {
     // Physic properties about this world
     private final double GRAVITY_ACCELERATION = -9.81;
+
     // List containing the physical bodies and joints
     private ArrayList<PBody> bodies = new ArrayList<PBody>();
     private ArrayList<PConstraints> constraints = new ArrayList<PConstraints>();
