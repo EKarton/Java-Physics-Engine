@@ -6,7 +6,7 @@
  */
 package com.javaphysicsengine.api;
 
-class PBoxBoxCollision {
+public class PBoxBoxCollision {
 
     /**
      * Determines if two bounding boxes collide

@@ -8,7 +8,7 @@ package com.javaphysicsengine.api;
 
 import com.javaphysicsengine.utils.Vector;
 
-class PCircleCircleCollision {
+public class PCircleCircleCollision {
     /**
      * Returns the displacement the main circle should move by
      * @param mtd The minimum translation vector from SAT algorithm

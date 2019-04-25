@@ -13,7 +13,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-class PBoundingBox {
+public class PBoundingBox {
     private double minX;
     private double maxX;
     private double minY;

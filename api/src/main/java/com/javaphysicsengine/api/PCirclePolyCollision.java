@@ -11,7 +11,7 @@ import com.javaphysicsengine.utils.Vector;
 
 import java.util.ArrayList;
 
-class PCirclePolyCollision extends PPolyPolyCollision {
+public class PCirclePolyCollision extends PPolyPolyCollision {
     private static Vector circleCenterPt;
     private static double circleRadius;
     private static ArrayList<Vector> polyVertices;
