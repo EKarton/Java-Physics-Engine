@@ -1,53 +1,53 @@
 /*
-  Purpose: To represent a PConstraints object that has spring-like physics
-  Original Creation Date: January 1 2016
-  @author Emilio Kartono
-  @version January 15 2016
-*/
+ * Purpose: To represent a PConstraints object that has spring-like physics
+ * Original Creation Date: January 1 2016
+ * @author Emilio Kartono
+ * @version January 15 2016
+ */
 
 package com.javaphysicsengine.api;
 
 import com.javaphysicsengine.utils.Vector;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
 
 public class PSpring extends PConstraints {
-    // Physic properties
     private double kValue = 100;  // <- In Newtons/meter
 
-    /*
-       Pre-condition: "body1" and "body2" must not be null
-       Post-condition: Creates a PSpring object with "body1" and "body2" attached
-       @param body1 The first body to be attached to.
-       @param body2 The second body to be attached to.
-    */
+    /**
+     * Pre-condition: "body1" and "body2" must not be null
+     * Post-condition: Creates a PSpring object with "body1" and "body2" attached
+     * @param body1 The first body to be attached to.
+     * @param body2 The second body to be attached to.
+     */
     public PSpring(PBody body1, PBody body2) {
         super(body1, body2);
         setLength(50);
     }
 
-    /*
-      Post-condition: Returns the k value of the spring
-      @return The k value of the spring
-    */
+    /**
+     * Post-condition: Returns the k value of the spring
+     * @return The k value of the spring
+     */
     public double getKValue() {
         return this.kValue;
     }
 
-    /*
-      Pre-condition: The kValue must be greater than 0
-      Post-condition: Sets the k value of the spring
-      @param kValue The new k value
-    */
+    /**
+     * Pre-condition: The kValue must be greater than 0
+     * Post-condition: Sets the k value of the spring
+     * @param kValue The new k value
+     */
     public void setKValue(double kValue) {
         this.kValue = kValue;
     }
 
-    /*
-       Post-condition: Adds the tension forces to a body
-       @param body The body
-       @param equilPt The equilibruim point of the spring
-    */
+    /**
+     * Post-condition: Adds the tension forces to a body
+     * @param body The body
+     * @param equilPt The equilibruim point of the spring
+     */
     private void addTensionForceToBody(PBody body, Vector equilPt) {
         // Computing the distance of the body to the centerpt in vector form
         double xMinus = body.getCenterPt().getX() - equilPt.getX();
@@ -72,9 +72,9 @@ public class PSpring extends PConstraints {
         body.setNetForce((Vector.add(body.getNetForce(), tensionForce)));
     }
 
-    /*
-       Post-condition: Adds the tension forces to the attached bodies
-    */
+    /**
+     * Post-condition: Adds the tension forces to the attached bodies
+     */
     public void addTensionForce() {
         // Computing the center of the spring
         PBody[] bodies = super.getAttachedBodies();
@@ -88,12 +88,12 @@ public class PSpring extends PConstraints {
         addTensionForceToBody(getAttachedBodies()[1], equilCenter);
     }
 
-    /*
-      Pre-condition: The "g" must not be null and the "windowHeight" must be greater than 0
-      Post-condition: Draws a line between the two attached bodies
-      @param g The Graphics Object
-      @param windowHeight The height of the window that is containing the body being displayed
-    */
+    /**
+     * Pre-condition: The "g" must not be null and the "windowHeight" must be greater than 0
+     * Post-condition: Draws a line between the two attached bodies
+     * @param g The Graphics Object
+     * @param windowHeight The height of the window that is containing the body being displayed
+     */
     public void drawConstraints(Graphics g, int windowHeight) {
         // Draw a line in between the two objects
         g.setColor(Color.GREEN);
@@ -102,10 +102,10 @@ public class PSpring extends PConstraints {
                 (int) bodies[1].getCenterPt().getX(), windowHeight - (int) bodies[1].getCenterPt().getY());
     }
 
-    /*
-      Post-condition: Returns the properties of the PSpring in a string where each property is stored in format { propertyType:propertyValue; } (excluding the curly brackets)
-      @return Returns the properties of the PSpring in a string
-    */
+    /**
+     * Post-condition: Returns the properties of the PSpring in a string where each property is stored in format { propertyType:propertyValue; } (excluding the curly brackets)
+     * @return Returns the properties of the PSpring in a string
+     */
     @Override
     public String toString() {
         return super.toString() + "KValue:" + kValue;
