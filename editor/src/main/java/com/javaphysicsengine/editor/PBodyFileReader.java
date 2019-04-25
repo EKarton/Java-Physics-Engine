@@ -61,7 +61,7 @@ public class PBodyFileReader {
        @param propertiesTokenizer The StringTokenizer containing the properties of the PPolygon
        @return PSpring The generated PSpring
     */
-    private PSpring createSpringConstraint(StringTokenizer propertiesTokenizer, ArrayList<PBody> bodies) {
+    private PSpring createSpringConstraint(StringTokenizer propertiesTokenizer, List<PBody> bodies) {
         PSpring createdSpring = null;
         while (propertiesTokenizer.hasMoreTokens()) {
             // Grab the properties and its values
@@ -107,7 +107,7 @@ public class PBodyFileReader {
       @param propertiesTokenizer The StringTokenizer containing the properties of the PPolygon
       @return PString The generated PString
    */
-    private PString createStringConstraint(StringTokenizer propertiesTokenizer, ArrayList<PBody> bodies) {
+    private PString createStringConstraint(StringTokenizer propertiesTokenizer, List<PBody> bodies) {
         PString createdString = null;
         while (propertiesTokenizer.hasMoreTokens()) {
             // Grab the properties and its values
@@ -206,12 +206,6 @@ public class PBodyFileReader {
     */
     private PCircle createCircleBody(StringTokenizer propertiesTokenizer) {
         PCircle createdCircle = null;
-        String name = "";
-        double radius = 10;
-        Vector centerPt = new Vector(10, 10);
-        boolean isMoveable = false;
-        double mass = 10;
-        double angle = 0;
 
         while (propertiesTokenizer.hasMoreTokens()) {
             StringTokenizer propertyTokenizer = new StringTokenizer(propertiesTokenizer.nextToken(), ":");

@@ -16,6 +16,7 @@ import com.javaphysicsengine.api.body.PSpring;
 import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.utils.File;
 import com.javaphysicsengine.utils.Vector;
+import com.sun.tools.javac.util.Pair;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -36,6 +37,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class PEditorFrame extends JFrame implements ActionListener {
@@ -160,40 +162,9 @@ public class PEditorFrame extends JFrame implements ActionListener {
    */
     private void loadBodiesFromFile() {
         PBodyFileReader fileReader = new PBodyFileReader();
-
-        // Get the file path from user
-        String filePath = JOptionPane.showInputDialog("Enter File Path");
-
-        // Start storing the bodies and constraints coming from the text file
-        editorPanel.clearConstraints();
-        editorPanel.clearBodies();
-        ArrayList<PBody> bodies = new ArrayList<PBody>();
-        ArrayList<PConstraints> constraints = new ArrayList<PConstraints>();
-
-        // Get the string of lines
-        String[] lines = File.readAllLines(filePath);
-        System.out.println(lines.length);
-
-        for (String line : lines) {
-            StringTokenizer outerBracketTokenizer = new StringTokenizer(line, "{}");
-            String bodyType = outerBracketTokenizer.nextToken();
-            String bodyProperties = outerBracketTokenizer.nextToken();
-            StringTokenizer propertiesTokenizer = new StringTokenizer(bodyProperties, ";");
-
-            if (bodyType.equals("PPolygon")) {
-                System.out.println("Loading Polygon:");
-                bodies.add(fileReader.createPolygonBody(propertiesTokenizer));
-            } else if (bodyType.equals("PCircle")) {
-                System.out.println("Loading Circle:");
-                bodies.add(fileReader.createCircleBody(propertiesTokenizer));
-            } else if (bodyType.equals("PSpring")) {
-                System.out.println("Loading Spring");
-                constraints.add(fileReader.createSpringConstraint(propertiesTokenizer, bodies));
-            } else if (bodyType.equals("PString")) {
-                System.out.println("Loading String");
-                constraints.add(fileReader.createStringConstraint(propertiesTokenizer, bodies));
-            }
-        }
+        Pair<List<PBody>, List<PConstraints>> results = fileReader.loadBodiesFromFile();
+        List<PBody> bodies = results.fst;
+        List<PConstraints> constraints = results.snd;
 
         // Adding the bodies and constraints to the editor
         for (PBody body : bodies)
