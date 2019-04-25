@@ -5,7 +5,7 @@
  @version January 15 2016
  */
 
-package PhysicsAPIEditor;
+package com.javaphysicsengine.editor;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
