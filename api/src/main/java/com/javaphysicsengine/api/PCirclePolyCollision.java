@@ -19,11 +19,11 @@ class PCirclePolyCollision extends PPolyPolyCollision {
     private static Vector polyCenterPt;
     private static Vector polyVelocity;
 
-    /*
-      Post-condition: Returns the points on the circle that are tangents to line only defined by its slope
-      @param normalSlope The slope of the line
-      @return Returns an array of points that are tangents to the line defined only by its slope
-    */
+    /**
+     * Post-condition: Returns the points on the circle that are tangents to line only defined by its slope
+     * @param normalSlope The slope of the line
+     * @return Returns an array of points that are tangents to the line defined only by its slope
+     */
     private static Vector[] getTangentPtsOfCircle(double normalSlope) {
         Vector[] intersectionPts = new Vector[2];
         intersectionPts[0] = new Vector(0, 0);
@@ -66,14 +66,14 @@ class PCirclePolyCollision extends PPolyPolyCollision {
         return intersectionPts;
     }
 
-    /*
-      Post-condition: Returns true if a separating line exist between a circle and a polygon based on a normal.
-                       Also returns the MTD from the normal if there is no separating line
-      Pre-condition: "bestOverlap" must not be null
-      @param normalSlope The slope of the normal
-      @param bestOverlap The MTD from the normal
-      @return Returns true if there is a separating line between a circle and a polygon based on a normal. Also returns the MTD from the "bestOverlap" parameter
-    */
+    /**
+     * Post-condition: Returns true if a separating line exist between a circle and a polygon based on a normal.
+     *                  Also returns the MTD from the normal if there is no separating line
+     * Pre-condition: "bestOverlap" must not be null
+     * @param normalSlope The slope of the normal
+     * @param bestOverlap The MTD from the normal
+     * @return Returns true if there is a separating line between a circle and a polygon based on a normal. Also returns the MTD from the "bestOverlap" parameter
+     */
     protected static boolean isSeparatingLineExist(double normalSlope, Vector bestOverlap) {
         // Projecting the poly's points to the normal and keeping track of its min/max
         Vector minPolyValues = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -109,12 +109,12 @@ class PCirclePolyCollision extends PPolyPolyCollision {
         // System.out.println("    BestOverlap:" + bestOverlap);
     }
 
-    /*
-      Post-condition: Returns true if the circle and polygon is intersecting; else false.
-                       Also returns the MTD of the circle and the polygon if they are intersecting
-      @param mtd The MTD (minimum translation vector) of the circle and polygon
-      @return Returns whether the circle and the polygon is intersecting; and the MTD stored in the parameter "mtd"
-    */
+    /**
+     * Post-condition: Returns true if the circle and polygon is intersecting; else false.
+     * Also returns the MTD of the circle and the polygon if they are intersecting
+     * @param mtd The MTD (minimum translation vector) of the circle and polygon
+     * @return Returns whether the circle and the polygon is intersecting; and the MTD stored in the parameter "mtd"
+     */
     protected static boolean isIntersecting(Vector mtd) {
         mtd.setXY(0, 0);
         Vector bestOverlap = null;
@@ -158,16 +158,16 @@ class PCirclePolyCollision extends PPolyPolyCollision {
         return true;
     }
 
-    /*
-       Pre-condition: "circle1", "circle2", "circle1TransVector", "circle2TransVector", "mtd" must not be null
-       Post-condition: Determines whether a circle and polygon is colliding, and returns the displacements each body should move by as well as the minimum translation vector
-       @param circle The circle
-       @param poly The polygon
-       @param circleTransVector The displacement the circle should move by if they are colliding
-       @param polyTransVector The displacement the polygon should move by if they are colliding
-       @param mtd Returns the minimum translation vector from SAT algorithm
-       @return Returns true if the two circles are colliding; else false. Also returns the MTD which is stored in the "mtd" parameter
-    */
+    /**
+     * Pre-condition: "circle1", "circle2", "circle1TransVector", "circle2TransVector", "mtd" must not be null
+     * Post-condition: Determines whether a circle and polygon is colliding, and returns the displacements each body should move by as well as the minimum translation vector
+     * @param circle The circle
+     * @param poly The polygon
+     * @param circleTransVector The displacement the circle should move by if they are colliding
+     * @param polyTransVector The displacement the polygon should move by if they are colliding
+     * @param mtd Returns the minimum translation vector from SAT algorithm
+     * @return Returns true if the two circles are colliding; else false. Also returns the MTD which is stored in the "mtd" parameter
+     */
     public static boolean doBodiesCollide(PCircle circle, PPolygon poly, Vector circleTransVector, Vector polyTransVector, Vector mtd) {
         // Saving the properties of the bodies to the global variables
         circleCenterPt = circle.getCenterPt();
