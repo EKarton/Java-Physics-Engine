@@ -8,7 +8,12 @@
 package com.javaphysicsengine.editor;
 
 import com.javaphysicsengine.api.PWorld;
-import com.javaphysicsengine.api.body.*;
+import com.javaphysicsengine.api.body.PBody;
+import com.javaphysicsengine.api.body.PCircle;
+import com.javaphysicsengine.api.body.PConstraints;
+import com.javaphysicsengine.api.body.PPolygon;
+import com.javaphysicsengine.api.body.PSpring;
+import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.utils.File;
 import com.javaphysicsengine.utils.Vector;
 
@@ -23,15 +28,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -657,136 +658,6 @@ public class PEditorFrame extends JFrame implements ActionListener {
                     System.out.println("Displayed Java Code");
                     viewJavaCode();
                     break;
-            }
-        }
-    }
-
-    /*
-       Purpose: Opens a new window, and simulates the bodies in real time
-       Original Creation Date: January 14 2016
-       @author Emilio Kartono
-       @version January 15 2016
-    */
-    private class PSimulationWindow extends JFrame {
-        private SimulationPanel panel = null;
-
-        /*
-          Pre-condition: "world" must not be a null value. Frame rate must be greater than 0
-          Post-condition: Creates a PSimulationWindow object
-          @param world The world which holds all the bodies to be simulated
-          @param frameRate The FPS for rendering and simulating the bodies
-          @param isShapeFillVisible Determines whether the bodies should have its shape fill rendered
-            @param isShapeOutlineVisible Determines whether the bodies should have its shape outlines rendered
-            @param isAntiAliasingToggled Determines whether AntiAliasing is turned on or off
-        */
-        public PSimulationWindow(PWorld world, double frameRate, boolean isShapeFillVisible, boolean isShapeOutlineVisible, boolean isAntiAliasingToggled) {
-            super("Simulation Window");
-            panel = new SimulationPanel(world, frameRate, isShapeFillVisible, isShapeOutlineVisible, isAntiAliasingToggled);
-            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-            // Add the simulation panel to the window and make the window visible
-            this.getContentPane().add(panel);
-            this.setVisible(true);
-            this.setSize(1000, 600);
-        }
-
-
-        /*
-         Post-condition: Destroys the object, clears the memory the object is used in the RAM and turns off the game timer
-        */
-        @Override
-        public void dispose() {
-            panel.turnOffTimer();
-            super.dispose();
-        }
-
-        /*
-         Purpose: A JPanel which will simulate and draw the objects stored in a PWorld object
-         Original Creation Date: January 14 2016
-         @author Emilio Kartono
-         @version January 15 2016
-        */
-        private class SimulationPanel extends JPanel implements ActionListener {
-            private PWorld world;
-            private double frameRate;
-            private boolean isShapeFillVisible = true;
-            private boolean isShapeOutlineVisible = true;
-            private boolean isAntiAliasingToggled = false;
-            private Timer gameTimer;
-
-            /*
-              Pre-condition: "world" must not be null. Frame rate must be greater than 0
-              Post-condition: Creates a SimulationPanel
-              @param world The PWorld object that contains all the objects to be simulated
-              @param frameRate The FPS for rendering and simulating the bodies
-              @param isShapeFillVisible Determines whether the bodies should have its shape fill rendered
-              @param isShapeOutlineVisible Determines whether the bodies should have its shape outlines rendered
-              @param isAntiAliasingToggled Determines whether AntiAliasing is turned on or off
-
-            */
-            public SimulationPanel(PWorld world, double frameRate, boolean isShapeFillVisible, boolean isShapeOutlineVisible, boolean isAntiAliasingToggled) {
-                super();
-                this.world = world;
-                this.frameRate = frameRate;
-                this.isShapeFillVisible = isShapeFillVisible;
-                this.isShapeOutlineVisible = isShapeOutlineVisible;
-                this.isAntiAliasingToggled = isAntiAliasingToggled;
-
-                // Initialise the game loop
-                gameTimer = new Timer((int) (1000 / frameRate), this);
-                gameTimer.start();
-            }
-
-            /*
-              Post-condition: Shuts down the physics simulation
-            */
-            public void turnOffTimer() {
-                this.gameTimer.stop();
-            }
-
-            @Override
-      /*
-        Pre-condition: Global variable "world" must not be null
-        Post-condition: Draws the objects on the screen
-        @param world The PWorld object that contains all the objects to be simulated
-        @param frameRate The FPS for rendering and simulating the bodies
-        @param isShapeFillVisible Determines whether the bodies should have its shape fill rendered
-        @param isShapeOutlineVisible Determines whether the bodies should have its shape outlines rendered
-      */
-            public void paintComponent(Graphics g) {
-                super.paintComponent(g);
-
-                // If antialiasing toggled
-                if (isAntiAliasingToggled) {
-                    // Set antialiasing (for smoother but slower graphics)
-                    Graphics2D g2 = (Graphics2D) g;
-                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                }
-
-                // Draw the bodies
-                for (PBody body : world.getBodies()) {
-                    if (isShapeFillVisible)
-                        body.drawFill(g, this.getHeight());
-                    if (isShapeOutlineVisible)
-                        body.drawOutline(g, this.getHeight());
-                }
-
-                // Draw the springs
-                for (PConstraints constraint : world.getConstraints())
-                    constraint.drawConstraints(g, this.getHeight());
-            }
-
-            /*
-              Pre-condition: Global variable "world" must not be null. "e" must not be null.
-              Post-condition: Simulates the bodies in the world and renders the objects
-              @param e The ActionEvent object that called this method
-            */
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource() instanceof Timer) {
-                    // Simulate the objects and draw them
-                    world.simulate(1000 / frameRate / 1000.0);
-                    repaint();
-                }
             }
         }
     }
