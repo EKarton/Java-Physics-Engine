@@ -52,7 +52,7 @@ public abstract class PBody {
         this.setNetForce(new Vector(existingBody.getNetForce().getX(), existingBody.getNetForce().getY()));
         this.setVelocity(new Vector(existingBody.getVelocity().getX(), existingBody.getVelocity().getY()));
         this.setAngle(existingBody.getAngle());
-        this.setMoving(existingBody.isMoving());
+        this.setMoveable(existingBody.isMoving());
         this.setOutlineColor(new Color(existingBody.getOutlineColor().getRed(), existingBody.getOutlineColor().getGreen(), existingBody.getOutlineColor().getBlue(), existingBody.getOutlineColor().getAlpha()));
         this.setFillColor(new Color(existingBody.getFillColor().getRed(), existingBody.getFillColor().getGreen(), existingBody.getFillColor().getBlue(), existingBody.getFillColor().getAlpha()));
     }
@@ -158,16 +158,12 @@ public abstract class PBody {
         return isMoving;
     }
 
-    public void setMoving(boolean moving) {
-        isMoving = moving;
-    }
-
     /**
      * Sets whether the body can be moveable or not
      * @param isMoving {@code true} if the body will be moving; else {@code false}
      */
     public void setMoveable(boolean isMoving) {
-        this.setMoving(isMoving);
+        this.isMoving = isMoving;
     }
 
     /**
