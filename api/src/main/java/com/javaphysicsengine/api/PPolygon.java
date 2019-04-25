@@ -1,9 +1,16 @@
+/*
+ * Purpose: To represent the basic properties of all polygons
+ * Original Creation Date: January 1 2016
+ * @author Emilio Kartono
+ * @version January 15 2016
+ */
+
 package com.javaphysicsengine.api;
 
 import com.javaphysicsengine.utils.Trigonometry;
 import com.javaphysicsengine.utils.Vector;
 
-import java.awt.*;
+import java.awt.Graphics;
 import java.util.ArrayList;
 
 public class PPolygon extends PBody {
@@ -11,10 +18,18 @@ public class PPolygon extends PBody {
     private ArrayList<Vector> vertices = new ArrayList<Vector>();
     private PBoundingBox boundingBox;
 
+    /**
+     * Constructs the polygon with a given name
+     * @param name the name of the polygon
+     */
     public PPolygon(String name) {
         super(name);
     }
 
+    /**
+     * Makes a hard copy of an existing polygon
+     * @param existingPolygon an existing polygon
+     */
     public PPolygon(PPolygon existingPolygon) {
         super(existingPolygon);
 
@@ -24,14 +39,25 @@ public class PPolygon extends PBody {
         this.computeCenterOfMass();
     }
 
+    /**
+     * Gets all the vertices of this polygon
+     * @return the vertices of this polygon
+     */
     public ArrayList<Vector> getVertices() {
         return vertices;
     }
 
+    /**
+     * Gets the bounding box of this polygon
+     * @return the bounding box
+     */
     public PBoundingBox getBoundingBox() {
         return boundingBox;
     }
 
+    /**
+     * Computes the center of mass
+     */
     public void computeCenterOfMass() {
         double minX = Double.MAX_VALUE;
         double maxX = Double.MIN_VALUE;
@@ -51,6 +77,10 @@ public class PPolygon extends PBody {
         boundingBox = new PBoundingBox(vertices);
     }
 
+    /**
+     * Translates the polygon by an amount
+     * @param displacement The displacement to move the body by a certain amount
+     */
     public void translate(Vector displacement) {
         // Moving all the vertices based on the displacement
         for (Vector vertex : vertices) {
@@ -69,6 +99,11 @@ public class PPolygon extends PBody {
         boundingBox.setMaxY(boundingBox.getMaxY() + displacement.getY());
     }
 
+    /**
+     * Rotates the body.
+     * Pre-condition: the angle must be in degrees.
+     * @param newAngle The angle of the body
+     */
     public void rotate(double newAngle) {
         // Rotate all the vertices around its center of mass
         for (Vector vertex : vertices) {
@@ -91,18 +126,32 @@ public class PPolygon extends PBody {
         super.angle = newAngle;
     }
 
+    /**
+     * Moves the body to a new center point
+     * @param newCenterPt The new center point
+     */
     public void move(Vector newCenterPt) {
         // Compute the displacement from the old centerPt to the new centerPt and call the translate()
         Vector displacement = Vector.subtract(newCenterPt, centerPt);
         translate(displacement);
     }
 
+    /**
+     * Draws the bounding box
+     * @param g The Graphics Object
+     * @param windowHeight The height of the window that is containing the body being displayed
+     */
     @Override
     public void drawBoundingBox(Graphics g, int windowHeight) {
         boundingBox.drawBoundingBox(g, windowHeight);
         super.drawBoundingBox(g, windowHeight);
     }
 
+    /**
+     * Draws the color of the object
+     * @param g The Graphics Object
+     * @param windowHeight The height of the window containing the body being displayed
+     */
     @Override
     public void drawFill(Graphics g, int windowHeight) {
         // Convert the vertices to x and y coordinates
@@ -121,6 +170,11 @@ public class PPolygon extends PBody {
         super.drawFill(g, windowHeight);
     }
 
+    /**
+     * Draws the outline of the polygon
+     * @param g The Graphics Object
+     * @param windowHeight The height of the window containing the body being displayed
+     */
     @Override
     public void drawOutline(Graphics g, int windowHeight) {
         // Convert the vertices to x and y coordinates
@@ -139,6 +193,11 @@ public class PPolygon extends PBody {
         super.drawOutline(g, windowHeight);
     }
 
+    /**
+     * Returns the polygon as a string.
+     * It should be used only for debugging purposes.
+     * @return the polygon as a string.
+     */
     @Override
     public String toString() {
         String propertiesLine = super.toString() + "Vertices:";
