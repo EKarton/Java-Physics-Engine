@@ -1,25 +1,23 @@
 /*
-  Purpose: To detect whether two circles collide with each other (why not put it in the Circle class? To make it more modular)
-  Original Creation Date: January 1 2016
-  @author Emilio Kartono
-  @version January 15 2016
-*/
-
+ * Purpose: To detect whether two circles collide with each other
+ * Original Creation Date: January 1 2016
+ * @author Emilio Kartono
+ * @version January 15 2016
+ */
 package com.javaphysicsengine.api;
 
 import com.javaphysicsengine.utils.Vector;
 
 class PCircleCircleCollision {
-    /*
-      Post-condition: Returns the displacement the main circle should move by
-      Pre-condition: "mtd", "mainPolyCenterPt", "otherPolyCenterPt", "mainPolyVelocity", "otherPolyVelocity" must not be null
-      @param mtd The minimum translation vector from SAT algorithm
-      @param mainPolyCenterPt The center point of the main circle
-      @param otherPolyCenterPt The center point of the other circle
-      @param mainPolyVelocity The velocity of the main circle
-      @param otherPolyVelocity The velocity of the other circle
-      @return Returns the displacement the main circle should move by
-    */
+    /**
+     * Returns the displacement the main circle should move by
+     * @param mtd The minimum translation vector from SAT algorithm
+     * @param mainPolyCenterPt The center point of the main circle
+     * @param otherPolyCenterPt The center point of the other circle
+     * @param mainPolyVelocity The velocity of the main circle
+     * @param otherPolyVelocity The velocity of the other circle
+     * @return Returns the displacement the main circle should move by
+     */
     private static Vector getTranslationVectors(Vector mtd, Vector mainPolyCenterPt, Vector otherPolyCenterPt, Vector mainPolyVelocity, Vector otherPolyVelocity) {
         // Checking if the velocity of main polygon is 0
         if (mainPolyVelocity.getX() == 0 && mainPolyVelocity.getY() == 0)
@@ -50,16 +48,16 @@ class PCircleCircleCollision {
         return translationVector;
     }
 
-    /*
-      Pre-condition: "circle1", "circle2", "circle1TransVector", "circle2TransVector", "mtd" must not be null
-      Post-condition: Determines whether two circles are colliding, and returns the displacements each circle should move by as well as the minimum translation vector
-      @param circle1 The first circle
-      @param circle2 The second circle
-      @param circle1TransVector The displacement circle1 should move by if they are colliding
-      @param circle2TransVector The displacement circle1 should move by if they are colliding
-      @param mtd Returns the minimum translation vector from SAT algorithm
-      @return Returns true if the two circles are colliding; else false. Also returns the MTD which is stored in the "mtd" parameter
-   */
+    /**
+     * Determines whether two circles are colliding, and returns the displacements
+     * each circle should move by as well as the minimum translation vector
+     * @param circle1 The first circle
+     * @param circle2 The second circle
+     * @param circle1TransVector The displacement circle1 should move by if they are colliding
+     * @param circle2TransVector The displacement circle1 should move by if they are colliding
+     * @param mtd Returns the minimum translation vector from SAT algorithm
+     * @return Returns true if the two circles are colliding; else false. Also returns the MTD which is stored in the "mtd" parameter
+     */
     public static boolean doBodiesCollide(PCircle circle1, PCircle circle2, Vector circle1TransVector, Vector circle2TransVector, Vector mtd) {
         // Compute the distance between the two circles as well as the sum of their radiuses
         double centerPtDistance = Math.pow(circle1.getCenterPt().getX() - circle2.getCenterPt().getX(), 2) + Math.pow(circle1.getCenterPt().getY() - circle2.getCenterPt().getY(), 2);
