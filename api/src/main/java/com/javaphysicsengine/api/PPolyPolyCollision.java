@@ -1,9 +1,9 @@
 /*
-  Purpose: To detect whether two polygons collide with each other (using SAT algorithm)
-  Original Creation Date: January 1 2016
-  @author Emilio Kartono
-  @version January 15 2016
-*/
+ * Purpose: To detect whether two polygons collide with each other (using SAT algorithm)
+ * Original Creation Date: January 1 2016
+ * @author Emilio Kartono
+ * @version January 15 2016
+ */
 
 package com.javaphysicsengine.api;
 
@@ -11,22 +11,18 @@ import com.javaphysicsengine.utils.Vector;
 
 import java.util.ArrayList;
 
-class PPolyPolyCollision {
+public class PPolyPolyCollision {
     // Storing the addresses of the body1 and body2 properties (only references)
     private static ArrayList<Vector> poly1Vertices;
     private static ArrayList<Vector> poly2Vertices;
-    private static Vector poly1CenterPt;
-    private static Vector poly2CenterPt;
-    private static Vector poly1Velocity;
-    private static Vector poly2Velocity;
 
-    /*
-      Post-condition: Returns the point projected to a line defined by the slope and y intercept
-      Pre-condition: "point" should not be null
-      @param normalSlope The slope of the line
-      @param yInterceptOfNormal The y intercept of the line
-      @return Returns the projected point
-    */
+    /**
+     * Post-condition: Returns the point projected to a line defined by the slope and y intercept
+     * Pre-condition: "point" should not be null
+     * @param slopeOfNormal The slope of the line
+     * @param yInterceptOfNormal The y intercept of the line
+     * @return Returns the projected point
+     */
     protected static Vector projectPointToLine(double slopeOfNormal, double yInterceptOfNormal, Vector point) {
         double perpendicularSlope = -1 / slopeOfNormal;
         double b = point.getY() - (perpendicularSlope * point.getX());
@@ -50,16 +46,16 @@ class PPolyPolyCollision {
         return new Vector(x, y);
     }
 
-    /*
-      Post-condition: Returns true if two domains interect one another. Also returns the amount of overlap between them
-      Pre-condition: "min1Values", "max1Values", "min2Values", "max2Values", "overlap" should not be null
-      @param min1Values The minimum x and y values for the first domain
-      @param max1Values The maximum x and y values for the first domain
-      @param min2Values The minimum x and y values for the second domain
-      @param max2Values The maximum x and y values for the seecond domain
-      @param overlap The overlap between the two domains
-      @return Returns true if the two domains overlap; else false. Also returns the amount of overlap in the "overlap" parameter
-    */
+    /**
+     * Post-condition: Returns true if two domains interect one another. Also returns the amount of overlap between them
+     * Pre-condition: "min1Values", "max1Values", "min2Values", "max2Values", "overlap" should not be null
+     * @param min1Values The minimum x and y values for the first domain
+     * @param max1Values The maximum x and y values for the first domain
+     * @param min2Values The minimum x and y values for the second domain
+     * @param max2Values The maximum x and y values for the seecond domain
+     * @param overlap The overlap between the two domains
+     * @return Returns true if the two domains overlap; else false. Also returns the amount of overlap in the "overlap" parameter
+     */
     protected static boolean isOverlap(Vector min1Values, Vector max1Values, Vector min2Values, Vector max2Values, Vector overlap) {
         // Making the overlap to 0 when domain and ranges of poly1 and poly2 are not intersecting
         overlap.setXY(0, 0);
@@ -82,14 +78,14 @@ class PPolyPolyCollision {
         return true;
     }
 
-    /*
-      Post-condition: Returns true if a separating line exist between the two polygons based on a normal.
-                       Also returns the MTD from the normal if there is no separating line
-      Pre-condition: "bestOverlap" must not be null
-      @param normalSlope The slope of the normal
-      @param bestOverlap The MTD from the normal
-      @return Returns true if there is a separating line between the two polygons based on a normal. Also returns the MTD from the "bestOverlap" parameter
-    */
+    /**
+     * Post-condition: Returns true if a separating line exist between the two polygons based on a normal.
+     *                  Also returns the MTD from the normal if there is no separating line
+     * Pre-condition: "bestOverlap" must not be null
+     * @param normalSlope The slope of the normal
+     * @param bestOverlap The MTD from the normal
+     * @return Returns true if there is a separating line between the two polygons based on a normal. Also returns the MTD from the "bestOverlap" parameter
+     */
     protected static boolean isSeparatingLineExist(double normalSlope, Vector bestOverlap) {
         // Storing the min/max x and y POI coordinates of poly1
         Vector min1Values = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -125,16 +121,16 @@ class PPolyPolyCollision {
 
         // Checking if the domain and ranges of polygons overlap (if it is, there is no separating line)
         // // System.out.println("    Min1:" + min1Values + " | Max1" + max1Values + " | Min2:" + min2Values + " | Max2:" + max2Values);
-        return isOverlap(min1Values, max1Values, min2Values, max2Values, bestOverlap) == false;
+        return !isOverlap(min1Values, max1Values, min2Values, max2Values, bestOverlap);
         // // System.out.println("    BestOverlap:" + bestOverlap);
     }
 
-    /*
-      Post-condition: Returns true if the two polygons are intersecting; else false.
-                       Also returns the MTD of the two polygons if they are interesecting
-      @param mtd The MTD (minimum translation vector) of the two polygons
-      @return Returns whether the two polygons are intersecting; and the MTD stored in the parameter "mtd"
-    */
+    /**
+     * Post-condition: Returns true if the two polygons are intersecting; else false.
+     *                  Also returns the MTD of the two polygons if they are interesecting
+     * @param mtd The MTD (minimum translation vector) of the two polygons
+     * @return Returns whether the two polygons are intersecting; and the MTD stored in the parameter "mtd"
+     */
     protected static boolean isIntersecting(Vector mtd) {
         mtd.setXY(0, 0); // Set MTD to 0 (just in case it is not intersecting)
         Vector bestOverlap = null;
@@ -208,16 +204,16 @@ class PPolyPolyCollision {
         return true;
     }
 
-    /*
-      Post-condition: Returns the displacement the main circle should move by
-      Pre-condition: "mtd", "mainPolyCenterPt", "otherPolyCenterPt", "mainPolyVelocity", "otherPolyVelocity" must not be null
-      @param mtd The minimum translation vector from SAT algorithm
-      @param mainPolyCenterPt The center point of the main circle
-      @param otherPolyCenterPt The center point of the other circle
-      @param mainPolyVelocity The velocity of the main circle
-      @param otherPolyVelocity The velocity of the other circle
-      @return Returns the displacement the main circle should move by
-    */
+    /**
+     * Post-condition: Returns the displacement the main circle should move by
+     * Pre-condition: "mtd", "mainPolyCenterPt", "otherPolyCenterPt", "mainPolyVelocity", "otherPolyVelocity" must not be null
+     * @param mtd The minimum translation vector from SAT algorithm
+     * @param mainPolyCenterPt The center point of the main circle
+     * @param otherPolyCenterPt The center point of the other circle
+     * @param mainPolyVelocity The velocity of the main circle
+     * @param otherPolyVelocity The velocity of the other circle
+     * @return Returns the displacement the main circle should move by
+     */
     protected static Vector getTranslationVectors(Vector mtd, Vector mainPolyCenterPt, Vector otherPolyCenterPt, Vector mainPolyVelocity, Vector otherPolyVelocity) {
         // Checking if the velocity of main polygon is 0
         if (mainPolyVelocity.getX() == 0 && mainPolyVelocity.getY() == 0)
@@ -248,24 +244,24 @@ class PPolyPolyCollision {
         return translationVector;
     }
 
-    /*
-       Pre-condition: "body1", "body2", "body1TransVector", "body2TransVector", "mtd" must not be null
-       Post-condition: Determines whether two polygons are colliding, and returns the displacements each polygon should move by as well as the minimum translation vector
-       @param body1 The first polygon
-       @param body2 The second polygon
-       @param body1TransVector The displacement the circle should move by if they are colliding
-       @param body2TransVector The displacement the polygon should move by if they are colliding
-       @param mtd Returns the minimum translation vector from SAT algorithm
-       @return Returns true if the two polygons are colliding; else false. Also returns the MTD which is stored in the "mtd" parameter
-    */
+    /**
+     * Pre-condition: "body1", "body2", "body1TransVector", "body2TransVector", "mtd" must not be null
+     * Post-condition: Determines whether two polygons are colliding, and returns the displacements each polygon should move by as well as the minimum translation vector
+     * @param body1 The first polygon
+     * @param body2 The second polygon
+     * @param body1TransVector The displacement the circle should move by if they are colliding
+     * @param body2TransVector The displacement the polygon should move by if they are colliding
+     * @param mtd Returns the minimum translation vector from SAT algorithm
+     * @return Returns true if the two polygons are colliding; else false. Also returns the MTD which is stored in the "mtd" parameter
+     */
     public static boolean doBodiesCollide(PPolygon body1, PPolygon body2, Vector body1TransVector, Vector body2TransVector, Vector mtd) {
         // Saving the properties
         poly1Vertices = body1.getVertices();
         poly2Vertices = body2.getVertices();
-        poly1CenterPt = body1.getCenterPt();
-        poly2CenterPt = body2.getCenterPt();
-        poly1Velocity = body1.getVelocity();
-        poly2Velocity = body2.getVelocity();
+        Vector poly1CenterPt = body1.getCenterPt();
+        Vector poly2CenterPt = body2.getCenterPt();
+        Vector poly1Velocity = body1.getVelocity();
+        Vector poly2Velocity = body2.getVelocity();
 
         // The translation vectors for both bodies will be 0 when there is no intersection
         body1TransVector.setXY(0, 0);
@@ -293,9 +289,10 @@ class PPolyPolyCollision {
         return false;
     }
 
-    /*
-      Post-condition: Tests the SAT algorithm to detect if two polygons are intersecting
-    */
+    /**
+     * Tests the SAT algorithm to detect if two polygons are intersecting
+     * @param args the command line arguments
+     */
     public static void main(String[] args) {
         PPolygon poly1 = new PPolygon("Hehe");
         poly1.getVelocity().setX(5);
