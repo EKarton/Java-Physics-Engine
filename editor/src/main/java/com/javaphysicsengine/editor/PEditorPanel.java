@@ -7,7 +7,12 @@
 
 package com.javaphysicsengine.editor;
 
-import com.javaphysicsengine.api.body.*;
+import com.javaphysicsengine.api.body.PBody;
+import com.javaphysicsengine.api.body.PCircle;
+import com.javaphysicsengine.api.body.PConstraints;
+import com.javaphysicsengine.api.body.PPolygon;
+import com.javaphysicsengine.api.body.PSpring;
+import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.utils.Vector;
 
 import javax.swing.ImageIcon;
