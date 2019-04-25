@@ -150,7 +150,7 @@ public class PBodyFileReader {
        @return PPolygon The generated PPolygon
     */
     private PPolygon createPolygonBody(StringTokenizer propertiesTokenizer) {
-        PPolygon createdPoly = null;
+        PPolygon createdPoly = new PPolygon("");
 
         while (propertiesTokenizer.hasMoreTokens()) {
             // Grab the properties and its values
@@ -161,7 +161,7 @@ public class PBodyFileReader {
             // Set the appropriate properties
             switch (propertyType) {
                 case "Name":
-                    createdPoly = new PPolygon(propertyValue);
+                    createdPoly.setName(propertyValue);
                     break;
                 case "Velocity":
                     StringTokenizer velocityTokenizer = new StringTokenizer(propertyValue, " ");
@@ -205,7 +205,7 @@ public class PBodyFileReader {
        @return The generated PCircle
     */
     private PCircle createCircleBody(StringTokenizer propertiesTokenizer) {
-        PCircle createdCircle = null;
+        PCircle createdCircle = new PCircle("");
 
         while (propertiesTokenizer.hasMoreTokens()) {
             StringTokenizer propertyTokenizer = new StringTokenizer(propertiesTokenizer.nextToken(), ":");
@@ -214,7 +214,7 @@ public class PBodyFileReader {
 
             switch (propertyType) {
                 case "Name":
-                    createdCircle = new PCircle(propertyValue);
+                    createdCircle.setName(propertyValue);
                     break;
                 case "Velocity":
                     StringTokenizer velocityTokenizer = new StringTokenizer(propertyValue, " ");
