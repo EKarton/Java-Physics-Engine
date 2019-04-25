@@ -1,16 +1,24 @@
+/*
+ * Purpose: To represent a PConstraints object that has string-like physics
+ * Original Creation Date: January 1 2016
+ * @author Emilio Kartono
+ * @version January 15 2016
+ */
+
 package com.javaphysicsengine.api;
 
 import com.javaphysicsengine.utils.Vector;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
 
 public class PString extends PConstraints {
-    /*
-       Pre-condition: "body1" and "body2" must not be null
-       Post-condition: Creates a PString object with "body1" and "body2" attached
-       @param body1 The first body to be attached to.
-       @param body2 The second body to be attached to.
-    */
+    /**
+     * Pre-condition: "body1" and "body2" must not be null
+     * Post-condition: Creates a PString object with "body1" and "body2" attached
+     * @param body1 The first body to be attached to.
+     * @param body2 The second body to be attached to.
+     */
     public PString(PBody body1, PBody body2) {
         super(body1, body2);
 
@@ -20,9 +28,9 @@ public class PString extends PConstraints {
         System.out.println("Distance Set: " + bodyDist);
     }
 
-    /*
-       Post-condition: Adds the tension forces to the attached bodies
-    */
+    /**
+     * Post-condition: Adds the tension forces to the attached bodies
+     */
     public void addTensionForce() {
         System.out.println("===============================");
         // Check if the distance between the strings are greater than the string length
@@ -74,12 +82,12 @@ public class PString extends PConstraints {
         }
     }
 
-    /*
-      Pre-condition: The "g" must not be null and the "windowHeight" must be greater than 0
-      Post-condition: Draws a line between the two attached bodies
-      @param g The Graphics Object
-      @param windowHeight The height of the window that is containing the body being displayed
-    */
+    /**
+     * Pre-condition: The "g" must not be null and the "windowHeight" must be greater than 0
+     * Post-condition: Draws a line between the two attached bodies
+     * @param g The Graphics Object
+     * @param windowHeight The height of the window that is containing the body being displayed
+     */
     public void drawConstraints(Graphics g, int windowHeight) {
         // Draw a line in between the two objects
         g.setColor(Color.WHITE);
