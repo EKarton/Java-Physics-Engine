@@ -14,10 +14,7 @@ import java.util.ArrayList;
 class PCirclePolyCollision extends PPolyPolyCollision {
     private static Vector circleCenterPt;
     private static double circleRadius;
-    private static Vector circleVelocity;
     private static ArrayList<Vector> polyVertices;
-    private static Vector polyCenterPt;
-    private static Vector polyVelocity;
 
     /**
      * Post-condition: Returns the points on the circle that are tangents to line only defined by its slope
@@ -172,10 +169,10 @@ class PCirclePolyCollision extends PPolyPolyCollision {
         // Saving the properties of the bodies to the global variables
         circleCenterPt = circle.getCenterPt();
         circleRadius = circle.getRadius();
-        circleVelocity = circle.getVelocity();
+        Vector circleVelocity = circle.getVelocity();
         polyVertices = poly.getVertices();
-        polyCenterPt = poly.getCenterPt();
-        polyVelocity = poly.getVelocity();
+        Vector polyCenterPt = poly.getCenterPt();
+        Vector polyVelocity = poly.getVelocity();
 
         // The translation vectors for both bodies will be 0 when there is no intersection
         circleTransVector.setXY(0, 0);

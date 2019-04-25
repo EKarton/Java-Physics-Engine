@@ -11,7 +11,7 @@ import java.awt.Graphics;
 
 public abstract class PConstraints {
 
-    protected double length = 0;
+    private double length = 0;
     private PBody[] bodies = new PBody[2];
 
     /**
