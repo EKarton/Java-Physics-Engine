@@ -1,15 +1,16 @@
 /*
-  Purpose: To represent the bounding box of a shape
-  Original Creation Date: January 1 2016
-  @author Emilio Kartono
-  @version January 15 2016
-*/
+ * Purpose: To represent the bounding box of a shape
+ * Original Creation Date: January 1 2016
+ * @author Emilio Kartono
+ * @version January 15 2016
+ */
 
 package com.javaphysicsengine.api;
 
 import com.javaphysicsengine.utils.Vector;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 
 class PBoundingBox {
@@ -18,20 +19,18 @@ class PBoundingBox {
     private double minY;
     private double maxY;
 
-    /*
-       Pre-condition: "vertices" must not be null
-       Post-condition: Creates a bounding box based on a list of vertices from a polygon shape
-       @param vertices The vertices of a polygon
-    */
+    /**
+     * Creates a bounding box based on a list of vertices from a polygon shape
+     * @param vertices The vertices of a polygon
+     */
     public PBoundingBox(ArrayList<Vector> vertices) {
         recomputeBoundaries(vertices);
     }
 
-    /*
-       Pre-condition: "vertices" must not be null
-       Post-condition: Recomputes a bounding box based on a list of vertices from a polygon shape
-       @param vertices The vertices of a polygon
-    */
+    /**
+     * Recomputes a bounding box based on a list of vertices from a polygon shape
+     * @param vertices The vertices of a polygon
+     */
     public void recomputeBoundaries(ArrayList<Vector> vertices) {
         minX = Double.MAX_VALUE;
         maxX = -Double.MIN_VALUE;
@@ -47,76 +46,76 @@ class PBoundingBox {
         }
     }
 
-    /*
-      Post-condition: Returns the minimum x value of the bounding box
-      @return Returns the minimum x value
-    */
+    /**
+     * Returns the minimum x value of the bounding box
+     * @return Returns the minimum x value
+     */
     public double getMinX() {
         return minX;
     }
 
-    /*
-      Post-condition: Sets the minimum x value of the bounding box
-      @param minX The new minimum x value
-    */
+    /**
+     * Sets the minimum x value of the bounding box
+     * @param minX The new minimum x value
+     */
     public void setMinX(double minX) {
         this.minX = minX;
     }
 
-    /*
-      Post-condition: Returns the minimum y value of the bounding box
-      @return Returns the minimum y value
-    */
+    /**
+     * Returns the minimum y value of the bounding box
+     * @return Returns the minimum y value
+     */
     public double getMinY() {
         return minY;
     }
 
-    /*
-      Post-condition: Sets the minimum y value of the bounding box
-      @param minY The new minimum y value
-    */
+    /**
+     * Sets the minimum y value of the bounding box
+     * @param minY The new minimum y value
+     */
     public void setMinY(double minY) {
         this.minY = minY;
     }
 
-    /*
-      Post-condition: Returns the maximum x value of the bounding box
-      @return Returns the maximum x value
-    */
+    /**
+     * Returns the maximum x value of the bounding box
+     * @return Returns the maximum x value
+     */
     public double getMaxX() {
         return maxX;
     }
 
-    /*
-      Post-condition: Sets the maximum x value of the bounding box
-      @param maxX The new maximum x value
-    */
+    /**
+     * Sets the maximum x value of the bounding box
+     * @param maxX The new maximum x value
+     */
     public void setMaxX(double maxX) {
         this.maxX = maxX;
     }
 
-    /*
-      Post-condition: Returns the maximum y value of the bounding box
-      @return Returns the maximum y value
-    */
+    /**
+     * Returns the maximum y value of the bounding box
+     * @return Returns the maximum y value
+     */
     public double getMaxY() {
         return maxY;
     }
 
-    /*
-      Post-condition: Sets the maximum y value of the bounding box
-      @param maxY The new maximum y value
-    */
+    /**
+     * Sets the maximum y value of the bounding box
+     * @param maxY The new maximum y value
+     */
     public void setMaxY(double maxY) {
         this.maxY = maxY;
     }
 
-    /*
-      Pre-condition: The "g" must not be null and the "windowHeight" must be greater than 0
-      Post-condition: Draws the bounding box outline on the screen
-      @param g The Graphics Object
-      @param windowHeight The height of the window that will draw the bounding box
-    */
+    /**
+     * Draws the bounding box outline on the screen
+     * Pre-condition: The "g" must not be null and the "windowHeight" must be greater than 0
+     * @param g The Graphics Object
+     * @param windowHeight The height of the window that will draw the bounding box
+     */
     public void drawBoundingBox(Graphics g, double windowHeight) {
         // Draw an outline of the bounding box
         g.setColor(Color.red);

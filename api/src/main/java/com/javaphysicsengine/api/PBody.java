@@ -1,4 +1,4 @@
-/**
+/*
  * Purpose: To represent the basic properties of all physical objects with no specific geometric shape
  * Original Creation Date: January 1 2016
  * @author Emilio Kartono
@@ -23,7 +23,7 @@ public abstract class PBody {
     protected Vector netForce = new Vector(0, 0);
     protected Vector velocity = new Vector(0, 0);
     protected double angle = 0;
-    
+
     private String name;
     private boolean isMoving = true;
 
