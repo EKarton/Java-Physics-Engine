@@ -7,6 +7,9 @@
 
 package com.javaphysicsengine.editor;
 
+import com.javaphysicsengine.api.*;
+import com.javaphysicsengine.utils.Vector;
+
 import java.util.ArrayList;
 
 import javax.swing.JViewport;
@@ -29,9 +32,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-
-import PhysicsEngine.*;
-import ToolBox.Vector;
 
 public class PEditorPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener
 {  

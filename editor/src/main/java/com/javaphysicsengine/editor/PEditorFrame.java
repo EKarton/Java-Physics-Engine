@@ -7,37 +7,40 @@
 
 package com.javaphysicsengine.editor;
 
-import java.util.StringTokenizer;
-import java.util.ArrayList;
+import com.javaphysicsengine.api.PBody;
+import com.javaphysicsengine.api.PCircle;
+import com.javaphysicsengine.api.PConstraints;
+import com.javaphysicsengine.api.PPolygon;
+import com.javaphysicsengine.api.PSpring;
+import com.javaphysicsengine.api.PString;
+import com.javaphysicsengine.api.PWorld;
+import com.javaphysicsengine.utils.File;
+import com.javaphysicsengine.utils.Vector;
 
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JTabbedPane;
-import javax.swing.JScrollPane;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JButton;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.Timer;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.Color;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import ToolBox.File;
-import ToolBox.Vector;
-import PhysicsEngine.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class PEditorFrame extends JFrame implements ActionListener
 {    

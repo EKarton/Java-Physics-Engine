@@ -7,38 +7,15 @@
 
 package com.javaphysicsengine.editor;
 
+import com.javaphysicsengine.api.PBody;
+import com.javaphysicsengine.api.PCircle;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JColorChooser;
-import javax.swing.JScrollPane;
-import javax.swing.JOptionPane;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Dimension;
-
-import PhysicsEngine.PBody;
-import PhysicsEngine.PPolygon;
-import PhysicsEngine.PCircle;
-import PhysicsEngine.PConstraints;
-import PhysicsEngine.PSpring;
-import PhysicsEngine.PString;
-import ToolBox.Vector;
 
 public class PBodyPropertiesTab extends JPanel implements ActionListener
 {
