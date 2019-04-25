@@ -11,6 +11,10 @@ import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PCircle;
 import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.api.body.PPolygon;
+import com.javaphysicsengine.api.collision.PBoxBoxCollision;
+import com.javaphysicsengine.api.collision.PCircleCircleCollision;
+import com.javaphysicsengine.api.collision.PCirclePolyCollision;
+import com.javaphysicsengine.api.collision.PPolyPolyCollision;
 import com.javaphysicsengine.utils.Vector;
 
 import java.awt.Color;

@@ -5,7 +5,7 @@
  * @version January 15 2016
  */
 
-package com.javaphysicsengine.api;
+package com.javaphysicsengine.api.collision;
 
 import com.javaphysicsengine.api.body.PCircle;
 import com.javaphysicsengine.api.body.PPolygon;
