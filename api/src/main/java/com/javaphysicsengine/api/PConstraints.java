@@ -3,7 +3,7 @@
  * Original Creation Date: January 1 2016
  * @author Emilio Kartono
  * @version January 15 2016
-*/
+ */
 
 package com.javaphysicsengine.api;
 

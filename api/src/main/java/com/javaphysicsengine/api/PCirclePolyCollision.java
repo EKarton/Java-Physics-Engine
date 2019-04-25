@@ -1,9 +1,9 @@
 /*
-  Purpose: To detect whether a circle and a polygon collide with each other (using SAT algorithm)
-  Original Creation Date: January 1 2016
-  @author Emilio Kartono
-  @version January 15 2016
-*/
+ * Purpose: To detect whether a circle and a polygon collide with each other (using SAT algorithm)
+ * Original Creation Date: January 1 2016
+ * @author Emilio Kartono
+ * @version January 15 2016
+ */
 
 package com.javaphysicsengine.api;
 

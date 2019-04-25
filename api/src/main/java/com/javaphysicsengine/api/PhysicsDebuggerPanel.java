@@ -1,40 +1,43 @@
 /*
-  Name: PhysicsDebugger
-  A class that uses the physics engine to simulate and draw simple shapes in a window
-  This class is only used for debugging purposes. No instance of this can be created outside the Physics Engine package
-  @author Emilio Kartono
-  @version December 21, 2015
-*/
+ * A class that uses the physics engine to simulate and draw simple shapes in a window
+ * This class is only used for debugging purposes. No instance of this can be created outside the Physics Engine package
+ * @author Emilio Kartono
+ * @version December 21, 2015
+ */
 
 package com.javaphysicsengine.api;
 
 import com.javaphysicsengine.utils.Vector;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
+    
     // Fields controlling the animation and graphics of the JPanel
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 600;
     private final double FPS = 60;
     private final double TIME_MULTIPLIER = 1;
-    private final boolean enableAntiAliasing = true;
 
     // Field storing the efficiency of the physics engine (based on the amount of time it takes to simulate the objects)
     private long simulationDuration = 0;
     private long maxSimulationDuration = Long.MIN_VALUE;
-    private long renderingDuration = 0;
 
     // Fields representing the physic engine and its bodies
     private PWorld pEngine = new PWorld();
     private PPolygon polygon;
 
-    /*
-      Post-condition: Creates a PhysicsDebuggerPanel object
-    */
+    /**
+     * Creates a PhysicsDebuggerPanel object
+     */
     public PhysicsDebuggerPanel() {
         // Initialise the physic engine
     /*
@@ -121,9 +124,9 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
         gameTimer.start();
     }
 
-    /*
-      Post-condition: Start the debugger, open the window, and simulate the bodies
-   */
+    /**
+     * Start the debugger, open the window, and simulate the bodies
+     */
     public static void main(String[] args) {
         // Create the window with certain properties
         JFrame debugWindow = new JFrame("Physic Engine Debugger");
@@ -138,17 +141,17 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
         debugWindow.setVisible(true);
     }
 
-    /*
-     Pre-condition: The "g" must not be null.
-     Post-condition: Draws the bodies on the screen
-     @param g The Graphics Object
-   */
+    /**
+     * Draws the bodies on the screen
+     * @param g The Graphics Object
+     */
     @Override
     public void paintComponent(Graphics g) {
         // Clear the screen
         super.paintComponent(g);
 
         // Set the antialiasing (if enabled)
+        boolean enableAntiAliasing = true;
         if (enableAntiAliasing) {
             Graphics2D graphics2D = (Graphics2D) g;
             graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -160,7 +163,7 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
         g.drawString("Time Ellapsed for Simulation: " + simulationDuration, 50, 40);
 
         // Get the efficiency of drawing the objects to the screen
-        renderingDuration = System.currentTimeMillis();
+        long renderingDuration = System.currentTimeMillis();
         pEngine.draw(g);
         renderingDuration = System.currentTimeMillis() - renderingDuration;
 
@@ -173,10 +176,10 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
         g.drawString("Time Speed: " + TIME_MULTIPLIER + "x", 50, 100);
     }
 
-    /*
-       Pre-condition: "e" must not be null
-       Post-condition: Simulates the bodies when a Timer triggers this event
-    */
+    /**
+     * Simulates the bodies when a Timer triggers this event
+     * @param e the action event
+     */
     public void actionPerformed(ActionEvent e) {
         // Keeping track of effiency
         simulationDuration = System.currentTimeMillis();
