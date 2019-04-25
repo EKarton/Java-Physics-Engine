@@ -5,7 +5,7 @@
  * @version January 15 2016
  */
 
-package com.javaphysicsengine.api;
+package com.javaphysicsengine.api.body;
 
 import com.javaphysicsengine.utils.Vector;
 

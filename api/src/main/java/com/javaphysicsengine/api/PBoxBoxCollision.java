@@ -6,6 +6,8 @@
  */
 package com.javaphysicsengine.api;
 
+import com.javaphysicsengine.api.body.PBoundingBox;
+
 public class PBoxBoxCollision {
 
     /**

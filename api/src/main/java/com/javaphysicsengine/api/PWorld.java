@@ -7,6 +7,10 @@
 
 package com.javaphysicsengine.api;
 
+import com.javaphysicsengine.api.body.PBody;
+import com.javaphysicsengine.api.body.PCircle;
+import com.javaphysicsengine.api.body.PConstraints;
+import com.javaphysicsengine.api.body.PPolygon;
 import com.javaphysicsengine.utils.Vector;
 
 import java.awt.Color;

@@ -7,12 +7,12 @@
 
 package com.javaphysicsengine.editor;
 
-import com.javaphysicsengine.api.PBody;
-import com.javaphysicsengine.api.PCircle;
-import com.javaphysicsengine.api.PConstraints;
-import com.javaphysicsengine.api.PPolygon;
-import com.javaphysicsengine.api.PSpring;
-import com.javaphysicsengine.api.PString;
+import com.javaphysicsengine.api.body.PBody;
+import com.javaphysicsengine.api.body.PCircle;
+import com.javaphysicsengine.api.body.PConstraints;
+import com.javaphysicsengine.api.body.PPolygon;
+import com.javaphysicsengine.api.body.PSpring;
+import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.utils.File;
 import com.javaphysicsengine.utils.Vector;

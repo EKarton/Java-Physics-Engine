@@ -7,8 +7,8 @@
 
 package com.javaphysicsengine.editor;
 
-import com.javaphysicsengine.api.PBody;
-import com.javaphysicsengine.api.PCircle;
+import com.javaphysicsengine.api.body.PBody;
+import com.javaphysicsengine.api.body.PCircle;
 
 import javax.swing.*;
 import java.awt.*;

@@ -7,6 +7,8 @@
 
 package com.javaphysicsengine.api;
 
+import com.javaphysicsengine.api.body.PCircle;
+import com.javaphysicsengine.api.body.PPolygon;
 import com.javaphysicsengine.utils.Vector;
 
 import java.util.ArrayList;

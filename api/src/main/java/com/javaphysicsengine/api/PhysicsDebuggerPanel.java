@@ -7,6 +7,9 @@
 
 package com.javaphysicsengine.api;
 
+import com.javaphysicsengine.api.body.PCircle;
+import com.javaphysicsengine.api.body.PPolygon;
+import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.utils.Vector;
 
 import javax.swing.JFrame;
