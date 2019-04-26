@@ -27,7 +27,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PEditorPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
-    private static final String UNSELECTED_CIRCLE_IMAGE_PATH = "icons/"
+    private static final String CIRCLE_SELECTED_IMAGE_PATH = "icons/circle-selected.png";
+    private static final String CIRCLE_UNSELECTED_IMAGE_PATH = "icons/circle-unselected.png";
+
+    private static final String CURSOR_SELECTED_IMAGE_PATH = "icons/cursor-selected.png";
+    private static final String CURSOR_UNSELECTED_IMAGE_PATH = "icons/cursor-unselected.png";
+
+    private static final String POLYGON_SELECTED_IMAGE_PATH = "icons/polygon-selected.png";
+    private static final String POLYGON_UNSELECTED_IMAGE_PATH = "icons/polygon-unselected.png";
+
+    private static final String SPRINGS_SELECTED_IMAGE_PATH = "icons/springs-selected.png";
+    private static final String SPRINGS_UNSELECTED_IMAGE_PATH = "icons/springs-unselected.png";
+
+    private static final String STRINGS_SELECTED_IMAGE_PATH = "icons/strings-selected.png";
+    private static final String STRINGS_UNSELECTED_IMAGE_PATH = "icons/strings-unselected.png";
+
+    private static final int SNAP_TOOL_POINT_RANGE = 4;
+    public static final String MOUSE_STATE_CURSOR = "CURSOR";
+    public static final String MOUSE_STATE_POLYGON = "POLYGON";
+    public static final String MOUSE_STATE_CIRCLE = "CIRCLE";
+    public static final String MOUSE_STATE_SPRING = "SPRING";
+    public static final String MOUSE_STATE_STRING = "STRING";
+    public static final Color BACKGROUND_COLOR = new Color(60, 60, 60);
+    public static final Color CURSOR_COLOR = Color.WHITE;
+    public static final Color OBJECT_TEXT_COLOR = Color.WHITE;
+    public static final Color POBJECT_NAME_TEXT_COLOR = OBJECT_TEXT_COLOR;
+    public static final Color SNAP_POINT_RANGE_COLOR = new Color(207, 176, 41);
+    public static final Color POLYGON_INPROGRESS_EDGE_COLOR = Color.WHITE;
+    public static final Color POLYGON_FINISHED_EDGE_COLOR = Color.BLACK;
+    public static final Color CIRCLE_INPROGRESS_EDGE_COLOR = Color.WHITE;
 
     // Storing the tabbed panel to add objects, as well as body coordinates for future creation of objects
     private JTabbedPane propertiesPane;
@@ -47,7 +75,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     private int mouseX = 0;
     private int mouseY = 0;
     private boolean isMouseSnappedToPoint = false;
-    private String mouseState = "CURSOR";  // <- Either "POLYGON", "CIRCLE", "SPRING", "STRING", "CURSOR"
+    private String mouseState = MOUSE_STATE_CURSOR;  // <- Either "POLYGON", "CIRCLE", "SPRING", "STRING", "CURSOR"
 
     // Graphic properties showing which parts are visible
     private boolean isBoundingBoxDisplayed = true;
@@ -57,7 +85,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     private boolean isAntiAliasingToggled = false;
 
     // The drawing buttons
-    private JToggleButton[] drawingBttns = new JToggleButton[5];
+    private JToggleButton[] drawingBttns;// <- Mouse will be on point if it is within a certain pixels away from actual point
 
     /*
       Post-condition: Creates a PEditorPane object
@@ -70,15 +98,15 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         this.propertiesPane = propertiesPane;
 
         // Set up the buttons
-        for (int i = 0; i < drawingBttns.length; i++) {
-            drawingBttns[i] = new JToggleButton("");
-            drawingBttns[i].setName("" + i);
-            drawingBttns[i].addActionListener(this);
-            URL res = this.getClass().getClassLoader().getResource("icons/New folder/" + ("" + i) + " Unselected.png");
-            drawingBttns[i].setIcon(new ImageIcon(res));
-//            drawingBttns[i].setIcon(new ImageIcon("resources\\icons\\New Folder\\" + ("" + i) + " Unselected.png"));
-            drawingBttns[i].setSelectedIcon(new ImageIcon("resources\\icons\\New Folder\\" + ("" + i) + " Selected.png"));
-            this.add(drawingBttns[i]);
+        drawingBttns =  new JToggleButton[5];
+        drawingBttns[0] = createCursorDrawingButton();
+        drawingBttns[1] = createPolygonDrawingButton();
+        drawingBttns[2] = createCircleDrawingButton();
+        drawingBttns[3] = createSpringDrawingButton();
+        drawingBttns[4] = createStringDrawingButton();
+
+        for (JToggleButton toggleButton : drawingBttns) {
+            this.add(toggleButton);
         }
 
         // Initialise the event handlers
@@ -88,6 +116,81 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         // Initialise the game loop
         Timer gameTimer = new Timer(1000 / 60, this);
         gameTimer.start();
+    }
+
+    private JToggleButton createCursorDrawingButton() {
+        JToggleButton jToggleButton = new JToggleButton("");
+        jToggleButton.setName("" + 0);
+        jToggleButton.addActionListener(this);
+
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        URL selectedIconPath = classLoader.getResource(CURSOR_SELECTED_IMAGE_PATH);
+        URL unselectedIconPath = classLoader.getResource(CURSOR_UNSELECTED_IMAGE_PATH);
+
+        jToggleButton.setIcon(new ImageIcon(unselectedIconPath));
+        jToggleButton.setSelectedIcon(new ImageIcon(selectedIconPath));
+
+        return jToggleButton;
+    }
+
+    private JToggleButton createPolygonDrawingButton() {
+        JToggleButton jToggleButton = new JToggleButton("");
+        jToggleButton.setName("" + 1);
+        jToggleButton.addActionListener(this);
+
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        URL selectedIconPath = classLoader.getResource(POLYGON_SELECTED_IMAGE_PATH);
+        URL unselectedIconPath = classLoader.getResource(POLYGON_UNSELECTED_IMAGE_PATH);
+
+        jToggleButton.setIcon(new ImageIcon(unselectedIconPath));
+        jToggleButton.setSelectedIcon(new ImageIcon(selectedIconPath));
+
+        return jToggleButton;
+    }
+
+    private JToggleButton createCircleDrawingButton() {
+        JToggleButton jToggleButton = new JToggleButton("");
+        jToggleButton.setName("" + 2);
+        jToggleButton.addActionListener(this);
+
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        URL selectedIconPath = classLoader.getResource(CIRCLE_SELECTED_IMAGE_PATH);
+        URL unselectedIconPath = classLoader.getResource(CIRCLE_UNSELECTED_IMAGE_PATH);
+
+        jToggleButton.setIcon(new ImageIcon(unselectedIconPath));
+        jToggleButton.setSelectedIcon(new ImageIcon(selectedIconPath));
+
+        return jToggleButton;
+    }
+
+    private JToggleButton createSpringDrawingButton() {
+        JToggleButton jToggleButton = new JToggleButton("");
+        jToggleButton.setName("" + 3);
+        jToggleButton.addActionListener(this);
+
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        URL selectedIconPath = classLoader.getResource(SPRINGS_SELECTED_IMAGE_PATH);
+        URL unselectedIconPath = classLoader.getResource(SPRINGS_UNSELECTED_IMAGE_PATH);
+
+        jToggleButton.setIcon(new ImageIcon(unselectedIconPath));
+        jToggleButton.setSelectedIcon(new ImageIcon(selectedIconPath));
+
+        return jToggleButton;
+    }
+
+    private JToggleButton createStringDrawingButton() {
+        JToggleButton jToggleButton = new JToggleButton("");
+        jToggleButton.setName("" + 3);
+        jToggleButton.addActionListener(this);
+
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        URL selectedIconPath = classLoader.getResource(STRINGS_SELECTED_IMAGE_PATH);
+        URL unselectedIconPath = classLoader.getResource(STRINGS_UNSELECTED_IMAGE_PATH);
+
+        jToggleButton.setIcon(new ImageIcon(unselectedIconPath));
+        jToggleButton.setSelectedIcon(new ImageIcon(selectedIconPath));
+
+        return jToggleButton;
     }
 
     public void displayBoundingBox(boolean isBoundingBoxDisplayed) {
@@ -325,12 +428,10 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @param posY The y coordinate of a specified point
       @return Returns true if the mouse is close to a specified point; else false
     */
-    private boolean isMouseOnPoint(int mouseX, int mouseY, int posX, int posY) {
-        final int TARGET_RANGE = 4;  // <- Mouse will be on point if it is within a certain pixels away from actual point
+    private boolean isMouseNearPoint(int mouseX, int mouseY, int posX, int posY) {
         double distToPoint = Math.pow(mouseX - posX, 2) + Math.pow(mouseY - posY, 2);
-        return distToPoint < TARGET_RANGE * TARGET_RANGE;
+        return distToPoint < SNAP_TOOL_POINT_RANGE * SNAP_TOOL_POINT_RANGE;
     }
-
 
     /*
       Post-condition: Draws the bodies and mouse cursor on the screen
@@ -340,7 +441,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(new Color(60, 60, 60));
+        g.setColor(BACKGROUND_COLOR);
         g.fillRect(0, 0, getWidth(), getHeight());
 
         // If antialiasing toggled
@@ -362,7 +463,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
                 body.drawFill(g, this.getHeight());
 
             // Draw the name of the object
-            g.setColor(Color.WHITE);
+            g.setColor(POBJECT_NAME_TEXT_COLOR);
             g.drawString(body.getName(), (int) body.getCenterPt().getX(), (int) (this.getHeight() - body.getCenterPt().getY()));
         }
 
@@ -371,7 +472,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
             constraint.drawConstraints(g, getHeight());
 
         // Draw the cursor
-        g.setColor(Color.WHITE);
+        g.setColor(CURSOR_COLOR);
         g.drawLine(mouseX, mouseY - 20, mouseX, mouseY + 20);
         g.drawLine(mouseX - 20, mouseY, mouseX + 20, mouseY);
 
@@ -387,18 +488,18 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         // Draw the point the cursor is snapped to (if it is snapped to)
         if (isMouseSnappedToPoint) {
             // Draw a circle around the point
-            g.setColor(new Color(207, 176, 41));
+            g.setColor(SNAP_POINT_RANGE_COLOR);
             g.drawOval(mouseX - 5, mouseY - 5, 10, 10);
         }
 
         // Drawing the line that will connect the mouse pos to the last vertex of the polygon
-        if (mouseState.equals("POLYGON") && polyVertices.size() > 0) {
+        if (mouseState.equals(MOUSE_STATE_POLYGON) && polyVertices.size() > 0) {
             Vector lastAddedVertex = polyVertices.get(polyVertices.size() - 1);
-            g.setColor(Color.WHITE);
+            g.setColor(POLYGON_INPROGRESS_EDGE_COLOR);
             g.drawLine((int) lastAddedVertex.getX(), (int) lastAddedVertex.getY(), mouseX, mouseY);
 
             // Drawing the going-to-be-drawn polygons
-            g.setColor(Color.BLACK);
+            g.setColor(POLYGON_FINISHED_EDGE_COLOR);
             for (int i = 0; i < polyVertices.size() - 1; i++) {
                 int x1 = (int) polyVertices.get(i).getX();
                 int y1 = (int) polyVertices.get(i).getY();
@@ -409,16 +510,16 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         }
 
         // Drawing the circle that will be drawn
-        else if (mouseState.equals("CIRCLE") && circleRadius > 0) {
+        else if (mouseState.equals(MOUSE_STATE_CIRCLE) && circleRadius > 0) {
             int topLeftX = (int) (circleCenterPt.getX() - circleRadius);
             int topLeftY = (int) (circleCenterPt.getY() - circleRadius);
-            g.setColor(Color.WHITE);
+            g.setColor(CIRCLE_INPROGRESS_EDGE_COLOR);
             g.drawOval(topLeftX, topLeftY, (int) (circleRadius * 2), (int) (circleRadius * 2));
             g.fillOval((int) circleCenterPt.getX() - 2, (int) circleCenterPt.getY() - 2, 4, 4);
         }
 
         // Drawing the constraint that will be drawn
-        else if (mouseState.equals("SPRING") || mouseState.equals("STRING"))
+        else if (mouseState.equals(MOUSE_STATE_SPRING) || mouseState.equals(MOUSE_STATE_STRING))
             if (attachedBody1 != null) {
                 // Draw a line from the centerpt of attachedBody1 to the mouse
                 g.setColor(Color.YELLOW);
@@ -460,19 +561,19 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
             JToggleButton curBttn = (JToggleButton) e.getSource();
             switch (curBttn.getName()) {
                 case "0":
-                    mouseState = "CURSOR";
+                    mouseState = MOUSE_STATE_CURSOR;
                     break;
                 case "1":
-                    mouseState = "POLYGON";
+                    mouseState = MOUSE_STATE_POLYGON;
                     break;
                 case "2":
-                    mouseState = "CIRCLE";
+                    mouseState = MOUSE_STATE_CIRCLE;
                     break;
                 case "3":
-                    mouseState = "SPRING";
+                    mouseState = MOUSE_STATE_SPRING;
                     break;
                 case "4":
-                    mouseState = "STRING";
+                    mouseState = MOUSE_STATE_STRING;
                     break;
             }
         }
@@ -485,7 +586,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     */
     public void mouseClicked(MouseEvent e) {
         // If it selected an object
-        if (mouseState == "CURSOR" || mouseState.equals("SPRING") || mouseState.equals("STRING")) {
+        if (mouseState.equals(MOUSE_STATE_CURSOR) || mouseState.equals(MOUSE_STATE_SPRING) || mouseState.equals(MOUSE_STATE_STRING)) {
             selectedBody = null;
             if (isMouseSnappedToPoint)
                 for (PBody body : createdBodies)
@@ -496,7 +597,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         }
 
         // If selected a body
-        if (mouseState.equals("CURSOR") && selectedBody != null) {
+        if (mouseState.equals(MOUSE_STATE_CURSOR) && selectedBody != null) {
             // Search for the body in the properties pane. If there is not, show the properties on the screen
             for (int i = 0; i < propertiesPane.getTabCount(); i++) {
                 String label = propertiesPane.getTitleAt(i);
@@ -509,22 +610,24 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         }
 
         // If selected a body to connect to spring
-        if (mouseState.equals("SPRING") || mouseState.equals("STRING") && selectedBody != null) {
+        if (mouseState.equals(MOUSE_STATE_SPRING) || mouseState.equals(MOUSE_STATE_STRING) && selectedBody != null) {
             if (attachedBody1 == null)
                 attachedBody1 = selectedBody;
             else if (selectedBody != null) {
                 // Create the object
                 PConstraints constraint = null;
-                if (mouseState.equals("SPRING"))
+                if (mouseState.equals(MOUSE_STATE_SPRING)) {
                     constraint = new PSpring(attachedBody1, selectedBody);
-                else if (mouseState.equals("STRING"))
+                }
+                else {
                     constraint = new PString(attachedBody1, selectedBody);
+                }
 
                 createdConstraints.add(constraint);
                 attachedBody1 = null;
                 selectedBody = null;
             }
-        } else if (mouseState.equals("CIRCLE")) {
+        } else if (mouseState.equals(MOUSE_STATE_CIRCLE)) {
             // If the center point is not defined yet, define it
             if (circleCenterPt.getX() == -1)
                 circleCenterPt.setXY(mouseX, mouseY);
@@ -534,7 +637,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
                 // Generate the circle name (the name must be unique from the other bodies)
                 String circleName = "";
                 do
-                    circleName = "Circle " + +(int) (Math.random() * (10000));
+                    circleName = "Circle " + (int) (Math.random() * (10000));
                 while (getBodyIndexByName(circleName, createdBodies) != -1);
 
                 PCircle circle = new PCircle(circleName);
@@ -543,7 +646,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
                 addBody(circle);
                 clearAllDrawables();
             }
-        } else if (mouseState == "POLYGON") {
+        } else if (mouseState == MOUSE_STATE_POLYGON) {
             polyVertices.add(new Vector(mouseX, mouseY));
 
             // Check if it closed the polygon
@@ -579,7 +682,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         this.mouseY = e.getY();
         isMouseSnappedToPoint = false;
 
-        if (selectedBody != null && mouseState.equals("CURSOR"))
+        if (selectedBody != null && mouseState.equals(MOUSE_STATE_CURSOR))
             selectedBody.move(new Vector(mouseX, this.getHeight() - mouseY));
     }
 
@@ -594,9 +697,9 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         isMouseSnappedToPoint = false;
 
         // If the mouse is on a certain point on the polygon not made yet
-        if (mouseState.equals("POLYGON"))
+        if (mouseState.equals(MOUSE_STATE_POLYGON))
             for (Vector pt : polyVertices)
-                if (isMouseOnPoint(mouseX, mouseY, (int) pt.getX(), (int) pt.getY())) {
+                if (isMouseNearPoint(mouseX, mouseY, (int) pt.getX(), (int) pt.getY())) {
                     // Save the point it is snapped to
                     isMouseSnappedToPoint = true;
                     mouseX = (int) pt.getX();
@@ -609,7 +712,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
             for (PBody body : createdBodies) {
                 // Check if it is on its center pt
                 Vector bodyCenterPt = body.getCenterPt();
-                if (isMouseOnPoint(mouseX, mouseY, (int) bodyCenterPt.getX(), (int) (getHeight() - bodyCenterPt.getY()))) {
+                if (isMouseNearPoint(mouseX, mouseY, (int) bodyCenterPt.getX(), (int) (getHeight() - bodyCenterPt.getY()))) {
                     // Save the point it is snapped to
                     isMouseSnappedToPoint = true;
                     mouseX = (int) bodyCenterPt.getX();
@@ -619,7 +722,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
             }
 
         // If the mouse is adjusting the radius of the circle
-        if (mouseState.equals("CIRCLE") && circleCenterPt.getX() != -1) {
+        if (mouseState.equals(MOUSE_STATE_CIRCLE) && circleCenterPt.getX() != -1) {
             double xMinus = mouseX - circleCenterPt.getX();
             double yMinus = mouseY - circleCenterPt.getY();
             circleRadius = Math.sqrt((xMinus * xMinus) + (yMinus * yMinus));
