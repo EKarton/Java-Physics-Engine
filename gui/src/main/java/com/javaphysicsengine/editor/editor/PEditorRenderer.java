@@ -6,10 +6,10 @@ import com.javaphysicsengine.utils.Vector;
 
 import java.awt.*;
 
-import static com.javaphysicsengine.editor.editor.PEditorPanel.MOUSE_STATE_CIRCLE;
-import static com.javaphysicsengine.editor.editor.PEditorPanel.MOUSE_STATE_POLYGON;
-import static com.javaphysicsengine.editor.editor.PEditorPanel.MOUSE_STATE_SPRING;
-import static com.javaphysicsengine.editor.editor.PEditorPanel.MOUSE_STATE_STRING;
+import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_CIRCLE;
+import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_POLYGON;
+import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_SPRING;
+import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_STRING;
 
 public class PEditorRenderer {
     public static final Color BACKGROUND_COLOR = new Color(60, 60, 60);
@@ -126,7 +126,7 @@ public class PEditorRenderer {
         }
 
         // Drawing the line that will connect the mouse pos to the last vertex of the polygon
-        if (mouseState.equals(MOUSE_STATE_POLYGON) && store.getPolyVertices().size() > 0) {
+        if (mouseState.equals(EDIT_MODE_POLYGON) && store.getPolyVertices().size() > 0) {
             Vector lastAddedVertex = store.getPolyVertices().get(store.getPolyVertices().size() - 1);
             g.setColor(POLYGON_INPROGRESS_EDGE_COLOR);
             g.drawLine((int) lastAddedVertex.getX(), (int) lastAddedVertex.getY(), mouseX, mouseY);
@@ -143,7 +143,7 @@ public class PEditorRenderer {
         }
 
         // Drawing the circle that will be drawn
-        else if (mouseState.equals(MOUSE_STATE_CIRCLE) && store.getCircleRadius() > 0) {
+        else if (mouseState.equals(EDIT_MODE_CIRCLE) && store.getCircleRadius() > 0) {
             int topLeftX = (int) (store.getCircleCenterPt().getX() - store.getCircleRadius());
             int topLeftY = (int) (store.getCircleCenterPt().getY() - store.getCircleRadius());
             g.setColor(CIRCLE_INPROGRESS_EDGE_COLOR);
@@ -152,7 +152,7 @@ public class PEditorRenderer {
         }
 
         // Drawing the constraint that will be drawn
-        else if (mouseState.equals(MOUSE_STATE_SPRING) || mouseState.equals(MOUSE_STATE_STRING))
+        else if (mouseState.equals(EDIT_MODE_SPRING) || mouseState.equals(EDIT_MODE_STRING))
             if (store.getAttachedBody1() != null) {
                 // Draw a line from the centerpt of attachedBody1 to the mouse
                 g.setColor(Color.YELLOW);
