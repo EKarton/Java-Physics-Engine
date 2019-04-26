@@ -354,37 +354,25 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @returns Returns true if the name was changed successfully; else false.
     */
     public boolean changeBodyName(String newName, PBody body) {
-        // Check if the body name already exists in the list of bodies
-        int bodyFoundIndex = getBodyIndexByName(newName, store.getCreatedBodies());
+        if (store.canChangeBodyName(newName, body)) {
+            store.changeBodyName(newName, body);
 
-        // If the body was found
-        if (bodyFoundIndex != -1 && !store.getCreatedBodies().get(bodyFoundIndex).equals(body))
-            return false;
+            // Change the name of the body as well as the title of the body's properties pane
+            for (int i = 0; i < propertiesPane.getTabCount(); i++) {
+                if (propertiesPane.getTitleAt(i).equals(body.getName()))
+                    propertiesPane.setTitleAt(i, newName);
+            }
 
-        // Change the name of the body as well as the title of the body's properties pane
-        for (int i = 0; i < propertiesPane.getTabCount(); i++)
-            if (propertiesPane.getTitleAt(i).equals(body.getName()))
-                propertiesPane.setTitleAt(i, newName);
-
-        body.setName(newName);
-        sortBodyByName();
-        return true;
+            return true;
+        }
+        return false;
     }
 
     /*
       Post-condition: Sorts the createdBodies[] list in alphabethica order according to body name
     */
     private void sortBodyByName() {
-        // Sort the bodies list by name in ascending order using insertion sort
-        for (int i = 1; i < store.getCreatedBodies().size(); i++) {
-            PBody curBody = store.getCreatedBodies().get(i);
-            int j = i;
-            while (j > 0 && store.getCreatedBodies().get(j - 1).getName().compareTo(curBody.getName()) > 0) {
-                store.getCreatedBodies().set(j, store.getCreatedBodies().get(j - 1));
-                j--;
-            }
-            store.getCreatedBodies().set(j, curBody);
-        }
+        store.sortBodyByName();
     }
 
     /*
@@ -393,23 +381,8 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @param bodies The list of bodies
       @return Returns the index of the body with the same name
     */
-    private int getBodyIndexByName(String name, ArrayList<PBody> bodies) {
-        // Do a binary search (already sorted by name in ascending order)
-        int left = 0;
-        int right = bodies.size() - 1;
-
-        while (right >= left) {
-            int mid = (left + right) / 2;
-            PBody curBody = bodies.get(mid);
-
-            if (curBody.getName().compareTo(name) < 0)
-                left = mid + 1;
-            else if (curBody.getName().compareTo(name) > 0)
-                right = mid - 1;
-            else
-                return mid;
-        }
-        return -1;
+    private int getBodyIndexByName(String name, List<PBody> bodies) {
+        return store.getBodyIndexByName(name, bodies);
     }
 
     /*

@@ -5,6 +5,7 @@ import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.utils.Vector;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PEditorStore {
     private ArrayList<Vector> polyVertices = new ArrayList<Vector>();
@@ -79,5 +80,66 @@ public class PEditorStore {
         circleRadius = -1;
         attachedBody1 = null;
         selectedBody = null;
+    }
+
+    /*
+      Post-condition: Changes the name of a known PBody object
+      Pre-condition: The "body" must not be null
+      @param newName The new name of the body
+      @param body The PBody that is wished to have its name changed
+      @returns Returns true if the name was changed successfully; else false.
+    */
+    public void changeBodyName(String newName, PBody body) {
+        body.setName(newName);
+        sortBodyByName();
+    }
+
+    public boolean canChangeBodyName(String newName, PBody body) {
+        // Check if the body name already exists in the list of bodies
+        int bodyFoundIndex = getBodyIndexByName(newName, createdBodies);
+
+        // If the body was found
+        return bodyFoundIndex == -1 || createdBodies.get(bodyFoundIndex).equals(body);
+    }
+
+    /*
+      Post-condition: Sorts the createdBodies[] list in alphabethical order according to body name
+    */
+    public void sortBodyByName() {
+        // Sort the bodies list by name in ascending order using insertion sort
+        for (int i = 1; i < createdBodies.size(); i++) {
+            PBody curBody = createdBodies.get(i);
+            int j = i;
+            while (j > 0 && createdBodies.get(j - 1).getName().compareTo(curBody.getName()) > 0) {
+                createdBodies.set(j, createdBodies.get(j - 1));
+                j--;
+            }
+            createdBodies.set(j, curBody);
+        }
+    }
+
+    /*
+      Post-condition: Returns the index in a list of bodies when found a body with the name name
+      @param name The name of the body to search for
+      @param bodies The list of bodies
+      @return Returns the index of the body with the same name
+    */
+    public int getBodyIndexByName(String name, List<PBody> bodies) {
+        // Do a binary search (already sorted by name in ascending order)
+        int left = 0;
+        int right = bodies.size() - 1;
+
+        while (right >= left) {
+            int mid = (left + right) / 2;
+            PBody curBody = bodies.get(mid);
+
+            if (curBody.getName().compareTo(name) < 0)
+                left = mid + 1;
+            else if (curBody.getName().compareTo(name) > 0)
+                right = mid - 1;
+            else
+                return mid;
+        }
+        return -1;
     }
 }
