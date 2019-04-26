@@ -187,35 +187,35 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     }
 
     public void displayBoundingBox(boolean isBoundingBoxDisplayed) {
-        renderer.isBoundingBoxDisplayed = isBoundingBoxDisplayed;
+        renderer.setBoundingBoxDisplayed(isBoundingBoxDisplayed);
     }
 
     public void displayShapeOutline(boolean isShapeOutlineDisplayed) {
-        renderer.isShapeOutlineDisplayed = isShapeOutlineDisplayed;
+        renderer.setShapeOutlineDisplayed(isShapeOutlineDisplayed);
     }
 
     public void displayShapeFill(boolean isShapeFillDisplayed) {
-        renderer.isShapeFillDisplayed = isShapeFillDisplayed;
+        renderer.setShapeFillDisplayed(isShapeFillDisplayed);
     }
 
     public void setAntiAliasing(boolean isToggled) {
-        renderer.isAntiAliasingToggled = isToggled;
+        renderer.setAntiAliasingToggled(isToggled);
     }
 
     public boolean isBoundingBoxDisplayed() {
-        return renderer.isBoundingBoxDisplayed;
+        return renderer.isBoundingBoxDisplayed();
     }
 
     public boolean isShapeOutlineDisplayed() {
-        return renderer.isShapeOutlineDisplayed;
+        return renderer.isShapeOutlineDisplayed();
     }
 
     public boolean isShapeFillDisplayed() {
-        return renderer.isShapeFillDisplayed;
+        return renderer.isShapeFillDisplayed();
     }
 
     public boolean isAntiAliasingToggled() {
-        return renderer.isAntiAliasingToggled;
+        return renderer.isAntiAliasingToggled();
     }
 
     /*
@@ -340,7 +340,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         g.fillRect(0, 0, getWidth(), getHeight());
 
         // If antialiasing toggled
-        if (renderer.isAntiAliasingToggled) {
+        if (renderer.isAntiAliasingToggled()) {
             // Set antialiasing (for smoother but slower graphics)
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -348,13 +348,13 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
 
         // Draw all the user-created bodies
         for (PBody body : store.getCreatedBodies()) {
-            if (renderer.isBoundingBoxDisplayed)
+            if (renderer.isBoundingBoxDisplayed())
                 body.drawBoundingBox(g, this.getHeight());
 
-            if (renderer.isShapeOutlineDisplayed)
+            if (renderer.isShapeOutlineDisplayed())
                 body.drawOutline(g, this.getHeight());
 
-            if (renderer.isShapeFillDisplayed)
+            if (renderer.isShapeFillDisplayed())
                 body.drawFill(g, this.getHeight());
 
             // Draw the name of the object

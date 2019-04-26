@@ -13,11 +13,11 @@ public class PEditorGraphicsRenderer {
     public static final Color CIRCLE_INPROGRESS_EDGE_COLOR = Color.WHITE;
 
     // Graphic properties showing which parts are visible
-    public boolean isBoundingBoxDisplayed = true;
-    public boolean isShapeOutlineDisplayed = true;
-    public boolean isShapeFillDisplayed = false;
-    public boolean isVelocityVectorsDisplayed = false;
-    public boolean isAntiAliasingToggled = false;
+    private boolean isBoundingBoxDisplayed = true;
+    private boolean isShapeOutlineDisplayed = true;
+    private boolean isShapeFillDisplayed = false;
+    private boolean isVelocityVectorsDisplayed = false;
+    private boolean isAntiAliasingToggled = false;
 
     private final PEditorStore store;
 
@@ -25,6 +25,50 @@ public class PEditorGraphicsRenderer {
         this.store = store;
     }
 
-    public void renderGraphics(Graphics g, int width, int height) {
+    public boolean isBoundingBoxDisplayed() {
+        return isBoundingBoxDisplayed;
+    }
+
+    public void setBoundingBoxDisplayed(boolean boundingBoxDisplayed) {
+        isBoundingBoxDisplayed = boundingBoxDisplayed;
+    }
+
+    public boolean isShapeOutlineDisplayed() {
+        return isShapeOutlineDisplayed;
+    }
+
+    public void setShapeOutlineDisplayed(boolean shapeOutlineDisplayed) {
+        isShapeOutlineDisplayed = shapeOutlineDisplayed;
+    }
+
+    public boolean isShapeFillDisplayed() {
+        return isShapeFillDisplayed;
+    }
+
+    public void setShapeFillDisplayed(boolean shapeFillDisplayed) {
+        isShapeFillDisplayed = shapeFillDisplayed;
+    }
+
+    public boolean isVelocityVectorsDisplayed() {
+        return isVelocityVectorsDisplayed;
+    }
+
+    public void setVelocityVectorsDisplayed(boolean velocityVectorsDisplayed) {
+        isVelocityVectorsDisplayed = velocityVectorsDisplayed;
+    }
+
+    public boolean isAntiAliasingToggled() {
+        return isAntiAliasingToggled;
+    }
+
+    public void setAntiAliasingToggled(boolean antiAliasingToggled) {
+        isAntiAliasingToggled = antiAliasingToggled;
+    }
+
+    public PEditorStore getStore() {
+        return store;
+    }
+
+    public void renderGraphics(Graphics g, int width, int height, int mouseX, int mouseY) {
     }
 }
