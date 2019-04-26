@@ -11,8 +11,8 @@ import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.editor.codegenerator.PCodeGenerator;
+import com.javaphysicsengine.editor.io.PFileWriter;
 import com.javaphysicsengine.editor.io.PFileReader;
-import com.javaphysicsengine.editor.io.PBodyFileWriter;
 import com.javaphysicsengine.editor.simulation.PSimulationWindow;
 
 import javax.swing.*;
@@ -22,6 +22,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -178,8 +180,16 @@ public class PEditorFrame extends JFrame implements ActionListener {
     private void saveBodiesToFile() {
         String filePath = JOptionPane.showInputDialog("Enter File Path:");
 
-        PBodyFileWriter writer = new PBodyFileWriter();
-        writer.saveBodiesToFile(editorPanel.getBodies(), editorPanel.getConstraints(), filePath);
+        try {
+            FileOutputStream fileWriter = new FileOutputStream(filePath);
+
+            PFileWriter pFileWriter = new PFileWriter(fileWriter);
+            pFileWriter.saveBodies(editorPanel.getBodies());
+            pFileWriter.saveConstraints(editorPanel.getConstraints());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -193,10 +203,12 @@ public class PEditorFrame extends JFrame implements ActionListener {
         List<String> codeLines = codeGenerator.generateApiCode(bodies, constraints);
 
         // Add them to the text area
-        String singularLine = "";
-        for (String line : codeLines)
-            singularLine += line + "\n";
-        JTextArea textArea = new JTextArea(singularLine);
+        StringBuilder singularLine = new StringBuilder();
+        for (String line : codeLines) {
+            singularLine.append(line)
+                    .append("\n");
+        }
+        JTextArea textArea = new JTextArea(singularLine.toString());
 
         // Show the info to a JOptionPane
         JScrollPane scrollPane = new JScrollPane(textArea);

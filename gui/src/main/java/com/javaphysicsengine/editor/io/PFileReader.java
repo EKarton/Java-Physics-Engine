@@ -1,5 +1,5 @@
 /*
- * Reads in the bodies from a file.
+ * Reads in the bodies from an input stream.
  * @author Emilio Kartono
  * @version January 15 2016
  */
