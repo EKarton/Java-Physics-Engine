@@ -5,7 +5,7 @@
  * @version January 15 2016
  */
 
-package com.javaphysicsengine.editor;
+package com.javaphysicsengine.editor.codegenerator;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PCircle;
