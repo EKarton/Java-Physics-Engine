@@ -82,6 +82,19 @@ public class PEditorStore {
         selectedBody = null;
     }
 
+    public void addBody(PBody body) {
+        createdBodies.add(body);
+        sortBodyByName();
+    }
+
+    /*
+      Post-condition: Add a constraint to the EditorPanel
+      @param constraint The PContraints object
+    */
+    public void addConstraint(PConstraints constraint) {
+        createdConstraints.add(constraint);
+    }
+
     public boolean canDeleteBody(String objectName) {
         // Search for the index of the object with the object name
         int bodyIndex = getBodyIndexByName(objectName, createdBodies);

@@ -274,11 +274,8 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @param body The PBody object
     */
     public void addBody(PBody body) {
-        // Add the body to the end of the list and show its properties pane
-        store.getCreatedBodies().add(body);
+        store.addBody(body);
         propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, this)));
-
-        sortBodyByName();
     }
 
     /*
@@ -286,7 +283,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @param constraint The PContraints object
     */
     public void addConstraint(PConstraints constraint) {
-        store.getCreatedConstraints().add(constraint);
+        store.addConstraint(constraint);
     }
 
     /*
