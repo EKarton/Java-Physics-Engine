@@ -5,7 +5,7 @@
  * @version January 15 2016
  */
 
-package com.javaphysicsengine.editor;
+package com.javaphysicsengine.editor.simulation;
 
 import com.javaphysicsengine.api.PWorld;
 

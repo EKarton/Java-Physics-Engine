@@ -11,7 +11,7 @@ import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.editor.PCodeGenerator;
-import com.javaphysicsengine.editor.PSimulationWindow;
+import com.javaphysicsengine.editor.simulation.PSimulationWindow;
 import com.javaphysicsengine.editor.io.PBodyFileReader;
 import com.javaphysicsengine.editor.io.PBodyFileWriter;
 import com.sun.tools.javac.util.Pair;
