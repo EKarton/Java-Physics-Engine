@@ -47,16 +47,9 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     public static final String MOUSE_STATE_CIRCLE = "CIRCLE";
     public static final String MOUSE_STATE_SPRING = "SPRING";
     public static final String MOUSE_STATE_STRING = "STRING";
-//    public static final Color BACKGROUND_COLOR = new Color(60, 60, 60);
-//    public static final Color CURSOR_COLOR = Color.WHITE;
-//    public static final Color OBJECT_TEXT_COLOR = Color.WHITE;
-//    public static final Color POBJECT_NAME_TEXT_COLOR = OBJECT_TEXT_COLOR;
-//    public static final Color SNAP_POINT_RANGE_COLOR = new Color(207, 176, 41);
-//    public static final Color POLYGON_INPROGRESS_EDGE_COLOR = Color.WHITE;
-//    public static final Color POLYGON_FINISHED_EDGE_COLOR = Color.BLACK;
-//    public static final Color CIRCLE_INPROGRESS_EDGE_COLOR = Color.WHITE;
+
     private final PEditorStore store;
-    private final PEditorGraphicsRenderer renderer;
+    private final PEditorRenderer renderer;
 
     // Storing the tabbed panel to add objects, as well as body coordinates for future creation of objects
     private JTabbedPane propertiesPane;
@@ -66,13 +59,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     private int mouseY = 0;
     private boolean isMouseSnappedToPoint = false;
     private String mouseState = MOUSE_STATE_CURSOR;  // <- Either "POLYGON", "CIRCLE", "SPRING", "STRING", "CURSOR"
-
-//    // Graphic properties showing which parts are visible
-//    private boolean isBoundingBoxDisplayed = true;
-//    private boolean isShapeOutlineDisplayed = true;
-//    private boolean isShapeFillDisplayed = false;
-//    private boolean isVelocityVectorsDisplayed = false;
-//    private boolean isAntiAliasingToggled = false;
 
     // The drawing buttons
     private JToggleButton[] drawingBttns;// <- Mouse will be on point if it is within a certain pixels away from actual point
@@ -104,7 +90,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         this.addMouseMotionListener(this);
 
         this.store = new PEditorStore();
-        this.renderer = new PEditorGraphicsRenderer(store);
+        this.renderer = new PEditorRenderer(store);
 
         // Initialise the game loop
         Timer gameTimer = new Timer(1000 / 60, this);
@@ -336,91 +322,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(renderer.BACKGROUND_COLOR);
-        g.fillRect(0, 0, getWidth(), getHeight());
-
-        // If antialiasing toggled
-        if (renderer.isAntiAliasingToggled()) {
-            // Set antialiasing (for smoother but slower graphics)
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        }
-
-        // Draw all the user-created bodies
-        for (PBody body : store.getCreatedBodies()) {
-            if (renderer.isBoundingBoxDisplayed())
-                body.drawBoundingBox(g, this.getHeight());
-
-            if (renderer.isShapeOutlineDisplayed())
-                body.drawOutline(g, this.getHeight());
-
-            if (renderer.isShapeFillDisplayed())
-                body.drawFill(g, this.getHeight());
-
-            // Draw the name of the object
-            g.setColor(renderer.POBJECT_NAME_TEXT_COLOR);
-            g.drawString(body.getName(), (int) body.getCenterPt().getX(), (int) (this.getHeight() - body.getCenterPt().getY()));
-        }
-
-        // Draw the constraints
-        for (PConstraints constraint : store.getCreatedConstraints())
-            constraint.drawConstraints(g, getHeight());
-
-        // Draw the cursor
-        g.setColor(renderer.CURSOR_COLOR);
-        g.drawLine(mouseX, mouseY - 20, mouseX, mouseY + 20);
-        g.drawLine(mouseX - 20, mouseY, mouseX + 20, mouseY);
-
-        handleBodyDrawing(g);
-    }
-
-    /*
-      Post-condition: Draws the bodies and constraints that are in the process of being created by the user
-      Pre-condition: The "g" must not be a null value
-      @param g The Graphics Object used to display the objects on the screen
-    */
-    private void handleBodyDrawing(Graphics g) {
-        // Draw the point the cursor is snapped to (if it is snapped to)
-        if (isMouseSnappedToPoint) {
-            // Draw a circle around the point
-            g.setColor(renderer.SNAP_POINT_RANGE_COLOR);
-            g.drawOval(mouseX - 5, mouseY - 5, 10, 10);
-        }
-
-        // Drawing the line that will connect the mouse pos to the last vertex of the polygon
-        if (mouseState.equals(MOUSE_STATE_POLYGON) && store.getPolyVertices().size() > 0) {
-            Vector lastAddedVertex = store.getPolyVertices().get(store.getPolyVertices().size() - 1);
-            g.setColor(renderer.POLYGON_INPROGRESS_EDGE_COLOR);
-            g.drawLine((int) lastAddedVertex.getX(), (int) lastAddedVertex.getY(), mouseX, mouseY);
-
-            // Drawing the going-to-be-drawn polygons
-            g.setColor(renderer.POLYGON_FINISHED_EDGE_COLOR);
-            for (int i = 0; i < store.getPolyVertices().size() - 1; i++) {
-                int x1 = (int) store.getPolyVertices().get(i).getX();
-                int y1 = (int) store.getPolyVertices().get(i).getY();
-                int x2 = (int) store.getPolyVertices().get(i + 1).getX();
-                int y2 = (int) store.getPolyVertices().get(i + 1).getY();
-                g.drawLine(x1, y1, x2, y2);
-            }
-        }
-
-        // Drawing the circle that will be drawn
-        else if (mouseState.equals(MOUSE_STATE_CIRCLE) && store.getCircleRadius() > 0) {
-            int topLeftX = (int) (store.getCircleCenterPt().getX() - store.getCircleRadius());
-            int topLeftY = (int) (store.getCircleCenterPt().getY() - store.getCircleRadius());
-            g.setColor(renderer.CIRCLE_INPROGRESS_EDGE_COLOR);
-            g.drawOval(topLeftX, topLeftY, (int) (store.getCircleRadius() * 2), (int) (store.getCircleRadius() * 2));
-            g.fillOval((int) store.getCircleCenterPt().getX() - 2, (int) store.getCircleCenterPt().getY() - 2, 4, 4);
-        }
-
-        // Drawing the constraint that will be drawn
-        else if (mouseState.equals(MOUSE_STATE_SPRING) || mouseState.equals(MOUSE_STATE_STRING))
-            if (store.getAttachedBody1() != null) {
-                // Draw a line from the centerpt of attachedBody1 to the mouse
-                g.setColor(Color.YELLOW);
-                g.drawLine((int) store.getAttachedBody1().getCenterPt().getX(), getHeight() - (int) store.getAttachedBody1().getCenterPt().getY(), mouseX, mouseY);
-            }
-
+        renderer.renderGraphics(g, getWidth(), getHeight(), mouseX, mouseY, isMouseSnappedToPoint, mouseState);
     }
 
     /*
