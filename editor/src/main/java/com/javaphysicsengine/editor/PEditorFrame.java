@@ -38,7 +38,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 public class PEditorFrame extends JFrame implements ActionListener {
     private PEditorPanel editorPanel = null;
