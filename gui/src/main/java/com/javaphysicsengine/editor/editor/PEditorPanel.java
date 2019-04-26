@@ -56,20 +56,10 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     public static final Color POLYGON_INPROGRESS_EDGE_COLOR = Color.WHITE;
     public static final Color POLYGON_FINISHED_EDGE_COLOR = Color.BLACK;
     public static final Color CIRCLE_INPROGRESS_EDGE_COLOR = Color.WHITE;
+    private final PEditorStore store;
 
     // Storing the tabbed panel to add objects, as well as body coordinates for future creation of objects
     private JTabbedPane propertiesPane;
-
-    // Variables used to create temporary bodies
-    private ArrayList<Vector> polyVertices = new ArrayList<Vector>();
-    private Vector circleCenterPt = new Vector(-1, -1); // <- If it is -1, it is not defined yet
-    private double circleRadius = -1;
-    private PBody selectedBody = null;
-    private PBody attachedBody1 = null;  // Used for springs / strings
-
-    // Arrays storing the bodies / constraints made by the user
-    private ArrayList<PBody> createdBodies = new ArrayList<PBody>();
-    private ArrayList<PConstraints> createdConstraints = new ArrayList<PConstraints>();
 
     // Stores the mouse coordinates and what the mouse is doing
     private int mouseX = 0;
@@ -112,6 +102,8 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         // Initialise the event handlers
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
+
+        this.store = new PEditorStore();
 
         // Initialise the game loop
         Timer gameTimer = new Timer(1000 / 60, this);
@@ -231,7 +223,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     */
     public List<PBody> getBodies() {
         List<PBody> copyOfBodies = new ArrayList<>();
-        for (PBody body : createdBodies) {
+        for (PBody body : store.getCreatedBodies()) {
             PBody copiedBody = null;
             if (body instanceof PPolygon)
                 copiedBody = new PPolygon((PPolygon) body);
@@ -250,7 +242,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     */
     public List<PConstraints> getConstraints() {
         List<PConstraints> copyOfConstraints = new ArrayList<>();
-        for (PConstraints constraint : createdConstraints) {
+        for (PConstraints constraint : store.getCreatedConstraints()) {
             PBody[] bodiesAttached_Copy = new PBody[2];
 
             // Making a copy of the bodies attached
@@ -283,7 +275,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     */
     public void addBody(PBody body) {
         // Add the body to the end of the list and show its properties pane
-        createdBodies.add(body);
+        store.getCreatedBodies().add(body);
         propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, this)));
 
         sortBodyByName();
@@ -294,7 +286,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @param constraint The PContraints object
     */
     public void addConstraint(PConstraints constraint) {
-        createdConstraints.add(constraint);
+        store.getCreatedConstraints().add(constraint);
     }
 
     /*
@@ -303,22 +295,22 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     */
     public void deleteObject(String objectName) {
         // Search for the index of the object with the object name
-        int bodyIndex = getBodyIndexByName(objectName, createdBodies);
+        int bodyIndex = getBodyIndexByName(objectName, store.getCreatedBodies());
 
         // If there was a -1, then there is an error
         if (bodyIndex == -1)
             return;
 
         // Search for any constraints attached to the body to be deleted. If there is, delete it
-        for (int i = 0; i < createdConstraints.size(); i++) {
-            PConstraints currentConstraint = createdConstraints.get(i);
+        for (int i = 0; i < store.getCreatedConstraints().size(); i++) {
+            PConstraints currentConstraint = store.getCreatedConstraints().get(i);
             System.out.println("Has constraint");
             for (int j = 0; j < currentConstraint.getAttachedBodies().length; j++) {
                 String nameOfAttachedBody = currentConstraint.getAttachedBodies()[j].getName();
                 System.out.println("  AB: " + nameOfAttachedBody);
                 if (nameOfAttachedBody.equals(objectName)) {
                     System.out.println("Found a constraint!");
-                    createdConstraints.remove(i);
+                    store.getCreatedConstraints().remove(i);
                     i--;
                     break;
                 }
@@ -326,7 +318,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         }
 
         // Remove the body from the arraylist of bodies
-        createdBodies.remove(bodyIndex);
+        store.getCreatedBodies().remove(bodyIndex);
 
         // Close the properties tab that shows the properties of the delete object
         for (int i = 0; i < propertiesPane.getTabCount(); i++) {
@@ -341,7 +333,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     */
     public void clearBodies() {
         // Remove all the bodies in the list
-        createdBodies.clear();
+        store.getCreatedBodies().clear();
 
         // Remove all the propertiy panes of all bodies
         propertiesPane.removeAll();
@@ -351,7 +343,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       Post-condition: Clear all constraints made
     */
     public void clearConstraints() {
-        createdConstraints.clear();
+        store.getCreatedConstraints().clear();
     }
 
     /*
@@ -363,10 +355,10 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     */
     public boolean changeBodyName(String newName, PBody body) {
         // Check if the body name already exists in the list of bodies
-        int bodyFoundIndex = getBodyIndexByName(newName, createdBodies);
+        int bodyFoundIndex = getBodyIndexByName(newName, store.getCreatedBodies());
 
         // If the body was found
-        if (bodyFoundIndex != -1 && !createdBodies.get(bodyFoundIndex).equals(body))
+        if (bodyFoundIndex != -1 && !store.getCreatedBodies().get(bodyFoundIndex).equals(body))
             return false;
 
         // Change the name of the body as well as the title of the body's properties pane
@@ -384,14 +376,14 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     */
     private void sortBodyByName() {
         // Sort the bodies list by name in ascending order using insertion sort
-        for (int i = 1; i < createdBodies.size(); i++) {
-            PBody curBody = createdBodies.get(i);
+        for (int i = 1; i < store.getCreatedBodies().size(); i++) {
+            PBody curBody = store.getCreatedBodies().get(i);
             int j = i;
-            while (j > 0 && createdBodies.get(j - 1).getName().compareTo(curBody.getName()) > 0) {
-                createdBodies.set(j, createdBodies.get(j - 1));
+            while (j > 0 && store.getCreatedBodies().get(j - 1).getName().compareTo(curBody.getName()) > 0) {
+                store.getCreatedBodies().set(j, store.getCreatedBodies().get(j - 1));
                 j--;
             }
-            createdBodies.set(j, curBody);
+            store.getCreatedBodies().set(j, curBody);
         }
     }
 
@@ -452,7 +444,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         }
 
         // Draw all the user-created bodies
-        for (PBody body : createdBodies) {
+        for (PBody body : store.getCreatedBodies()) {
             if (isBoundingBoxDisplayed)
                 body.drawBoundingBox(g, this.getHeight());
 
@@ -468,7 +460,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         }
 
         // Draw the constraints
-        for (PConstraints constraint : createdConstraints)
+        for (PConstraints constraint : store.getCreatedConstraints())
             constraint.drawConstraints(g, getHeight());
 
         // Draw the cursor
@@ -493,37 +485,37 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         }
 
         // Drawing the line that will connect the mouse pos to the last vertex of the polygon
-        if (mouseState.equals(MOUSE_STATE_POLYGON) && polyVertices.size() > 0) {
-            Vector lastAddedVertex = polyVertices.get(polyVertices.size() - 1);
+        if (mouseState.equals(MOUSE_STATE_POLYGON) && store.getPolyVertices().size() > 0) {
+            Vector lastAddedVertex = store.getPolyVertices().get(store.getPolyVertices().size() - 1);
             g.setColor(POLYGON_INPROGRESS_EDGE_COLOR);
             g.drawLine((int) lastAddedVertex.getX(), (int) lastAddedVertex.getY(), mouseX, mouseY);
 
             // Drawing the going-to-be-drawn polygons
             g.setColor(POLYGON_FINISHED_EDGE_COLOR);
-            for (int i = 0; i < polyVertices.size() - 1; i++) {
-                int x1 = (int) polyVertices.get(i).getX();
-                int y1 = (int) polyVertices.get(i).getY();
-                int x2 = (int) polyVertices.get(i + 1).getX();
-                int y2 = (int) polyVertices.get(i + 1).getY();
+            for (int i = 0; i < store.getPolyVertices().size() - 1; i++) {
+                int x1 = (int) store.getPolyVertices().get(i).getX();
+                int y1 = (int) store.getPolyVertices().get(i).getY();
+                int x2 = (int) store.getPolyVertices().get(i + 1).getX();
+                int y2 = (int) store.getPolyVertices().get(i + 1).getY();
                 g.drawLine(x1, y1, x2, y2);
             }
         }
 
         // Drawing the circle that will be drawn
-        else if (mouseState.equals(MOUSE_STATE_CIRCLE) && circleRadius > 0) {
-            int topLeftX = (int) (circleCenterPt.getX() - circleRadius);
-            int topLeftY = (int) (circleCenterPt.getY() - circleRadius);
+        else if (mouseState.equals(MOUSE_STATE_CIRCLE) && store.getCircleRadius() > 0) {
+            int topLeftX = (int) (store.getCircleCenterPt().getX() - store.getCircleRadius());
+            int topLeftY = (int) (store.getCircleCenterPt().getY() - store.getCircleRadius());
             g.setColor(CIRCLE_INPROGRESS_EDGE_COLOR);
-            g.drawOval(topLeftX, topLeftY, (int) (circleRadius * 2), (int) (circleRadius * 2));
-            g.fillOval((int) circleCenterPt.getX() - 2, (int) circleCenterPt.getY() - 2, 4, 4);
+            g.drawOval(topLeftX, topLeftY, (int) (store.getCircleRadius() * 2), (int) (store.getCircleRadius() * 2));
+            g.fillOval((int) store.getCircleCenterPt().getX() - 2, (int) store.getCircleCenterPt().getY() - 2, 4, 4);
         }
 
         // Drawing the constraint that will be drawn
         else if (mouseState.equals(MOUSE_STATE_SPRING) || mouseState.equals(MOUSE_STATE_STRING))
-            if (attachedBody1 != null) {
+            if (store.getAttachedBody1() != null) {
                 // Draw a line from the centerpt of attachedBody1 to the mouse
                 g.setColor(Color.YELLOW);
-                g.drawLine((int) attachedBody1.getCenterPt().getX(), getHeight() - (int) attachedBody1.getCenterPt().getY(), mouseX, mouseY);
+                g.drawLine((int) store.getAttachedBody1().getCenterPt().getX(), getHeight() - (int) store.getAttachedBody1().getCenterPt().getY(), mouseX, mouseY);
             }
 
     }
@@ -532,11 +524,11 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       Post-condition: Clear all data of all bodies and constraints that will be created by the user
     */
     private void clearAllDrawables() {
-        polyVertices.clear();
-        circleCenterPt.setXY(-1, -1);
-        circleRadius = -1;
-        attachedBody1 = null;
-        selectedBody = null;
+        store.getPolyVertices().clear();
+        store.getCircleCenterPt().setXY(-1, -1);
+        store.setCircleRadius(-1);
+        store.setAttachedBody1(null);
+        store.setSelectedBody(null);
     }
 
     /*
@@ -587,50 +579,50 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     public void mouseClicked(MouseEvent e) {
         // If it selected an object
         if (mouseState.equals(MOUSE_STATE_CURSOR) || mouseState.equals(MOUSE_STATE_SPRING) || mouseState.equals(MOUSE_STATE_STRING)) {
-            selectedBody = null;
+            store.setSelectedBody(null);
             if (isMouseSnappedToPoint)
-                for (PBody body : createdBodies)
+                for (PBody body : store.getCreatedBodies())
                     if ((int) body.getCenterPt().getX() == mouseX && (int) (getHeight() - body.getCenterPt().getY()) == mouseY) {
-                        selectedBody = body;
+                        store.setSelectedBody(body);
                         break;
                     }
         }
 
         // If selected a body
-        if (mouseState.equals(MOUSE_STATE_CURSOR) && selectedBody != null) {
+        if (mouseState.equals(MOUSE_STATE_CURSOR) && store.getSelectedBody() != null) {
             // Search for the body in the properties pane. If there is not, show the properties on the screen
             for (int i = 0; i < propertiesPane.getTabCount(); i++) {
                 String label = propertiesPane.getTitleAt(i);
-                if (label.equals(selectedBody.getName()))
+                if (label.equals(store.getSelectedBody().getName()))
                     return;
             }
 
             // Create a properties tab for that body
-            propertiesPane.add(selectedBody.getName(), new JScrollPane(new PBodyPropertiesPanel(selectedBody, propertiesPane, this)));
+            propertiesPane.add(store.getSelectedBody().getName(), new JScrollPane(new PBodyPropertiesPanel(store.getSelectedBody(), propertiesPane, this)));
         }
 
         // If selected a body to connect to spring
-        if (mouseState.equals(MOUSE_STATE_SPRING) || mouseState.equals(MOUSE_STATE_STRING) && selectedBody != null) {
-            if (attachedBody1 == null)
-                attachedBody1 = selectedBody;
-            else if (selectedBody != null) {
+        if (mouseState.equals(MOUSE_STATE_SPRING) || mouseState.equals(MOUSE_STATE_STRING) && store.getSelectedBody() != null) {
+            if (store.getAttachedBody1() == null)
+                store.setAttachedBody1(store.getSelectedBody());
+            else if (store.getSelectedBody() != null) {
                 // Create the object
                 PConstraints constraint = null;
                 if (mouseState.equals(MOUSE_STATE_SPRING)) {
-                    constraint = new PSpring(attachedBody1, selectedBody);
+                    constraint = new PSpring(store.getAttachedBody1(), store.getSelectedBody());
                 }
                 else {
-                    constraint = new PString(attachedBody1, selectedBody);
+                    constraint = new PString(store.getAttachedBody1(), store.getSelectedBody());
                 }
 
-                createdConstraints.add(constraint);
-                attachedBody1 = null;
-                selectedBody = null;
+                store.getCreatedConstraints().add(constraint);
+                store.setAttachedBody1(null);
+                store.setSelectedBody(null);
             }
         } else if (mouseState.equals(MOUSE_STATE_CIRCLE)) {
             // If the center point is not defined yet, define it
-            if (circleCenterPt.getX() == -1)
-                circleCenterPt.setXY(mouseX, mouseY);
+            if (store.getCircleCenterPt().getX() == -1)
+                store.getCircleCenterPt().setXY(mouseX, mouseY);
 
                 // If the user selects the radius, create the circle object
             else {
@@ -638,32 +630,32 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
                 String circleName = "";
                 do
                     circleName = "Circle " + (int) (Math.random() * (10000));
-                while (getBodyIndexByName(circleName, createdBodies) != -1);
+                while (getBodyIndexByName(circleName, store.getCreatedBodies()) != -1);
 
                 PCircle circle = new PCircle(circleName);
-                circle.setRadius(circleRadius);
-                circle.getCenterPt().setXY(circleCenterPt.getX(), this.getHeight() - circleCenterPt.getY());
+                circle.setRadius(store.getCircleRadius());
+                circle.getCenterPt().setXY(store.getCircleCenterPt().getX(), this.getHeight() - store.getCircleCenterPt().getY());
                 addBody(circle);
                 clearAllDrawables();
             }
         } else if (mouseState == MOUSE_STATE_POLYGON) {
-            polyVertices.add(new Vector(mouseX, mouseY));
+            store.getPolyVertices().add(new Vector(mouseX, mouseY));
 
             // Check if it closed the polygon
-            if (polyVertices.size() > 2)
-                if (polyVertices.get(0).equals(polyVertices.get(polyVertices.size() - 1))) {
+            if (store.getPolyVertices().size() > 2)
+                if (store.getPolyVertices().get(0).equals(store.getPolyVertices().get(store.getPolyVertices().size() - 1))) {
                     // Generate the body name (the body name must be unique from all the rest)
                     String polyName = "";
                     do
                         polyName = "Polygon " + (int) (Math.random() * (10000));
-                    while (getBodyIndexByName(polyName, createdBodies) != -1);
+                    while (getBodyIndexByName(polyName, store.getCreatedBodies()) != -1);
 
                     // Create the body
                     PPolygon polygon = new PPolygon(polyName);
-                    for (int i = 0; i < polyVertices.size() - 1; i++) // -1 since the last vertex is a copy of the first vertex
+                    for (int i = 0; i < store.getPolyVertices().size() - 1; i++) // -1 since the last vertex is a copy of the first vertex
                     {
-                        polyVertices.get(i).setY(this.getHeight() - polyVertices.get(i).getY());  // Translate the point since the origin for polygon is bottom left
-                        polygon.getVertices().add(polyVertices.get(i));
+                        store.getPolyVertices().get(i).setY(this.getHeight() - store.getPolyVertices().get(i).getY());  // Translate the point since the origin for polygon is bottom left
+                        polygon.getVertices().add(store.getPolyVertices().get(i));
                     }
                     polygon.computeCenterOfMass();
                     addBody(polygon);
@@ -682,8 +674,8 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         this.mouseY = e.getY();
         isMouseSnappedToPoint = false;
 
-        if (selectedBody != null && mouseState.equals(MOUSE_STATE_CURSOR))
-            selectedBody.move(new Vector(mouseX, this.getHeight() - mouseY));
+        if (store.getSelectedBody() != null && mouseState.equals(MOUSE_STATE_CURSOR))
+            store.getSelectedBody().move(new Vector(mouseX, this.getHeight() - mouseY));
     }
 
     /*
@@ -698,7 +690,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
 
         // If the mouse is on a certain point on the polygon not made yet
         if (mouseState.equals(MOUSE_STATE_POLYGON))
-            for (Vector pt : polyVertices)
+            for (Vector pt : store.getPolyVertices())
                 if (isMouseNearPoint(mouseX, mouseY, (int) pt.getX(), (int) pt.getY())) {
                     // Save the point it is snapped to
                     isMouseSnappedToPoint = true;
@@ -709,7 +701,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
 
         // Check if it snapped to any of the made bodies
         if (!isMouseSnappedToPoint)
-            for (PBody body : createdBodies) {
+            for (PBody body : store.getCreatedBodies()) {
                 // Check if it is on its center pt
                 Vector bodyCenterPt = body.getCenterPt();
                 if (isMouseNearPoint(mouseX, mouseY, (int) bodyCenterPt.getX(), (int) (getHeight() - bodyCenterPt.getY()))) {
@@ -722,10 +714,10 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
             }
 
         // If the mouse is adjusting the radius of the circle
-        if (mouseState.equals(MOUSE_STATE_CIRCLE) && circleCenterPt.getX() != -1) {
-            double xMinus = mouseX - circleCenterPt.getX();
-            double yMinus = mouseY - circleCenterPt.getY();
-            circleRadius = Math.sqrt((xMinus * xMinus) + (yMinus * yMinus));
+        if (mouseState.equals(MOUSE_STATE_CIRCLE) && store.getCircleCenterPt().getX() != -1) {
+            double xMinus = mouseX - store.getCircleCenterPt().getX();
+            double yMinus = mouseY - store.getCircleCenterPt().getY();
+            store.setCircleRadius(Math.sqrt((xMinus * xMinus) + (yMinus * yMinus)));
         }
     }
 
