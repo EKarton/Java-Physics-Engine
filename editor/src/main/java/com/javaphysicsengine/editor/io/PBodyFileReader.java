@@ -3,21 +3,29 @@
  * @author Emilio Kartono
  * @version January 15 2016
  */
-package com.javaphysicsengine.editor;
+package com.javaphysicsengine.editor.io;
 
-import com.javaphysicsengine.api.body.*;
+import com.javaphysicsengine.api.body.PBody;
+import com.javaphysicsengine.api.body.PCircle;
+import com.javaphysicsengine.api.body.PConstraints;
+import com.javaphysicsengine.api.body.PPolygon;
+import com.javaphysicsengine.api.body.PSpring;
+import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.utils.File;
 import com.javaphysicsengine.utils.Vector;
 import com.sun.tools.javac.util.Pair;
 
-import javax.swing.JOptionPane;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 public class PBodyFileReader {
 
+    /**
+     * Loads the bodies and constraints from a file
+     * @param filePath the file path
+     * @return the bodies and the constraints
+     */
     public Pair<List<PBody>, List<PConstraints>> loadBodiesFromFile(String filePath) {
         PBodyFileReader fileReader = new PBodyFileReader();
 

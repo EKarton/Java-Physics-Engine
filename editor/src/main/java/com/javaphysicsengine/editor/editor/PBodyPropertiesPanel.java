@@ -5,7 +5,7 @@
  * @version January 15 2016
  */
 
-package com.javaphysicsengine.editor;
+package com.javaphysicsengine.editor.editor;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PCircle;
@@ -28,7 +28,7 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
     private JPanel colorPanel = new JPanel();  // A panel used to host the color picker
     private JTabbedPane tabbedPane;
     private PEditorPanel editorPanel;
-    private ArrayList<com.javaphysicsengine.editor.PBodyPropertyItem> propertyItems = new ArrayList<com.javaphysicsengine.editor.PBodyPropertyItem>();
+    private ArrayList<PBodyPropertyItem> propertyItems = new ArrayList<PBodyPropertyItem>();
     private PBody body;
 
     /**
@@ -51,14 +51,14 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
         closeTabBttn.setName("Close Tab");
         closeTabBttn.setForeground(new Color(237, 182, 52));
         closeTabBttn.addActionListener(this);
-        propertyItems.add(new com.javaphysicsengine.editor.PBodyPropertyItem("", closeTabBttn));
+        propertyItems.add(new PBodyPropertyItem("", closeTabBttn));
 
         // Add the "Delete Object" tab button
         JButton deleteBttn = new JButton("Delete Object");
         deleteBttn.setName("Delete Object");
         deleteBttn.setForeground(new Color(237, 182, 52));
         deleteBttn.addActionListener(this);
-        propertyItems.add(new com.javaphysicsengine.editor.PBodyPropertyItem("", deleteBttn));
+        propertyItems.add(new PBodyPropertyItem("", deleteBttn));
 
         // Add the properties common to all PBodies:
         addPropertiesOfPBody();
@@ -72,21 +72,12 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
             JTextField radiusTxtBox = new JTextField(10);
             radiusTxtBox.addActionListener(this);
             radiusTxtBox.setText("" + circle.getRadius());
-            propertyItems.add(new com.javaphysicsengine.editor.PBodyPropertyItem("Radius", radiusTxtBox));
+            propertyItems.add(new PBodyPropertyItem("Radius", radiusTxtBox));
         }
 
         // Add the property items to the JPanel
-        for (com.javaphysicsengine.editor.PBodyPropertyItem item : propertyItems)
+        for (PBodyPropertyItem item : propertyItems)
             this.add(item);
-    }
-
-    /**
-     * Returns the object attached to this properties pane
-     *
-     * @return The body attached to this properties pane
-     */
-    public PBody getBodyShown() {
-        return body;
     }
 
     /**
@@ -97,42 +88,42 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
         JTextField nameTxtBox = new JTextField(10);
         nameTxtBox.setText(body.getName());
         nameTxtBox.addActionListener(this);
-        propertyItems.add(new com.javaphysicsengine.editor.PBodyPropertyItem("Name", nameTxtBox));
+        propertyItems.add(new PBodyPropertyItem("Name", nameTxtBox));
 
         // Adding name txtbox
         JTextField massTxtBox = new JTextField(10);
         massTxtBox.setText("" + body.getMass());
         massTxtBox.addActionListener(this);
-        propertyItems.add(new com.javaphysicsengine.editor.PBodyPropertyItem("Mass", massTxtBox));
+        propertyItems.add(new PBodyPropertyItem("Mass", massTxtBox));
 
         // Adding fill button
         JButton fillBttn = new JButton("  Set   Fill   Color  ");
         fillBttn.addActionListener(this);
-        propertyItems.add(new com.javaphysicsengine.editor.PBodyPropertyItem("Fill Color", fillBttn));
+        propertyItems.add(new PBodyPropertyItem("Fill Color", fillBttn));
 
         // Adding outline button
         JButton outlineBttn = new JButton("Set Stroke Color");
         outlineBttn.addActionListener(this);
-        propertyItems.add(new com.javaphysicsengine.editor.PBodyPropertyItem("Stroke Color", outlineBttn));
+        propertyItems.add(new PBodyPropertyItem("Stroke Color", outlineBttn));
 
         // Adding velocity txtbox
         JTextField velTxtBox = new JTextField(10);
         velTxtBox.setText("" + body.getVelocity());
         velTxtBox.addActionListener(this);
-        propertyItems.add(new com.javaphysicsengine.editor.PBodyPropertyItem("Velocity", velTxtBox));
+        propertyItems.add(new PBodyPropertyItem("Velocity", velTxtBox));
 
         // Adding angle txtbox
         JTextField angleTxtBox = new JTextField(10);
         angleTxtBox.setText("" + body.getAngle());
         angleTxtBox.addActionListener(this);
-        propertyItems.add(new com.javaphysicsengine.editor.PBodyPropertyItem("Angle", angleTxtBox));
+        propertyItems.add(new PBodyPropertyItem("Angle", angleTxtBox));
 
         // Adding moveable checkbox
         JCheckBox moveableChckBox = new JCheckBox("Is Moveable");
         moveableChckBox.setForeground(new Color(186, 186, 186));
         moveableChckBox.setSelected(body.isMoving());
         moveableChckBox.addActionListener(this);
-        propertyItems.add(new com.javaphysicsengine.editor.PBodyPropertyItem("", moveableChckBox));
+        propertyItems.add(new PBodyPropertyItem("", moveableChckBox));
     }
 
     /**

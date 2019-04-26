@@ -1,4 +1,4 @@
-package com.javaphysicsengine.editor;
+package com.javaphysicsengine.editor.io;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PCircle;
@@ -12,6 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PBodyFileWriter {
+
+    /**
+     * Saves the bodies and constraints to a file.
+     * @param bodies the bodies
+     * @param constraints the constraints
+     * @param filePath the file path
+     */
     public void saveBodiesToFile(List<PBody> bodies, List<PConstraints> constraints, String filePath){
         ArrayList<String> fileLines = new ArrayList<>();
 

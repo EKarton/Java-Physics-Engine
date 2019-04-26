@@ -5,7 +5,7 @@
   @version January 15 2016
 */
 
-package com.javaphysicsengine.editor;
+package com.javaphysicsengine.editor.editor;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PCircle;
@@ -258,7 +258,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         int bodyFoundIndex = getBodyIndexByName(newName, createdBodies);
 
         // If the body was found
-        if (bodyFoundIndex != -1 && createdBodies.get(bodyFoundIndex).equals(body) == false)
+        if (bodyFoundIndex != -1 && !createdBodies.get(bodyFoundIndex).equals(body))
             return false;
 
         // Change the name of the body as well as the title of the body's properties pane
@@ -445,7 +445,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         else if (e.getSource() instanceof JToggleButton) {
             // Deselect all the other buttons that are not the current button
             for (JToggleButton bttn : drawingBttns)
-                if (bttn.equals(e.getSource()) == false)
+                if (!bttn.equals(e.getSource()))
                     bttn.setSelected(false);
 
             // Remove all pre-existing drawable objects
@@ -600,7 +600,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
                 }
 
         // Check if it snapped to any of the made bodies
-        if (isMouseSnappedToPoint == false)
+        if (!isMouseSnappedToPoint)
             for (PBody body : createdBodies) {
                 // Check if it is on its center pt
                 Vector bodyCenterPt = body.getCenterPt();

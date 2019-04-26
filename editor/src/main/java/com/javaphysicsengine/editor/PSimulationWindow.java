@@ -11,7 +11,7 @@ import com.javaphysicsengine.api.PWorld;
 
 import javax.swing.JFrame;
 
-class PSimulationWindow extends JFrame {
+public class PSimulationWindow extends JFrame {
     private PSimulationPanel panel;
 
     /**
