@@ -15,9 +15,22 @@ import com.javaphysicsengine.editor.io.PFileWriter;
 import com.javaphysicsengine.editor.io.PFileReader;
 import com.javaphysicsengine.editor.simulation.PSimulationWindow;
 
-import javax.swing.*;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
@@ -138,7 +151,7 @@ public class PEditorFrame extends JFrame implements ActionListener {
         }
         this.setJMenuBar(menuBar);
 
-        for (JMenuItem menu : menus) {
+        for (JMenuItem menu : menuItems) {
             menu.addActionListener(this);
         }
     }
