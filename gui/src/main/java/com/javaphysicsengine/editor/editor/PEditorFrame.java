@@ -11,29 +11,18 @@ import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.editor.codegenerator.PCodeGenerator;
-import com.javaphysicsengine.editor.io.PBodyFileReader;
+import com.javaphysicsengine.editor.io.PFileReader;
 import com.javaphysicsengine.editor.io.PBodyFileWriter;
 import com.javaphysicsengine.editor.simulation.PSimulationWindow;
-import org.apache.commons.lang3.tuple.Pair;
 
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
 public class PEditorFrame extends JFrame implements ActionListener {
@@ -144,9 +133,12 @@ public class PEditorFrame extends JFrame implements ActionListener {
         JMenuBar menuBar = new JMenuBar();
         for (JMenuItem menu : menus) {
             menuBar.add(menu);
-            menu.addActionListener(this);
         }
         this.setJMenuBar(menuBar);
+
+        for (JMenuItem menu : menus) {
+            menu.addActionListener(this);
+        }
     }
 
     /**
@@ -157,20 +149,24 @@ public class PEditorFrame extends JFrame implements ActionListener {
     private void loadBodiesFromFile() {
         // Get the file path from user
         String filePath = JOptionPane.showInputDialog("Enter File Path");
+        try {
+            InputStream inputStream = new FileInputStream(filePath);
 
-        PBodyFileReader fileReader = new PBodyFileReader();
-        Pair<List<PBody>, List<PConstraints>> results = fileReader.loadBodiesFromFile(filePath);
-        List<PBody> bodies = results.getLeft();
-        List<PConstraints> constraints = results.getRight();
+            PFileReader fileReader = new PFileReader(inputStream);
+            List<PBody> bodies = fileReader.getBodies();
+            List<PConstraints> constraints = fileReader.getConstraints();
 
-        // Adding the bodies and constraints to the editor
-        for (PBody body : bodies) {
-            if (body != null)
-                editorPanel.addBody(body);
-        }
-        for (PConstraints constraint : constraints) {
-            if (constraint != null)
-                editorPanel.addConstraint(constraint);
+            // Adding the bodies and constraints to the editor
+            for (PBody body : bodies) {
+                if (body != null)
+                    editorPanel.addBody(body);
+            }
+            for (PConstraints constraint : constraints) {
+                if (constraint != null)
+                    editorPanel.addConstraint(constraint);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

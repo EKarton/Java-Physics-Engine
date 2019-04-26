@@ -11,64 +11,107 @@ import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.api.body.PPolygon;
 import com.javaphysicsengine.api.body.PSpring;
 import com.javaphysicsengine.api.body.PString;
-import com.javaphysicsengine.utils.File;
 import com.javaphysicsengine.utils.Vector;
-import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
-public class PBodyFileReader {
+public class PFileReader {
+
+    private InputStream inputStream;
+    private Optional<List<PBody>> bodies = Optional.empty();
+    private Optional<List<PConstraints>> constraints = Optional.empty();
 
     /**
-     * Loads the bodies and constraints from a file
-     * @param filePath the file path
-     * @return the bodies and the constraints
+     * Creates the PFileReader from an input stream
+     * @param inputStream the input stream
      */
-    public Pair<List<PBody>, List<PConstraints>> loadBodiesFromFile(String filePath) {
-        PBodyFileReader fileReader = new PBodyFileReader();
+    public PFileReader(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
 
+    /**
+     * Gets the body from the input stream
+     * @return a list of bodies
+     */
+    public List<PBody> getBodies() {
+        if (!bodies.isPresent()) {
+            loadBodiesAndConstraints();
+        }
+        return bodies.get();
+    }
+
+    /**
+     * Gets the constraints from the input stream
+     * @return a list of constraints
+     */
+    public List<PConstraints> getConstraints() {
+        if (!constraints.isPresent()) {
+            loadBodiesAndConstraints();
+        }
+        return constraints.get();
+    }
+
+    /**
+     * Loads the {@code this.bodies} and {@code this.constraints} from the input stream
+     */
+    private void loadBodiesAndConstraints() {
         // Start storing the bodies and constraints coming from the text file
         List<PBody> bodies = new ArrayList<>();
         List<PConstraints> constraints = new ArrayList<>();
 
-        // Get the string of lines
-        String[] lines = File.readAllLines(filePath);
-        System.out.println(lines.length);
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(this.inputStream))) {
 
-        for (String line : lines) {
-            StringTokenizer outerBracketTokenizer = new StringTokenizer(line, "{}");
-            String bodyType = outerBracketTokenizer.nextToken();
-            String bodyProperties = outerBracketTokenizer.nextToken();
-            StringTokenizer propertiesTokenizer = new StringTokenizer(bodyProperties, ";");
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                StringTokenizer outerBracketTokenizer = new StringTokenizer(line, "{}");
+                String bodyType = outerBracketTokenizer.nextToken();
+                String bodyProperties = outerBracketTokenizer.nextToken();
+                StringTokenizer propertiesTokenizer = new StringTokenizer(bodyProperties, ";");
 
-            if (bodyType.equals("PPolygon")) {
-                System.out.println("Loading Polygon:");
-                bodies.add(fileReader.createPolygonBody(propertiesTokenizer));
-            } else if (bodyType.equals("PCircle")) {
-                System.out.println("Loading Circle:");
-                bodies.add(fileReader.createCircleBody(propertiesTokenizer));
-            } else if (bodyType.equals("PSpring")) {
-                System.out.println("Loading Spring");
-                constraints.add(fileReader.createSpringConstraint(propertiesTokenizer, bodies));
-            } else if (bodyType.equals("PString")) {
-                System.out.println("Loading String");
-                constraints.add(fileReader.createStringConstraint(propertiesTokenizer, bodies));
+                switch (bodyType) {
+                    case "PPolygon":
+                        System.out.println("Loading Polygon:");
+                        bodies.add(createPolygonBody(propertiesTokenizer));
+                        break;
+                    case "PCircle":
+                        System.out.println("Loading Circle:");
+                        bodies.add(createCircleBody(propertiesTokenizer));
+                        break;
+                    case "PSpring":
+                        System.out.println("Loading Spring");
+                        constraints.add(createSpringConstraint(propertiesTokenizer, bodies));
+                        break;
+                    case "PString":
+                        System.out.println("Loading String");
+                        constraints.add(createStringConstraint(propertiesTokenizer, bodies));
+                        break;
+                }
             }
+
+        } catch (IOException ioe) {
+            System.out.println("Exception while reading input " + ioe);
         }
-        return Pair.of(bodies, constraints);
+
+        this.bodies = Optional.of(bodies);
+        this.constraints = Optional.of(constraints);
     }
 
-    /*
-       Pre-condition: "properitesTokenizer" and "bodies" must not be null
-       Post-condition: Creates a PSpring object based on the properties listed in the StringTokenizer
-       @param bodies A list of bodies already created
-       @param propertiesTokenizer The StringTokenizer containing the properties of the PPolygon
-       @return PSpring The generated PSpring
-    */
+    /**
+     * Creates a PSpring object based on the properties listed in the StringTokenizer
+     * Note: "properitesTokenizer" and "bodies" must not be null
+     * @param bodies A list of bodies already created
+     * @param propertiesTokenizer The StringTokenizer containing the properties of the PPolygon
+     * @return PSpring The generated PSpring
+     */
     private PSpring createSpringConstraint(StringTokenizer propertiesTokenizer, List<PBody> bodies) {
-        PSpring createdSpring = null;
+        PSpring createdSpring = new PSpring(null, null);
         while (propertiesTokenizer.hasMoreTokens()) {
             // Grab the properties and its values
             StringTokenizer propertyTokenizer = new StringTokenizer(propertiesTokenizer.nextToken(), ":");
@@ -106,15 +149,15 @@ public class PBodyFileReader {
         return createdSpring;
     }
 
-    /*
-      Pre-condition: "properitesTokenizer" and "bodies" must not be null
-      Post-condition: Creates a PString object based on the properties listed in the StringTokenizer
-      @param bodies A list of bodies already created
-      @param propertiesTokenizer The StringTokenizer containing the properties of the PPolygon
-      @return PString The generated PString
-   */
+    /**
+     * Creates a PString object based on the properties listed in the StringTokenizer
+     * Note: "properitesTokenizer" and "bodies" must not be null
+     * @param bodies A list of bodies already created
+     * @param propertiesTokenizer The StringTokenizer containing the properties of the PPolygon
+     * @return PString The generated PString
+     */
     private PString createStringConstraint(StringTokenizer propertiesTokenizer, List<PBody> bodies) {
-        PString createdString = null;
+        PString createdString = new PString(null, null);
         while (propertiesTokenizer.hasMoreTokens()) {
             // Grab the properties and its values
             StringTokenizer propertyTokenizer = new StringTokenizer(propertiesTokenizer.nextToken(), ":");
@@ -149,12 +192,12 @@ public class PBodyFileReader {
         return createdString;
     }
 
-    /*
-       Pre-condition: "properitesTokenizer" must not be null; it must have valid property syntaxes (i.e. propertyName:propertyValue)
-       Post-condition: Creates a PPolygon object based on the properties listed in the StringTokenizer
-       @param propertiesTokenizer The StringTokenizer containing the properties of the PPolygon
-       @return PPolygon The generated PPolygon
-    */
+    /**
+     * Creates a PPolygon object based on the properties listed in the StringTokenizer
+     * Note: "properitesTokenizer" must not be null; it must have valid property syntaxes (i.e. propertyName:propertyValue)
+     * @param propertiesTokenizer The StringTokenizer containing the properties of the PPolygon
+     * @return PPolygon The generated PPolygon
+     */
     private PPolygon createPolygonBody(StringTokenizer propertiesTokenizer) {
         PPolygon createdPoly = new PPolygon("");
 
@@ -197,19 +240,18 @@ public class PBodyFileReader {
         }
 
         // Initialise the center of mass
-        if (createdPoly != null)
-            createdPoly.computeCenterOfMass();
+        createdPoly.computeCenterOfMass();
 
         System.out.println("    Successfully Created PPolygon !!!");
         return createdPoly;
     }
 
-    /*
-       Pre-condition: "properitesTokenizer" must not be null; it must have valid property syntaxes (i.e. propertyName:propertyValue)
-       Post-condition: Creates a PCircle object based on the properties listed in the StringTokenizer
-       @param propertiesTokenizer The StringTokenizer containing the properties of the PCircle
-       @return The generated PCircle
-    */
+    /**
+     * Creates a PCircle object based on the properties listed in the StringTokenizer
+     * Note: "properitesTokenizer" must not be null; it must have valid property syntaxes (i.e. propertyName:propertyValue)
+     * @param propertiesTokenizer The StringTokenizer containing the properties of the PCircle
+     * @return The generated PCircle
+     */
     private PCircle createCircleBody(StringTokenizer propertiesTokenizer) {
         PCircle createdCircle = new PCircle("");
 
