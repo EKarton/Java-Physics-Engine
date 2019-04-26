@@ -15,22 +15,15 @@ import com.javaphysicsengine.api.body.PSpring;
 import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.utils.Vector;
 
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToggleButton;
-import javax.swing.Timer;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PEditorPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
     // Storing the tabbed panel to add objects, as well as body coordinates for future creation of objects
@@ -128,8 +121,8 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       Post-condition: Returns a copy of all the PBody objects created in this panel
       @return List of all copied PBody objects created in this panel
     */
-    public ArrayList<PBody> getBodies() {
-        ArrayList<PBody> copyOfBodies = new ArrayList<PBody>();
+    public List<PBody> getBodies() {
+        List<PBody> copyOfBodies = new ArrayList<>();
         for (PBody body : createdBodies) {
             PBody copiedBody = null;
             if (body instanceof PPolygon)
@@ -147,8 +140,8 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       Post-condition: Returns a copy of all the PConstraints objects created in this panel
       @return List of all copied PConstraints objects created in this panel
     */
-    public ArrayList<PConstraints> getConstraints() {
-        ArrayList<PConstraints> copyOfConstraints = new ArrayList<PConstraints>();
+    public List<PConstraints> getConstraints() {
+        List<PConstraints> copyOfConstraints = new ArrayList<>();
         for (PConstraints constraint : createdConstraints) {
             PBody[] bodiesAttached_Copy = new PBody[2];
 
