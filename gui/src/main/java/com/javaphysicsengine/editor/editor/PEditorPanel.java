@@ -23,7 +23,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PEditorPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
@@ -48,15 +47,16 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     public static final String MOUSE_STATE_CIRCLE = "CIRCLE";
     public static final String MOUSE_STATE_SPRING = "SPRING";
     public static final String MOUSE_STATE_STRING = "STRING";
-    public static final Color BACKGROUND_COLOR = new Color(60, 60, 60);
-    public static final Color CURSOR_COLOR = Color.WHITE;
-    public static final Color OBJECT_TEXT_COLOR = Color.WHITE;
-    public static final Color POBJECT_NAME_TEXT_COLOR = OBJECT_TEXT_COLOR;
-    public static final Color SNAP_POINT_RANGE_COLOR = new Color(207, 176, 41);
-    public static final Color POLYGON_INPROGRESS_EDGE_COLOR = Color.WHITE;
-    public static final Color POLYGON_FINISHED_EDGE_COLOR = Color.BLACK;
-    public static final Color CIRCLE_INPROGRESS_EDGE_COLOR = Color.WHITE;
+//    public static final Color BACKGROUND_COLOR = new Color(60, 60, 60);
+//    public static final Color CURSOR_COLOR = Color.WHITE;
+//    public static final Color OBJECT_TEXT_COLOR = Color.WHITE;
+//    public static final Color POBJECT_NAME_TEXT_COLOR = OBJECT_TEXT_COLOR;
+//    public static final Color SNAP_POINT_RANGE_COLOR = new Color(207, 176, 41);
+//    public static final Color POLYGON_INPROGRESS_EDGE_COLOR = Color.WHITE;
+//    public static final Color POLYGON_FINISHED_EDGE_COLOR = Color.BLACK;
+//    public static final Color CIRCLE_INPROGRESS_EDGE_COLOR = Color.WHITE;
     private final PEditorStore store;
+    private final PEditorGraphicsRenderer renderer;
 
     // Storing the tabbed panel to add objects, as well as body coordinates for future creation of objects
     private JTabbedPane propertiesPane;
@@ -67,12 +67,12 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     private boolean isMouseSnappedToPoint = false;
     private String mouseState = MOUSE_STATE_CURSOR;  // <- Either "POLYGON", "CIRCLE", "SPRING", "STRING", "CURSOR"
 
-    // Graphic properties showing which parts are visible
-    private boolean isBoundingBoxDisplayed = true;
-    private boolean isShapeOutlineDisplayed = true;
-    private boolean isShapeFillDisplayed = false;
-    private boolean isVelocityVectorsDisplayed = false;
-    private boolean isAntiAliasingToggled = false;
+//    // Graphic properties showing which parts are visible
+//    private boolean isBoundingBoxDisplayed = true;
+//    private boolean isShapeOutlineDisplayed = true;
+//    private boolean isShapeFillDisplayed = false;
+//    private boolean isVelocityVectorsDisplayed = false;
+//    private boolean isAntiAliasingToggled = false;
 
     // The drawing buttons
     private JToggleButton[] drawingBttns;// <- Mouse will be on point if it is within a certain pixels away from actual point
@@ -104,6 +104,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         this.addMouseMotionListener(this);
 
         this.store = new PEditorStore();
+        this.renderer = new PEditorGraphicsRenderer(store);
 
         // Initialise the game loop
         Timer gameTimer = new Timer(1000 / 60, this);
@@ -186,35 +187,35 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     }
 
     public void displayBoundingBox(boolean isBoundingBoxDisplayed) {
-        this.isBoundingBoxDisplayed = isBoundingBoxDisplayed;
+        renderer.isBoundingBoxDisplayed = isBoundingBoxDisplayed;
     }
 
     public void displayShapeOutline(boolean isShapeOutlineDisplayed) {
-        this.isShapeOutlineDisplayed = isShapeOutlineDisplayed;
+        renderer.isShapeOutlineDisplayed = isShapeOutlineDisplayed;
     }
 
     public void displayShapeFill(boolean isShapeFillDisplayed) {
-        this.isShapeFillDisplayed = isShapeFillDisplayed;
+        renderer.isShapeFillDisplayed = isShapeFillDisplayed;
     }
 
     public void setAntiAliasing(boolean isToggled) {
-        this.isAntiAliasingToggled = isToggled;
+        renderer.isAntiAliasingToggled = isToggled;
     }
 
     public boolean isBoundingBoxDisplayed() {
-        return isBoundingBoxDisplayed;
+        return renderer.isBoundingBoxDisplayed;
     }
 
     public boolean isShapeOutlineDisplayed() {
-        return isShapeOutlineDisplayed;
+        return renderer.isShapeOutlineDisplayed;
     }
 
     public boolean isShapeFillDisplayed() {
-        return isShapeFillDisplayed;
+        return renderer.isShapeFillDisplayed;
     }
 
     public boolean isAntiAliasingToggled() {
-        return isAntiAliasingToggled;
+        return renderer.isAntiAliasingToggled;
     }
 
     /*
@@ -222,18 +223,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @return List of all copied PBody objects created in this panel
     */
     public List<PBody> getBodies() {
-        List<PBody> copyOfBodies = new ArrayList<>();
-        for (PBody body : store.getCreatedBodies()) {
-            PBody copiedBody = null;
-            if (body instanceof PPolygon)
-                copiedBody = new PPolygon((PPolygon) body);
-            else if (body instanceof PCircle)
-                copiedBody = new PCircle((PCircle) body);
-
-            if (copiedBody != null)
-                copyOfBodies.add(copiedBody);
-        }
-        return copyOfBodies;
+        return store.getCopiesOfBodies();
     }
 
     /*
@@ -241,32 +231,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @return List of all copied PConstraints objects created in this panel
     */
     public List<PConstraints> getConstraints() {
-        List<PConstraints> copyOfConstraints = new ArrayList<>();
-        for (PConstraints constraint : store.getCreatedConstraints()) {
-            PBody[] bodiesAttached_Copy = new PBody[2];
-
-            // Making a copy of the bodies attached
-            for (int i = 0; i < bodiesAttached_Copy.length; i++) {
-                PBody bodyAttached = constraint.getAttachedBodies()[i];
-                if (bodyAttached instanceof PPolygon)
-                    bodiesAttached_Copy[i] = new PPolygon((PPolygon) bodyAttached);
-                else if (bodyAttached instanceof PCircle)
-                    bodiesAttached_Copy[i] = new PCircle((PCircle) bodyAttached);
-            }
-
-            // Making a copy of the constraints
-            if (constraint instanceof PSpring) {
-                PSpring springCopy = new PSpring(bodiesAttached_Copy[0], bodiesAttached_Copy[1]);
-                springCopy.setKValue(((PSpring) constraint).getKValue());
-                springCopy.setLength(constraint.getLength());
-                copyOfConstraints.add(springCopy);
-            } else if (constraint instanceof PString) {
-                PString stringCopy = new PString(bodiesAttached_Copy[0], bodiesAttached_Copy[1]);
-                stringCopy.setLength(constraint.getLength());
-                copyOfConstraints.add(stringCopy);
-            }
-        }
-        return copyOfConstraints;
+        return store.getCopiesOfConstraints();
     }
 
     /*
@@ -341,13 +306,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     }
 
     /*
-      Post-condition: Sorts the createdBodies[] list in alphabethica order according to body name
-    */
-    private void sortBodyByName() {
-        store.sortBodyByName();
-    }
-
-    /*
       Post-condition: Returns the index in a list of bodies when found a body with the name name
       @param name The name of the body to search for
       @param bodies The list of bodies
@@ -378,11 +336,11 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(BACKGROUND_COLOR);
+        g.setColor(renderer.BACKGROUND_COLOR);
         g.fillRect(0, 0, getWidth(), getHeight());
 
         // If antialiasing toggled
-        if (isAntiAliasingToggled) {
+        if (renderer.isAntiAliasingToggled) {
             // Set antialiasing (for smoother but slower graphics)
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -390,17 +348,17 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
 
         // Draw all the user-created bodies
         for (PBody body : store.getCreatedBodies()) {
-            if (isBoundingBoxDisplayed)
+            if (renderer.isBoundingBoxDisplayed)
                 body.drawBoundingBox(g, this.getHeight());
 
-            if (isShapeOutlineDisplayed)
+            if (renderer.isShapeOutlineDisplayed)
                 body.drawOutline(g, this.getHeight());
 
-            if (isShapeFillDisplayed)
+            if (renderer.isShapeFillDisplayed)
                 body.drawFill(g, this.getHeight());
 
             // Draw the name of the object
-            g.setColor(POBJECT_NAME_TEXT_COLOR);
+            g.setColor(renderer.POBJECT_NAME_TEXT_COLOR);
             g.drawString(body.getName(), (int) body.getCenterPt().getX(), (int) (this.getHeight() - body.getCenterPt().getY()));
         }
 
@@ -409,7 +367,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
             constraint.drawConstraints(g, getHeight());
 
         // Draw the cursor
-        g.setColor(CURSOR_COLOR);
+        g.setColor(renderer.CURSOR_COLOR);
         g.drawLine(mouseX, mouseY - 20, mouseX, mouseY + 20);
         g.drawLine(mouseX - 20, mouseY, mouseX + 20, mouseY);
 
@@ -425,18 +383,18 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         // Draw the point the cursor is snapped to (if it is snapped to)
         if (isMouseSnappedToPoint) {
             // Draw a circle around the point
-            g.setColor(SNAP_POINT_RANGE_COLOR);
+            g.setColor(renderer.SNAP_POINT_RANGE_COLOR);
             g.drawOval(mouseX - 5, mouseY - 5, 10, 10);
         }
 
         // Drawing the line that will connect the mouse pos to the last vertex of the polygon
         if (mouseState.equals(MOUSE_STATE_POLYGON) && store.getPolyVertices().size() > 0) {
             Vector lastAddedVertex = store.getPolyVertices().get(store.getPolyVertices().size() - 1);
-            g.setColor(POLYGON_INPROGRESS_EDGE_COLOR);
+            g.setColor(renderer.POLYGON_INPROGRESS_EDGE_COLOR);
             g.drawLine((int) lastAddedVertex.getX(), (int) lastAddedVertex.getY(), mouseX, mouseY);
 
             // Drawing the going-to-be-drawn polygons
-            g.setColor(POLYGON_FINISHED_EDGE_COLOR);
+            g.setColor(renderer.POLYGON_FINISHED_EDGE_COLOR);
             for (int i = 0; i < store.getPolyVertices().size() - 1; i++) {
                 int x1 = (int) store.getPolyVertices().get(i).getX();
                 int y1 = (int) store.getPolyVertices().get(i).getY();
@@ -450,7 +408,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         else if (mouseState.equals(MOUSE_STATE_CIRCLE) && store.getCircleRadius() > 0) {
             int topLeftX = (int) (store.getCircleCenterPt().getX() - store.getCircleRadius());
             int topLeftY = (int) (store.getCircleCenterPt().getY() - store.getCircleRadius());
-            g.setColor(CIRCLE_INPROGRESS_EDGE_COLOR);
+            g.setColor(renderer.CIRCLE_INPROGRESS_EDGE_COLOR);
             g.drawOval(topLeftX, topLeftY, (int) (store.getCircleRadius() * 2), (int) (store.getCircleRadius() * 2));
             g.fillOval((int) store.getCircleCenterPt().getX() - 2, (int) store.getCircleCenterPt().getY() - 2, 4, 4);
         }
@@ -568,7 +526,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
 
                 PCircle circle = new PCircle(circleName);
                 circle.setRadius(store.getCircleRadius());
-                circle.getCenterPt().setXY(store.getCircleCenterPt().getX(), this.getHeight() - store.getCircleCenterPt().getY());
+                circle.setCenterPt(new Vector(store.getCircleCenterPt().getX(), this.getHeight() - store.getCircleCenterPt().getY()));
                 addBody(circle);
                 store.reset();
             }

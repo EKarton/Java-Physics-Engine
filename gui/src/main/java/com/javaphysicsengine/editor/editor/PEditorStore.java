@@ -1,7 +1,11 @@
 package com.javaphysicsengine.editor.editor;
 
 import com.javaphysicsengine.api.body.PBody;
+import com.javaphysicsengine.api.body.PCircle;
 import com.javaphysicsengine.api.body.PConstraints;
+import com.javaphysicsengine.api.body.PPolygon;
+import com.javaphysicsengine.api.body.PSpring;
+import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.utils.Vector;
 
 import java.util.ArrayList;
@@ -22,16 +26,8 @@ public class PEditorStore {
         return polyVertices;
     }
 
-    public void setPolyVertices(ArrayList<Vector> polyVertices) {
-        this.polyVertices = polyVertices;
-    }
-
     public Vector getCircleCenterPt() {
         return circleCenterPt;
-    }
-
-    public void setCircleCenterPt(Vector circleCenterPt) {
-        this.circleCenterPt = circleCenterPt;
     }
 
     public double getCircleRadius() {
@@ -62,16 +58,8 @@ public class PEditorStore {
         return createdBodies;
     }
 
-    public void setCreatedBodies(ArrayList<PBody> createdBodies) {
-        this.createdBodies = createdBodies;
-    }
-
     public ArrayList<PConstraints> getCreatedConstraints() {
         return createdConstraints;
-    }
-
-    public void setCreatedConstraints(ArrayList<PConstraints> createdConstraints) {
-        this.createdConstraints = createdConstraints;
     }
 
     public void reset() {
@@ -80,6 +68,54 @@ public class PEditorStore {
         circleRadius = -1;
         attachedBody1 = null;
         selectedBody = null;
+    }
+
+    public List<PBody> getCopiesOfBodies() {
+        List<PBody> copyOfBodies = new ArrayList<>();
+        for (PBody body : createdBodies) {
+            PBody copiedBody = null;
+            if (body instanceof PPolygon)
+                copiedBody = new PPolygon((PPolygon) body);
+            else if (body instanceof PCircle)
+                copiedBody = new PCircle((PCircle) body);
+
+            if (copiedBody != null)
+                copyOfBodies.add(copiedBody);
+        }
+        return copyOfBodies;
+    }
+
+    /*
+      Post-condition: Returns a copy of all the PConstraints objects created in this panel
+      @return List of all copied PConstraints objects created in this panel
+    */
+    public List<PConstraints> getCopiesOfConstraints() {
+        List<PConstraints> copyOfConstraints = new ArrayList<>();
+        for (PConstraints constraint : createdConstraints) {
+            PBody[] bodiesAttached_Copy = new PBody[2];
+
+            // Making a copy of the bodies attached
+            for (int i = 0; i < bodiesAttached_Copy.length; i++) {
+                PBody bodyAttached = constraint.getAttachedBodies()[i];
+                if (bodyAttached instanceof PPolygon)
+                    bodiesAttached_Copy[i] = new PPolygon((PPolygon) bodyAttached);
+                else if (bodyAttached instanceof PCircle)
+                    bodiesAttached_Copy[i] = new PCircle((PCircle) bodyAttached);
+            }
+
+            // Making a copy of the constraints
+            if (constraint instanceof PSpring) {
+                PSpring springCopy = new PSpring(bodiesAttached_Copy[0], bodiesAttached_Copy[1]);
+                springCopy.setKValue(((PSpring) constraint).getKValue());
+                springCopy.setLength(constraint.getLength());
+                copyOfConstraints.add(springCopy);
+            } else if (constraint instanceof PString) {
+                PString stringCopy = new PString(bodiesAttached_Copy[0], bodiesAttached_Copy[1]);
+                stringCopy.setLength(constraint.getLength());
+                copyOfConstraints.add(stringCopy);
+            }
+        }
+        return copyOfConstraints;
     }
 
     public void addBody(PBody body) {
