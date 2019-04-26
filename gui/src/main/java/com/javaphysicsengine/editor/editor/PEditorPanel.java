@@ -22,10 +22,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PEditorPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
+    private static final String UNSELECTED_CIRCLE_IMAGE_PATH = "icons/"
+
     // Storing the tabbed panel to add objects, as well as body coordinates for future creation of objects
     private JTabbedPane propertiesPane;
 
@@ -71,7 +74,9 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
             drawingBttns[i] = new JToggleButton("");
             drawingBttns[i].setName("" + i);
             drawingBttns[i].addActionListener(this);
-            drawingBttns[i].setIcon(new ImageIcon("resources\\icons\\New Folder\\" + ("" + i) + " Unselected.png"));
+            URL res = this.getClass().getClassLoader().getResource("icons/New folder/" + ("" + i) + " Unselected.png");
+            drawingBttns[i].setIcon(new ImageIcon(res));
+//            drawingBttns[i].setIcon(new ImageIcon("resources\\icons\\New Folder\\" + ("" + i) + " Unselected.png"));
             drawingBttns[i].setSelectedIcon(new ImageIcon("resources\\icons\\New Folder\\" + ("" + i) + " Selected.png"));
             this.add(drawingBttns[i]);
         }
