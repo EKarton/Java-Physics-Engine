@@ -10,8 +10,13 @@ package com.javaphysicsengine.editor.editor;
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
+import javax.swing.Timer;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -306,9 +311,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     public void mouseClicked(MouseEvent e) {
         mouseHandler.mouseClicked(e, getHeight());
 
-        // --------------------------------------------------------
-        // THING TO DO WITH THE PROPERTIES PANEL:
-        // --------------------------------------------------------
         // If selected a body
         if (editMode.equals(EDIT_MODE_CURSOR) && store.getSelectedBody() != null) {
             // Search for the body in the properties pane. If there is not, show the properties on the screen
