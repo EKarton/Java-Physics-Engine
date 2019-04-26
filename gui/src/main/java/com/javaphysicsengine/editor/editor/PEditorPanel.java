@@ -8,12 +8,7 @@
 package com.javaphysicsengine.editor.editor;
 
 import com.javaphysicsengine.api.body.PBody;
-import com.javaphysicsengine.api.body.PCircle;
 import com.javaphysicsengine.api.body.PConstraints;
-import com.javaphysicsengine.api.body.PPolygon;
-import com.javaphysicsengine.api.body.PSpring;
-import com.javaphysicsengine.api.body.PString;
-import com.javaphysicsengine.utils.Vector;
 
 import javax.swing.*;
 import java.awt.*;
@@ -41,14 +36,14 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     private static final String STRINGS_SELECTED_IMAGE_PATH = "icons/strings-selected.png";
     private static final String STRINGS_UNSELECTED_IMAGE_PATH = "icons/strings-unselected.png";
 
-    private static final int SNAP_TOOL_POINT_RANGE = 4;
+    public static final int SNAP_TOOL_POINT_RANGE = 4;
     public static final String EDIT_MODE_CURSOR = "CURSOR";
     public static final String EDIT_MODE_POLYGON = "POLYGON";
     public static final String EDIT_MODE_CIRCLE = "CIRCLE";
     public static final String EDIT_MODE_SPRING = "SPRING";
     public static final String EDIT_MODE_STRING = "STRING";
 
-    private final PEditorStore store;
+    private final PEditorObservableStore store;
     private final PEditorRenderer renderer;
     private final PEditorMouseHandler mouseHandler;
 
@@ -86,8 +81,12 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
 
-        this.store = new PEditorStore();
-        this.mouseHandler = new PEditorMouseHandler(store);
+        PEditorPanel panel = this;
+
+        this.store = new PEditorObservableStore();
+        this.store.getEventListeners().add(body -> propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, panel))));
+
+        this.mouseHandler = new PEditorMouseHandler(store, editMode);
         this.renderer = new PEditorRenderer(store);
 
         // Initialise the game loop
@@ -184,10 +183,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
 
     public void setAntiAliasing(boolean isToggled) {
         renderer.setAntiAliasingToggled(isToggled);
-    }
-
-    public boolean isBoundingBoxDisplayed() {
-        return renderer.isBoundingBoxDisplayed();
     }
 
     public boolean isShapeOutlineDisplayed() {
@@ -290,16 +285,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     }
 
     /*
-      Post-condition: Returns the index in a list of bodies when found a body with the name name
-      @param name The name of the body to search for
-      @param bodies The list of bodies
-      @return Returns the index of the body with the same name
-    */
-    private int getBodyIndexByName(String name, List<PBody> bodies) {
-        return store.getBodyIndexByName(name, bodies);
-    }
-
-    /*
       Post-condition: Returns true if the mouse is within a range of 4 pixels of a specified point
       @param mouseX The x mouse coodinate
       @param mouseY The y mouse coordinate
@@ -320,7 +305,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        renderer.renderGraphics(g, getWidth(), getHeight(), mouseHandler.mouseX, mouseHandler.mouseY, mouseHandler.isMouseSnappedToPoint, editMode);
+        renderer.renderGraphics(g, getWidth(), getHeight(), mouseHandler.getMouseX(), mouseHandler.getMouseY(), mouseHandler.isMouseSnappedToPoint(), editMode);
     }
 
     /*
@@ -360,6 +345,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
                     editMode = EDIT_MODE_STRING;
                     break;
             }
+            this.mouseHandler.setEditMode(editMode);
         }
     }
 
@@ -369,17 +355,11 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @param e The MouseEvent object
     */
     public void mouseClicked(MouseEvent e) {
-        // If it selected an object
-        if (editMode.equals(EDIT_MODE_CURSOR) || editMode.equals(EDIT_MODE_SPRING) || editMode.equals(EDIT_MODE_STRING)) {
-            store.setSelectedBody(null);
-            if (mouseHandler.isMouseSnappedToPoint)
-                for (PBody body : store.getCreatedBodies())
-                    if ((int) body.getCenterPt().getX() == mouseHandler.mouseX && (int) (getHeight() - body.getCenterPt().getY()) == mouseHandler.mouseY) {
-                        store.setSelectedBody(body);
-                        break;
-                    }
-        }
+        mouseHandler.mouseClicked(e, getHeight());
 
+        // --------------------------------------------------------
+        // THING TO DO WITH THE PROPERTIES PANEL:
+        // --------------------------------------------------------
         // If selected a body
         if (editMode.equals(EDIT_MODE_CURSOR) && store.getSelectedBody() != null) {
             // Search for the body in the properties pane. If there is not, show the properties on the screen
@@ -392,68 +372,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
             // Create a properties tab for that body
             propertiesPane.add(store.getSelectedBody().getName(), new JScrollPane(new PBodyPropertiesPanel(store.getSelectedBody(), propertiesPane, this)));
         }
-
-        // If selected a body to connect to spring
-        if (editMode.equals(EDIT_MODE_SPRING) || editMode.equals(EDIT_MODE_STRING) && store.getSelectedBody() != null) {
-            if (store.getAttachedBody1() == null)
-                store.setAttachedBody1(store.getSelectedBody());
-            else if (store.getSelectedBody() != null) {
-                // Create the object
-                PConstraints constraint = null;
-                if (editMode.equals(EDIT_MODE_SPRING)) {
-                    constraint = new PSpring(store.getAttachedBody1(), store.getSelectedBody());
-                }
-                else {
-                    constraint = new PString(store.getAttachedBody1(), store.getSelectedBody());
-                }
-
-                store.getCreatedConstraints().add(constraint);
-                store.setAttachedBody1(null);
-                store.setSelectedBody(null);
-            }
-        } else if (editMode.equals(EDIT_MODE_CIRCLE)) {
-            // If the center point is not defined yet, define it
-            if (store.getCircleCenterPt().getX() == -1)
-                store.getCircleCenterPt().setXY(mouseHandler.mouseX, mouseHandler.mouseY);
-
-                // If the user selects the radius, create the circle object
-            else {
-                // Generate the circle name (the name must be unique from the other bodies)
-                String circleName = "";
-                do
-                    circleName = "Circle " + (int) (Math.random() * (10000));
-                while (getBodyIndexByName(circleName, store.getCreatedBodies()) != -1);
-
-                PCircle circle = new PCircle(circleName);
-                circle.setRadius(store.getCircleRadius());
-                circle.setCenterPt(new Vector(store.getCircleCenterPt().getX(), this.getHeight() - store.getCircleCenterPt().getY()));
-                addBody(circle);
-                store.reset();
-            }
-        } else if (editMode.equals(EDIT_MODE_POLYGON)) {
-            store.getPolyVertices().add(new Vector(mouseHandler.mouseX, mouseHandler.mouseY));
-
-            // Check if it closed the polygon
-            if (store.getPolyVertices().size() > 2)
-                if (store.getPolyVertices().get(0).equals(store.getPolyVertices().get(store.getPolyVertices().size() - 1))) {
-                    // Generate the body name (the body name must be unique from all the rest)
-                    String polyName = "";
-                    do
-                        polyName = "Polygon " + (int) (Math.random() * (10000));
-                    while (getBodyIndexByName(polyName, store.getCreatedBodies()) != -1);
-
-                    // Create the body
-                    PPolygon polygon = new PPolygon(polyName);
-                    for (int i = 0; i < store.getPolyVertices().size() - 1; i++) // -1 since the last vertex is a copy of the first vertex
-                    {
-                        store.getPolyVertices().get(i).setY(this.getHeight() - store.getPolyVertices().get(i).getY());  // Translate the point since the origin for polygon is bottom left
-                        polygon.getVertices().add(store.getPolyVertices().get(i));
-                    }
-                    polygon.computeCenterOfMass();
-                    addBody(polygon);
-                    store.reset();
-                }
-        }
     }
 
     /*
@@ -462,12 +380,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @param e The MouseEvent object
     */
     public void mouseDragged(MouseEvent e) {
-        mouseHandler.mouseX = e.getX();
-        mouseHandler.mouseY = e.getY();
-        mouseHandler.isMouseSnappedToPoint = false;
-
-        if (store.getSelectedBody() != null && editMode.equals(EDIT_MODE_CURSOR))
-            store.getSelectedBody().move(new Vector(mouseHandler.mouseX, this.getHeight() - mouseHandler.mouseY));
+        mouseHandler.mouseDragged(e, this.getHeight());
     }
 
     /*
@@ -476,41 +389,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @param e The MouseEvent object
     */
     public void mouseMoved(MouseEvent e) {
-        mouseHandler.mouseX = e.getX();
-        mouseHandler.mouseY = e.getY();
-        mouseHandler.isMouseSnappedToPoint = false;
-
-        // If the mouse is on a certain point on the polygon not made yet
-        if (editMode.equals(EDIT_MODE_POLYGON))
-            for (Vector pt : store.getPolyVertices())
-                if (isMouseNearPoint(mouseHandler.mouseX, mouseHandler.mouseY, (int) pt.getX(), (int) pt.getY())) {
-                    // Save the point it is snapped to
-                    mouseHandler.isMouseSnappedToPoint = true;
-                    mouseHandler.mouseX = (int) pt.getX();
-                    mouseHandler.mouseY = (int) pt.getY();
-                    break;
-                }
-
-        // Check if it snapped to any of the made bodies
-        if (!mouseHandler.isMouseSnappedToPoint)
-            for (PBody body : store.getCreatedBodies()) {
-                // Check if it is on its center pt
-                Vector bodyCenterPt = body.getCenterPt();
-                if (isMouseNearPoint(mouseHandler.mouseX, mouseHandler.mouseY, (int) bodyCenterPt.getX(), (int) (getHeight() - bodyCenterPt.getY()))) {
-                    // Save the point it is snapped to
-                    mouseHandler.isMouseSnappedToPoint = true;
-                    mouseHandler.mouseX = (int) bodyCenterPt.getX();
-                    mouseHandler.mouseY = (int) (getHeight() - bodyCenterPt.getY());
-                    break;
-                }
-            }
-
-        // If the mouse is adjusting the radius of the circle
-        if (editMode.equals(EDIT_MODE_CIRCLE) && store.getCircleCenterPt().getX() != -1) {
-            double xMinus = mouseHandler.mouseX - store.getCircleCenterPt().getX();
-            double yMinus = mouseHandler.mouseY - store.getCircleCenterPt().getY();
-            store.setCircleRadius(Math.sqrt((xMinus * xMinus) + (yMinus * yMinus)));
-        }
+        mouseHandler.mouseMoved(e, getHeight());
     }
 
     /*
