@@ -1,28 +1,35 @@
 /*
-  Purpose: To create the PhysicsAPI Editor Window that is able to define objects by the user, simulate them, and save them.
-  Original Creation Date: January 11 2016
-  @author Emilio Kartono
-  @version January 15 2016
-*/
+ * Purpose: To create the PhysicsAPI Editor Window that is able to define objects by the user, simulate them, and save them.
+ * Original Creation Date: January 11 2016
+ * @author Emilio Kartono
+ * @version January 15 2016
+ */
 
 package com.javaphysicsengine.editor;
 
 import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.body.PBody;
-import com.javaphysicsengine.api.body.PCircle;
 import com.javaphysicsengine.api.body.PConstraints;
-import com.javaphysicsengine.api.body.PPolygon;
-import com.javaphysicsengine.api.body.PSpring;
-import com.javaphysicsengine.api.body.PString;
-import com.javaphysicsengine.utils.File;
 import com.sun.tools.javac.util.Pair;
 
-import javax.swing.*;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PEditorFrame extends JFrame implements ActionListener {
@@ -141,10 +148,11 @@ public class PEditorFrame extends JFrame implements ActionListener {
             menuItems[i].addActionListener(this);
     }
 
-    /*
-      Pre-condition: Global Variable "editorPanel" must not be null; file path asked to user must be the full file path
-      Post-condition: Loads all the bodies stored in a ".txt" file (Will be asked to user VIA JOptionPane)
-   */
+    /**
+     * It will save the bodies from the editor to a file.
+     * It will show a prompt to the user asking for where to save the file.
+     * Note that it must be a full file path.
+     */
     private void loadBodiesFromFile() {
         // Get the file path from user
         String filePath = JOptionPane.showInputDialog("Enter File Path");
@@ -163,50 +171,22 @@ public class PEditorFrame extends JFrame implements ActionListener {
                 editorPanel.addConstraint(constraint);
     }
 
-    /*
-       Pre-condition: Global variable "editorPanel" must not be null; file path asked to user must be the full file path
-       Post-condition: Saves all the bodies in a file
-    */
+    /**
+     * It will pop up a dialog window asking the user to enter the file path
+     * that will save the bodies to.
+     * Note: the file path must be a full file path.
+     */
     private void saveBodiesToFile() {
         String filePath = JOptionPane.showInputDialog("Enter File Path:");
-        ArrayList<String> fileLines = new ArrayList<String>();
 
-        // Adding all the bodies to an array of strings
-        for (PBody body : editorPanel.getBodies()) {
-            String line = "";
-            if (body instanceof PPolygon)
-                line += "PPolygon";
-            else if (body instanceof PCircle)
-                line += "PCircle";
-
-            // Adding the properties of the body
-            line += "{";
-            line += body.toString();
-            line += "}";
-            fileLines.add(line);
-        }
-
-        // Adding the constraints
-        for (PConstraints constraint : editorPanel.getConstraints()) {
-            String line = "";
-            if (constraint instanceof PSpring)
-                line += "PSpring";
-            else if (constraint instanceof PString)
-                line += "PString";
-
-            // Adding the properties of the constraint
-            line += "{";
-            line += constraint.toString();
-            line += "}";
-            fileLines.add(line);
-        }
-
-        // Save them to a text file
-        String[] fileLines_Array = new String[fileLines.size()];
-        fileLines_Array = fileLines.toArray(fileLines_Array);
-        File.write(fileLines_Array, filePath);
+        PBodyFileWriter writer = new PBodyFileWriter();
+        writer.saveBodiesToFile(editorPanel.getBodies(), editorPanel.getConstraints(), filePath);
     }
 
+    /**
+     * View the java code generated from the bodies made in the editor.
+     * It will open up a window with the code.
+     */
     private void viewJavaCode() {
         List<PBody> bodies = editorPanel.getBodies();
         List<PConstraints> constraints = editorPanel.getConstraints();
