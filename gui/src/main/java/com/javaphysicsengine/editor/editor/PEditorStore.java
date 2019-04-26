@@ -82,6 +82,51 @@ public class PEditorStore {
         selectedBody = null;
     }
 
+    public boolean canDeleteBody(String objectName) {
+        // Search for the index of the object with the object name
+        int bodyIndex = getBodyIndexByName(objectName, createdBodies);
+
+        // If there was a -1, then there is an error
+        return bodyIndex != -1;
+    }
+
+    public void deleteBody(String objectName) {
+        // Search for the index of the object with the object name
+        int bodyIndex = this.getBodyIndexByName(objectName, createdBodies);
+
+        // If there was a -1, then there is an error
+        if (bodyIndex == -1)
+            return;
+
+        // Search for any constraints attached to the body to be deleted. If there is, delete it
+        for (int i = 0; i < createdConstraints.size(); i++) {
+            PConstraints currentConstraint = createdConstraints.get(i);
+            System.out.println("Has constraint");
+
+            for (int j = 0; j < currentConstraint.getAttachedBodies().length; j++) {
+                String nameOfAttachedBody = currentConstraint.getAttachedBodies()[j].getName();
+                System.out.println("  AB: " + nameOfAttachedBody);
+                if (nameOfAttachedBody.equals(objectName)) {
+                    System.out.println("Found a constraint!");
+                    createdConstraints.remove(i);
+                    i--;
+                    break;
+                }
+            }
+        }
+
+        // Remove the body from the arraylist of bodies
+        createdBodies.remove(bodyIndex);
+    }
+
+    public void clearBodies() {
+        createdBodies.clear();
+    }
+
+    public void clearConstraints() {
+        createdConstraints.clear();
+    }
+
     /*
       Post-condition: Changes the name of a known PBody object
       Pre-condition: The "body" must not be null

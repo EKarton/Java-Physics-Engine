@@ -294,37 +294,15 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @param objectName The name of the object
     */
     public void deleteObject(String objectName) {
-        // Search for the index of the object with the object name
-        int bodyIndex = getBodyIndexByName(objectName, store.getCreatedBodies());
+        if (store.canDeleteBody(objectName)) {
+            store.deleteBody(objectName);
 
-        // If there was a -1, then there is an error
-        if (bodyIndex == -1)
-            return;
-
-        // Search for any constraints attached to the body to be deleted. If there is, delete it
-        for (int i = 0; i < store.getCreatedConstraints().size(); i++) {
-            PConstraints currentConstraint = store.getCreatedConstraints().get(i);
-            System.out.println("Has constraint");
-            for (int j = 0; j < currentConstraint.getAttachedBodies().length; j++) {
-                String nameOfAttachedBody = currentConstraint.getAttachedBodies()[j].getName();
-                System.out.println("  AB: " + nameOfAttachedBody);
-                if (nameOfAttachedBody.equals(objectName)) {
-                    System.out.println("Found a constraint!");
-                    store.getCreatedConstraints().remove(i);
-                    i--;
-                    break;
-                }
+            // Close the properties tab that shows the properties of the delete object
+            for (int i = 0; i < propertiesPane.getTabCount(); i++) {
+                String label = propertiesPane.getTitleAt(i);
+                if (label.equals(objectName))
+                    propertiesPane.remove(i);
             }
-        }
-
-        // Remove the body from the arraylist of bodies
-        store.getCreatedBodies().remove(bodyIndex);
-
-        // Close the properties tab that shows the properties of the delete object
-        for (int i = 0; i < propertiesPane.getTabCount(); i++) {
-            String label = propertiesPane.getTitleAt(i);
-            if (label.equals(objectName))
-                propertiesPane.remove(i);
         }
     }
 
@@ -332,10 +310,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       Post-condition: Clear all bodies made
     */
     public void clearBodies() {
-        // Remove all the bodies in the list
-        store.getCreatedBodies().clear();
-
-        // Remove all the propertiy panes of all bodies
+        store.clearBodies();
         propertiesPane.removeAll();
     }
 
@@ -343,7 +318,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       Post-condition: Clear all constraints made
     */
     public void clearConstraints() {
-        store.getCreatedConstraints().clear();
+        store.clearConstraints();
     }
 
     /*
