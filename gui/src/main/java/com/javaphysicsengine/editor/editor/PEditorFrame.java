@@ -197,8 +197,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
             FileOutputStream fileWriter = new FileOutputStream(filePath);
 
             PFileWriter pFileWriter = new PFileWriter(fileWriter);
-            pFileWriter.saveBodies(editorPanel.getBodies());
-            pFileWriter.saveConstraints(editorPanel.getConstraints());
+            pFileWriter.saveBodies(editorPanel.getStore().getCopiesOfBodies());
+            pFileWriter.saveConstraints(editorPanel.getStore().getCopiesOfConstraints());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -210,8 +210,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
      * It will open up a window with the code.
      */
     private void viewJavaCode() {
-        List<PBody> bodies = editorPanel.getBodies();
-        List<PConstraints> constraints = editorPanel.getConstraints();
+        List<PBody> bodies = editorPanel.getStore().getCopiesOfBodies();
+        List<PConstraints> constraints = editorPanel.getStore().getCopiesOfConstraints();
         PCodeGenerator codeGenerator = new PCodeGenerator();
         List<String> codeLines = codeGenerator.generateApiCode(bodies, constraints);
 
@@ -233,8 +233,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
      * Gets the bodies created in the editorPanel, opens a new window, and simulates it
      */
     private void runSimulation() {
-        List<PBody> bodies = editorPanel.getBodies();
-        List<PConstraints> constraints = editorPanel.getConstraints();
+        List<PBody> bodies = editorPanel.getStore().getCopiesOfBodies();
+        List<PConstraints> constraints = editorPanel.getStore().getCopiesOfConstraints();
 
         // Relink the bodies attached to constraints to the bodies[] because the bodies attached to constraints[] are copies
         for (PConstraints constraint : constraints) {
@@ -278,8 +278,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
             world.getConstraints().add(constraint);
 
         // Create the window
-        new PSimulationWindow(world, 30, editorPanel.isShapeFillDisplayed(),
-                editorPanel.isShapeOutlineDisplayed(), editorPanel.isAntiAliasingToggled())
+        new PSimulationWindow(world, 30, editorPanel.getRenderer().isShapeFillDisplayed(),
+                editorPanel.getRenderer().isShapeOutlineDisplayed(), editorPanel.getRenderer().isAntiAliasingToggled())
                 .setVisible(true);
     }
 
@@ -293,18 +293,18 @@ public class PEditorFrame extends JFrame implements ActionListener {
             switch (curItem.getText()) {
                 case "Toggle Anti-Aliasing":
                     System.out.println("Toggled Anti-Aliasing");
-                    editorPanel.setAntiAliasing(curItem.isSelected());
+                    editorPanel.getRenderer().setAntiAliasingToggled(curItem.isSelected());
                     break;
                 case "View Bounding Box":
-                    editorPanel.displayBoundingBox(curItem.getState());
+                    editorPanel.getRenderer().setBoundingBoxDisplayed(curItem.getState());
                     System.out.println("Displayed Bounding Box");
                     break;
                 case "View Shape Outline":
-                    editorPanel.displayShapeOutline(curItem.getState());
+                    editorPanel.getRenderer().setShapeOutlineDisplayed(curItem.getState());
                     System.out.println("Displayed Shape Outline");
                     break;
                 case "View Shape Fill":
-                    editorPanel.displayShapeFill(curItem.getState());
+                    editorPanel.getRenderer().setShapeFillDisplayed(curItem.getState());
                     System.out.println("Displayed Shape Fill");
                     break;
             }

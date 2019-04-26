@@ -15,9 +15,10 @@ import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_CURSOR;
 import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_POLYGON;
 import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_SPRING;
 import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_STRING;
-import static com.javaphysicsengine.editor.editor.PEditorPanel.SNAP_TOOL_POINT_RANGE;
 
 public class PEditorMouseHandler {
+
+    public static final int SNAP_TOOL_POINT_RANGE = 4;
 
     private final PEditorStore store;
     private int mouseX = 0;

@@ -18,7 +18,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.net.URL;
-import java.util.List;
 
 public class PEditorPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
     private static final String CIRCLE_SELECTED_IMAGE_PATH = "icons/circle-selected.png";
@@ -36,7 +35,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     private static final String STRINGS_SELECTED_IMAGE_PATH = "icons/strings-selected.png";
     private static final String STRINGS_UNSELECTED_IMAGE_PATH = "icons/strings-unselected.png";
 
-    public static final int SNAP_TOOL_POINT_RANGE = 4;
     public static final String EDIT_MODE_CURSOR = "CURSOR";
     public static final String EDIT_MODE_POLYGON = "POLYGON";
     public static final String EDIT_MODE_CIRCLE = "CIRCLE";
@@ -169,48 +167,12 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         return jToggleButton;
     }
 
-    public void displayBoundingBox(boolean isBoundingBoxDisplayed) {
-        renderer.setBoundingBoxDisplayed(isBoundingBoxDisplayed);
+    public PEditorRenderer getRenderer() {
+        return this.renderer;
     }
 
-    public void displayShapeOutline(boolean isShapeOutlineDisplayed) {
-        renderer.setShapeOutlineDisplayed(isShapeOutlineDisplayed);
-    }
-
-    public void displayShapeFill(boolean isShapeFillDisplayed) {
-        renderer.setShapeFillDisplayed(isShapeFillDisplayed);
-    }
-
-    public void setAntiAliasing(boolean isToggled) {
-        renderer.setAntiAliasingToggled(isToggled);
-    }
-
-    public boolean isShapeOutlineDisplayed() {
-        return renderer.isShapeOutlineDisplayed();
-    }
-
-    public boolean isShapeFillDisplayed() {
-        return renderer.isShapeFillDisplayed();
-    }
-
-    public boolean isAntiAliasingToggled() {
-        return renderer.isAntiAliasingToggled();
-    }
-
-    /*
-      Post-condition: Returns a copy of all the PBody objects created in this panel
-      @return List of all copied PBody objects created in this panel
-    */
-    public List<PBody> getBodies() {
-        return store.getCopiesOfBodies();
-    }
-
-    /*
-      Post-condition: Returns a copy of all the PConstraints objects created in this panel
-      @return List of all copied PConstraints objects created in this panel
-    */
-    public List<PConstraints> getConstraints() {
-        return store.getCopiesOfConstraints();
+    public PEditorStore getStore() {
+        return this.store;
     }
 
     /*
@@ -282,19 +244,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
             return true;
         }
         return false;
-    }
-
-    /*
-      Post-condition: Returns true if the mouse is within a range of 4 pixels of a specified point
-      @param mouseX The x mouse coodinate
-      @param mouseY The y mouse coordinate
-      @param posX The x coordinate of a specified point
-      @param posY The y coordinate of a specified point
-      @return Returns true if the mouse is close to a specified point; else false
-    */
-    private boolean isMouseNearPoint(int mouseX, int mouseY, int posX, int posY) {
-        double distToPoint = Math.pow(mouseX - posX, 2) + Math.pow(mouseY - posY, 2);
-        return distToPoint < SNAP_TOOL_POINT_RANGE * SNAP_TOOL_POINT_RANGE;
     }
 
     /*
