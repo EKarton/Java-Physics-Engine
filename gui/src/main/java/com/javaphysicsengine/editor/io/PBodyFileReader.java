@@ -13,7 +13,7 @@ import com.javaphysicsengine.api.body.PSpring;
 import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.utils.File;
 import com.javaphysicsengine.utils.Vector;
-import com.sun.tools.javac.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class PBodyFileReader {
                 constraints.add(fileReader.createStringConstraint(propertiesTokenizer, bodies));
             }
         }
-        return new Pair<>(bodies, constraints);
+        return Pair.of(bodies, constraints);
     }
 
     /*

@@ -11,10 +11,10 @@ import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.editor.codegenerator.PCodeGenerator;
-import com.javaphysicsengine.editor.simulation.PSimulationWindow;
 import com.javaphysicsengine.editor.io.PBodyFileReader;
 import com.javaphysicsengine.editor.io.PBodyFileWriter;
-import com.sun.tools.javac.util.Pair;
+import com.javaphysicsengine.editor.simulation.PSimulationWindow;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
@@ -160,8 +160,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
 
         PBodyFileReader fileReader = new PBodyFileReader();
         Pair<List<PBody>, List<PConstraints>> results = fileReader.loadBodiesFromFile(filePath);
-        List<PBody> bodies = results.fst;
-        List<PConstraints> constraints = results.snd;
+        List<PBody> bodies = results.getLeft();
+        List<PConstraints> constraints = results.getRight();
 
         // Adding the bodies and constraints to the editor
         for (PBody body : bodies) {
@@ -258,7 +258,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
 
         // Create the window
         new PSimulationWindow(world, 30, editorPanel.isShapeFillDisplayed(),
-                editorPanel.isShapeOutlineDisplayed(), editorPanel.isAntiAliasingToggled());
+                editorPanel.isShapeOutlineDisplayed(), editorPanel.isAntiAliasingToggled())
+                .setVisible(true);
     }
 
     /**

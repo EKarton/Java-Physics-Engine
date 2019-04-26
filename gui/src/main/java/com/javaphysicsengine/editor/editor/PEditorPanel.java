@@ -71,8 +71,8 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
             drawingBttns[i] = new JToggleButton("");
             drawingBttns[i].setName("" + i);
             drawingBttns[i].addActionListener(this);
-            drawingBttns[i].setIcon(new ImageIcon("PhysicsAPIEditor\\icons\\New Folder\\" + ("" + i) + " Unselected.png"));
-            drawingBttns[i].setSelectedIcon(new ImageIcon("PhysicsAPIEditor\\icons\\New Folder\\" + ("" + i) + " Selected.png"));
+            drawingBttns[i].setIcon(new ImageIcon("resources\\icons\\New Folder\\" + ("" + i) + " Unselected.png"));
+            drawingBttns[i].setSelectedIcon(new ImageIcon("resources\\icons\\New Folder\\" + ("" + i) + " Selected.png"));
             this.add(drawingBttns[i]);
         }
 
