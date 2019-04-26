@@ -35,9 +35,9 @@ import java.util.List;
 public class PEditorFrame extends JFrame implements ActionListener {
     private PEditorPanel editorPanel = null;
 
-    /*
-      Post-condition: Creates a PEditorFrame window object
-    */
+    /**
+     * Creates a PEditorFrame window object
+     */
     public PEditorFrame() {
         super("Physics API Editor");
         this.setFocusable(true);
@@ -47,9 +47,9 @@ public class PEditorFrame extends JFrame implements ActionListener {
         addPanels();
     }
 
-    /*
-      Post-condition: Starts the PhysicsAPI Editor window, and sets the look and feel
-    */
+    /**
+     * Post-condition: Starts the PhysicsAPI Editor window, and sets the look and feel
+     */
     public static void main(String[] args) {
         // Setting the new look and feel of the window
         try {
@@ -58,8 +58,7 @@ public class PEditorFrame extends JFrame implements ActionListener {
                     UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
-        } catch (Exception e) {
-        }
+        } catch (Exception ignored) {  }
 
         // Setting the look and feel of GUI components
         UIManager.put("nimbusBase", new Color(50, 50, 50));
@@ -78,9 +77,9 @@ public class PEditorFrame extends JFrame implements ActionListener {
         newWindow.setVisible(true);
     }
 
-    /*
-      Post-condition: Adds the properties pane and the editor pane onto the window
-    */
+    /**
+     * Adds the properties pane and the editor pane onto the window
+     */
     private void addPanels() {
         // Set up the properties pane
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -100,9 +99,9 @@ public class PEditorFrame extends JFrame implements ActionListener {
         this.getContentPane().add(windowPanel);
     }
 
-    /*
-       Post-condition: Creates the Menu Bar with its menu buttons on the window
-    */
+    /**
+     * Creates the Menu Bar with its menu buttons on the window
+     */
     private void setupMenuBar() {
         // An array storing all the JMenuItems and JMenu and all that inherit from it
         JMenuItem[] menuItems = new JMenuItem[9];
@@ -139,13 +138,11 @@ public class PEditorFrame extends JFrame implements ActionListener {
 
         // Add the menus to the menu bar
         JMenuBar menuBar = new JMenuBar();
-        for (int i = 0; i < menus.length; i++)
-            menuBar.add(menus[i]);
+        for (JMenuItem menu : menus) {
+            menuBar.add(menu);
+            menu.addActionListener(this);
+        }
         this.setJMenuBar(menuBar);
-
-        // Link the ActionListeners to the JMenuItems
-        for (int i = 0; i < menuItems.length; i++)
-            menuItems[i].addActionListener(this);
     }
 
     /**
@@ -163,12 +160,14 @@ public class PEditorFrame extends JFrame implements ActionListener {
         List<PConstraints> constraints = results.snd;
 
         // Adding the bodies and constraints to the editor
-        for (PBody body : bodies)
+        for (PBody body : bodies) {
             if (body != null)
                 editorPanel.addBody(body);
-        for (PConstraints constraint : constraints)
+        }
+        for (PConstraints constraint : constraints) {
             if (constraint != null)
                 editorPanel.addConstraint(constraint);
+        }
     }
 
     /**
@@ -205,10 +204,9 @@ public class PEditorFrame extends JFrame implements ActionListener {
         JOptionPane.showMessageDialog(null, scrollPane, "Bodies Summary", JOptionPane.PLAIN_MESSAGE);
     }
 
-    /*
-       Pre-condition: Global variable "editorPanel" must not be null
-       Post-condition: Gets the bodies created in the editorPanel, opens a new window, and simulates it
-    */
+    /**
+     * Gets the bodies created in the editorPanel, opens a new window, and simulates it
+     */
     private void runSimulation() {
         List<PBody> bodies = editorPanel.getBodies();
         List<PConstraints> constraints = editorPanel.getConstraints();
@@ -241,11 +239,6 @@ public class PEditorFrame extends JFrame implements ActionListener {
                 System.out.println("Finished BS");
             }
 
-            // If one of them are nulls
-            for (int i = 0; i < reattachedBodies.length; i++)
-                if (reattachedBodies[i] == null)
-                    continue;
-
             // Set the legitamate bodies to the constraints
             constraint.setAttachedBodies(reattachedBodies[0], reattachedBodies[1]);
         }
@@ -260,14 +253,14 @@ public class PEditorFrame extends JFrame implements ActionListener {
             world.getConstraints().add(constraint);
 
         // Create the window
-        PSimulationWindow simulationWindow = new PSimulationWindow(world, 30, editorPanel.isShapeFillDisplayed(),
+        new PSimulationWindow(world, 30, editorPanel.isShapeFillDisplayed(),
                 editorPanel.isShapeOutlineDisplayed(), editorPanel.isAntiAliasingToggled());
     }
 
-    /*
-       Pre-condition: "e" must not be null
-       Post-condition: Certain actions called when clicked on a Menu Item in the Menu Bar of the window
-    */
+    /**
+     * Certain actions called when clicked on a Menu Item in the Menu Bar of the window
+     * @param e the event triggered
+     */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() instanceof JCheckBoxMenuItem) {
             JCheckBoxMenuItem curItem = (JCheckBoxMenuItem) e.getSource();
