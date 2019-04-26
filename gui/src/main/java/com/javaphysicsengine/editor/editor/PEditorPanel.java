@@ -521,17 +521,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     }
 
     /*
-      Post-condition: Clear all data of all bodies and constraints that will be created by the user
-    */
-    private void clearAllDrawables() {
-        store.getPolyVertices().clear();
-        store.getCircleCenterPt().setXY(-1, -1);
-        store.setCircleRadius(-1);
-        store.setAttachedBody1(null);
-        store.setSelectedBody(null);
-    }
-
-    /*
       Post-condition: Handles which cursor button the mouse clicked.
       Pre-condition: The "e" must not be null
       @param e The ActionEvent object
@@ -547,7 +536,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
                     bttn.setSelected(false);
 
             // Remove all pre-existing drawable objects
-            clearAllDrawables();
+            store.reset();
 
             // Grab which one was called
             JToggleButton curBttn = (JToggleButton) e.getSource();
@@ -636,9 +625,9 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
                 circle.setRadius(store.getCircleRadius());
                 circle.getCenterPt().setXY(store.getCircleCenterPt().getX(), this.getHeight() - store.getCircleCenterPt().getY());
                 addBody(circle);
-                clearAllDrawables();
+                store.reset();
             }
-        } else if (mouseState == MOUSE_STATE_POLYGON) {
+        } else if (mouseState.equals(MOUSE_STATE_POLYGON)) {
             store.getPolyVertices().add(new Vector(mouseX, mouseY));
 
             // Check if it closed the polygon
@@ -659,7 +648,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
                     }
                     polygon.computeCenterOfMass();
                     addBody(polygon);
-                    clearAllDrawables();
+                    store.reset();
                 }
         }
     }

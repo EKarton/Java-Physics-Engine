@@ -72,4 +72,12 @@ public class PEditorStore {
     public void setCreatedConstraints(ArrayList<PConstraints> createdConstraints) {
         this.createdConstraints = createdConstraints;
     }
+
+    public void reset() {
+        polyVertices.clear();
+        circleCenterPt.setXY(-1, -1);
+        circleRadius = -1;
+        attachedBody1 = null;
+        selectedBody = null;
+    }
 }
