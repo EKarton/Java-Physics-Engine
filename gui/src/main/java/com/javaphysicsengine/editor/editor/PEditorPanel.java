@@ -50,14 +50,15 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
 
     private final PEditorStore store;
     private final PEditorRenderer renderer;
+    private final PEditorMouseHandler mouseHandler;
 
     // Storing the tabbed panel to add objects, as well as body coordinates for future creation of objects
     private JTabbedPane propertiesPane;
 
     // Stores the mouse coordinates and what the mouse is doing
-    private int mouseX = 0;
-    private int mouseY = 0;
-    private boolean isMouseSnappedToPoint = false;
+//    private int mouseX = 0;
+//    private int mouseY = 0;
+//    private boolean isMouseSnappedToPoint = false;
     private String mouseState = MOUSE_STATE_CURSOR;  // <- Either "POLYGON", "CIRCLE", "SPRING", "STRING", "CURSOR"
 
     // The drawing buttons
@@ -90,6 +91,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         this.addMouseMotionListener(this);
 
         this.store = new PEditorStore();
+        this.mouseHandler = new PEditorMouseHandler(store);
         this.renderer = new PEditorRenderer(store);
 
         // Initialise the game loop
@@ -322,7 +324,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        renderer.renderGraphics(g, getWidth(), getHeight(), mouseX, mouseY, isMouseSnappedToPoint, mouseState);
+        renderer.renderGraphics(g, getWidth(), getHeight(), mouseHandler.mouseX, mouseHandler.mouseY, mouseHandler.isMouseSnappedToPoint, mouseState);
     }
 
     /*
@@ -374,9 +376,9 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         // If it selected an object
         if (mouseState.equals(MOUSE_STATE_CURSOR) || mouseState.equals(MOUSE_STATE_SPRING) || mouseState.equals(MOUSE_STATE_STRING)) {
             store.setSelectedBody(null);
-            if (isMouseSnappedToPoint)
+            if (mouseHandler.isMouseSnappedToPoint)
                 for (PBody body : store.getCreatedBodies())
-                    if ((int) body.getCenterPt().getX() == mouseX && (int) (getHeight() - body.getCenterPt().getY()) == mouseY) {
+                    if ((int) body.getCenterPt().getX() == mouseHandler.mouseX && (int) (getHeight() - body.getCenterPt().getY()) == mouseHandler.mouseY) {
                         store.setSelectedBody(body);
                         break;
                     }
@@ -416,7 +418,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         } else if (mouseState.equals(MOUSE_STATE_CIRCLE)) {
             // If the center point is not defined yet, define it
             if (store.getCircleCenterPt().getX() == -1)
-                store.getCircleCenterPt().setXY(mouseX, mouseY);
+                store.getCircleCenterPt().setXY(mouseHandler.mouseX, mouseHandler.mouseY);
 
                 // If the user selects the radius, create the circle object
             else {
@@ -433,7 +435,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
                 store.reset();
             }
         } else if (mouseState.equals(MOUSE_STATE_POLYGON)) {
-            store.getPolyVertices().add(new Vector(mouseX, mouseY));
+            store.getPolyVertices().add(new Vector(mouseHandler.mouseX, mouseHandler.mouseY));
 
             // Check if it closed the polygon
             if (store.getPolyVertices().size() > 2)
@@ -464,12 +466,12 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @param e The MouseEvent object
     */
     public void mouseDragged(MouseEvent e) {
-        this.mouseX = e.getX();
-        this.mouseY = e.getY();
-        isMouseSnappedToPoint = false;
+        mouseHandler.mouseX = e.getX();
+        mouseHandler.mouseY = e.getY();
+        mouseHandler.isMouseSnappedToPoint = false;
 
         if (store.getSelectedBody() != null && mouseState.equals(MOUSE_STATE_CURSOR))
-            store.getSelectedBody().move(new Vector(mouseX, this.getHeight() - mouseY));
+            store.getSelectedBody().move(new Vector(mouseHandler.mouseX, this.getHeight() - mouseHandler.mouseY));
     }
 
     /*
@@ -478,39 +480,39 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @param e The MouseEvent object
     */
     public void mouseMoved(MouseEvent e) {
-        this.mouseX = e.getX();
-        this.mouseY = e.getY();
-        isMouseSnappedToPoint = false;
+        mouseHandler.mouseX = e.getX();
+        mouseHandler.mouseY = e.getY();
+        mouseHandler.isMouseSnappedToPoint = false;
 
         // If the mouse is on a certain point on the polygon not made yet
         if (mouseState.equals(MOUSE_STATE_POLYGON))
             for (Vector pt : store.getPolyVertices())
-                if (isMouseNearPoint(mouseX, mouseY, (int) pt.getX(), (int) pt.getY())) {
+                if (isMouseNearPoint(mouseHandler.mouseX, mouseHandler.mouseY, (int) pt.getX(), (int) pt.getY())) {
                     // Save the point it is snapped to
-                    isMouseSnappedToPoint = true;
-                    mouseX = (int) pt.getX();
-                    mouseY = (int) pt.getY();
+                    mouseHandler.isMouseSnappedToPoint = true;
+                    mouseHandler.mouseX = (int) pt.getX();
+                    mouseHandler.mouseY = (int) pt.getY();
                     break;
                 }
 
         // Check if it snapped to any of the made bodies
-        if (!isMouseSnappedToPoint)
+        if (!mouseHandler.isMouseSnappedToPoint)
             for (PBody body : store.getCreatedBodies()) {
                 // Check if it is on its center pt
                 Vector bodyCenterPt = body.getCenterPt();
-                if (isMouseNearPoint(mouseX, mouseY, (int) bodyCenterPt.getX(), (int) (getHeight() - bodyCenterPt.getY()))) {
+                if (isMouseNearPoint(mouseHandler.mouseX, mouseHandler.mouseY, (int) bodyCenterPt.getX(), (int) (getHeight() - bodyCenterPt.getY()))) {
                     // Save the point it is snapped to
-                    isMouseSnappedToPoint = true;
-                    mouseX = (int) bodyCenterPt.getX();
-                    mouseY = (int) (getHeight() - bodyCenterPt.getY());
+                    mouseHandler.isMouseSnappedToPoint = true;
+                    mouseHandler.mouseX = (int) bodyCenterPt.getX();
+                    mouseHandler.mouseY = (int) (getHeight() - bodyCenterPt.getY());
                     break;
                 }
             }
 
         // If the mouse is adjusting the radius of the circle
         if (mouseState.equals(MOUSE_STATE_CIRCLE) && store.getCircleCenterPt().getX() != -1) {
-            double xMinus = mouseX - store.getCircleCenterPt().getX();
-            double yMinus = mouseY - store.getCircleCenterPt().getY();
+            double xMinus = mouseHandler.mouseX - store.getCircleCenterPt().getX();
+            double yMinus = mouseHandler.mouseY - store.getCircleCenterPt().getY();
             store.setCircleRadius(Math.sqrt((xMinus * xMinus) + (yMinus * yMinus)));
         }
     }
