@@ -67,10 +67,6 @@ public class PEditorPanel extends JPanel implements ActionListener {
         this.startGameLoop();
     }
 
-    public PEditorRenderer getRenderer() {
-        return this.renderer;
-    }
-
     public PEditorStore getStore() {
         return this.store;
     }

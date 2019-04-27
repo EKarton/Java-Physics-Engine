@@ -50,6 +50,9 @@ import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_
 public class PEditorFrame extends JFrame implements ActionListener {
     private PEditorPanel editorPanel = null;
     private JTabbedPane propertiesPane;
+    private PEditorObservableStore store;
+    private PEditorMouseHandler mouseHandler;
+    private PEditorRenderer renderer;
 
     /**
      * Creates a PEditorFrame window object
@@ -102,11 +105,11 @@ public class PEditorFrame extends JFrame implements ActionListener {
         propertiesPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
         // Set up the pane where users can draw on it
-        PEditorObservableStore store = new PEditorObservableStore();
+        store = new PEditorObservableStore();
         store.getAddBodyListeners().add(body -> propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, editorPanel))));
 
-        PEditorMouseHandler mouseHandler = new PEditorMouseHandler(store, EDIT_MODE_CURSOR);
-        PEditorRenderer renderer = new PEditorRenderer(store);
+        mouseHandler = new PEditorMouseHandler(store, EDIT_MODE_CURSOR);
+        renderer = new PEditorRenderer(store);
         editorPanel = new PEditorPanel(store, mouseHandler, renderer);
 
         store.getDeleteBodyListeners().add(objectName -> {
@@ -336,8 +339,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
             world.getConstraints().add(constraint);
 
         // Create the window
-        new PSimulationWindow(world, 30, editorPanel.getRenderer().isShapeFillDisplayed(),
-                editorPanel.getRenderer().isShapeOutlineDisplayed(), editorPanel.getRenderer().isAntiAliasingToggled())
+        new PSimulationWindow(world, 30, renderer.isShapeFillDisplayed(),
+                renderer.isShapeOutlineDisplayed(), renderer.isAntiAliasingToggled())
                 .setVisible(true);
     }
 
@@ -351,18 +354,18 @@ public class PEditorFrame extends JFrame implements ActionListener {
             switch (curItem.getText()) {
                 case "Toggle Anti-Aliasing":
                     System.out.println("Toggled Anti-Aliasing");
-                    editorPanel.getRenderer().setAntiAliasingToggled(curItem.isSelected());
+                    renderer.setAntiAliasingToggled(curItem.isSelected());
                     break;
                 case "View Bounding Box":
-                    editorPanel.getRenderer().setBoundingBoxDisplayed(curItem.getState());
+                    renderer.setBoundingBoxDisplayed(curItem.getState());
                     System.out.println("Displayed Bounding Box");
                     break;
                 case "View Shape Outline":
-                    editorPanel.getRenderer().setShapeOutlineDisplayed(curItem.getState());
+                    renderer.setShapeOutlineDisplayed(curItem.getState());
                     System.out.println("Displayed Shape Outline");
                     break;
                 case "View Shape Fill":
-                    editorPanel.getRenderer().setShapeFillDisplayed(curItem.getState());
+                    renderer.setShapeFillDisplayed(curItem.getState());
                     System.out.println("Displayed Shape Fill");
                     break;
             }
