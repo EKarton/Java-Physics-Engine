@@ -208,13 +208,13 @@ public class PEditorFrame extends JFrame implements ActionListener {
             // Adding the bodies and constraints to the editor
             for (PBody body : bodies) {
                 if (body != null) {
-                    editorPanel.addBody(body);
+                    editorPanel.getStore().addBody(body);
                     propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, editorPanel)));
                 }
             }
             for (PConstraints constraint : constraints) {
                 if (constraint != null) {
-                    editorPanel.addConstraint(constraint);
+                    editorPanel.getStore().addConstraint(constraint);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -350,8 +350,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
             switch (curItem.getText()) {
                 case "New":
                     System.out.println("Created a new file");
-                    editorPanel.clearBodies();
-                    editorPanel.clearConstraints();
+                    editorPanel.getStore().clearBodies();
+                    editorPanel.getStore().clearConstraints();
                     propertiesPane.removeAll();
                     break;
                 case "Load":

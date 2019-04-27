@@ -7,8 +7,6 @@
 
 package com.javaphysicsengine.editor.editor;
 
-import com.javaphysicsengine.api.body.PBody;
-import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.editor.editor.store.PEditorStore;
 
 import javax.swing.*;
@@ -166,61 +164,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseMotionL
 
     public PEditorStore getStore() {
         return this.store;
-    }
-
-    /*
-      Post-condition: Add a body to the EditorPanel
-      @param body The PBody object
-    */
-    public void addBody(PBody body) {
-        store.addBody(body);
-    }
-
-    /*
-      Post-condition: Add a constraint to the EditorPanel
-      @param constraint The PContraints object
-    */
-    public void addConstraint(PConstraints constraint) {
-        store.addConstraint(constraint);
-    }
-
-    /*
-      Post-condition: Deletes a PBody object based on its name.
-      @param objectName The name of the object
-    */
-    public void deleteObject(String objectName) {
-        if (store.canDeleteBody(objectName)) {
-            store.deleteBody(objectName);
-        }
-    }
-
-    /*
-      Post-condition: Clear all bodies made
-    */
-    public void clearBodies() {
-        store.clearBodies();
-    }
-
-    /*
-      Post-condition: Clear all constraints made
-    */
-    public void clearConstraints() {
-        store.clearConstraints();
-    }
-
-    /*
-      Post-condition: Changes the name of a known PBody object
-      Pre-condition: The "body" must not be null
-      @param newName The new name of the body
-      @param body The PBody that is wished to have its name changed
-      @returns Returns true if the name was changed successfully; else false.
-    */
-    public boolean changeBodyName(String newName, PBody body) {
-        if (store.canChangeBodyName(newName, body)) {
-            store.changeBodyName(newName, body);
-            return true;
-        }
-        return false;
     }
 
     /*

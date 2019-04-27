@@ -144,8 +144,9 @@ public class PEditorStore {
         int bodyIndex = this.getBodyIndexByName(objectName, createdBodies);
 
         // If there was a -1, then there is an error
-        if (bodyIndex == -1)
-            return;
+        if (bodyIndex == -1) {
+            throw new IllegalArgumentException("Object name does not exist!");
+        }
 
         // Search for any constraints attached to the body to be deleted. If there is, delete it
         for (int i = 0; i < createdConstraints.size(); i++) {

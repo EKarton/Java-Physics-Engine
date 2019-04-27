@@ -141,6 +141,7 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
 
                         try {
                             editorPanel.getStore().changeBodyName(txtbox.getText(), body);
+
                         } catch (IllegalArgumentException exception) {
                             JOptionPane.showMessageDialog(null, "Name already set to another body!");
                             txtbox.setText(body.getName());
@@ -184,7 +185,7 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
                             System.out.println("Tab Removal Error");
                         break;
                     case "Delete Object":
-                        editorPanel.deleteObject(body.getName());
+                        editorPanel.getStore().deleteBody(body.getName());
 
                         break;
                 }
