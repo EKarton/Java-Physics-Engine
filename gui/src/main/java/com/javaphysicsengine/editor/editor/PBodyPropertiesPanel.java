@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class PBodyPropertiesPanel extends JPanel implements ActionListener {
+
     private JPanel colorPanel = new JPanel();  // A panel used to host the color picker
     private JTabbedPane tabbedPane;
     private PEditorPanel editorPanel;
@@ -181,6 +182,7 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
                         break;
                     case "Delete Object":
                         editorPanel.deleteObject(body.getName());
+
                         break;
                 }
             } else if (e.getSource() instanceof JCheckBox) {

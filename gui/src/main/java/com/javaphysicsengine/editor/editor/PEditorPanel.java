@@ -10,13 +10,8 @@ package com.javaphysicsengine.editor.editor;
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
 
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToggleButton;
-import javax.swing.Timer;
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -24,7 +19,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.net.URL;
 
-public class PEditorPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
+public class PEditorPanel extends JPanel implements ActionListener, MouseMotionListener, MouseListener {
     private static final String CIRCLE_SELECTED_IMAGE_PATH = "icons/circle-selected.png";
     private static final String CIRCLE_UNSELECTED_IMAGE_PATH = "icons/circle-unselected.png";
 
@@ -46,12 +41,9 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     public static final String EDIT_MODE_SPRING = "SPRING";
     public static final String EDIT_MODE_STRING = "STRING";
 
-    private final PEditorObservableStore store;
+    private final PEditorStore store;
     private final PEditorRenderer renderer;
     private final PEditorMouseHandler mouseHandler;
-
-    // Storing the tabbed panel to add objects, as well as body coordinates for future creation of objects
-    private JTabbedPane propertiesPane;
 
     private String editMode = EDIT_MODE_CURSOR;  // <- Either "POLYGON", "CIRCLE", "SPRING", "STRING", "CURSOR"
 
@@ -63,13 +55,12 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       Pre-condition: "propertiesPane" must not be null
       @param propertiesPane The JTabbedPane that will display the properties of the objects created in this PEditorPanel object
     */
-    public PEditorPanel(JTabbedPane propertiesPane) {
+    public PEditorPanel(PEditorStore store) {
         // Initialise the fields
         super();
-        this.propertiesPane = propertiesPane;
 
         // Set up the buttons
-        drawingBttns =  new JToggleButton[5];
+        drawingBttns = new JToggleButton[5];
         drawingBttns[0] = createCursorDrawingButton();
         drawingBttns[1] = createPolygonDrawingButton();
         drawingBttns[2] = createCircleDrawingButton();
@@ -84,11 +75,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
 
-        PEditorPanel panel = this;
-
-        this.store = new PEditorObservableStore();
-        this.store.getEventListeners().add(body -> propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, panel))));
-
+        this.store = store;
         this.mouseHandler = new PEditorMouseHandler(store, editMode);
         this.renderer = new PEditorRenderer(store);
 
@@ -186,7 +173,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     */
     public void addBody(PBody body) {
         store.addBody(body);
-        propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, this)));
     }
 
     /*
@@ -204,13 +190,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     public void deleteObject(String objectName) {
         if (store.canDeleteBody(objectName)) {
             store.deleteBody(objectName);
-
-            // Close the properties tab that shows the properties of the delete object
-            for (int i = 0; i < propertiesPane.getTabCount(); i++) {
-                String label = propertiesPane.getTitleAt(i);
-                if (label.equals(objectName))
-                    propertiesPane.remove(i);
-            }
         }
     }
 
@@ -219,7 +198,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     */
     public void clearBodies() {
         store.clearBodies();
-        propertiesPane.removeAll();
     }
 
     /*
@@ -239,13 +217,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
     public boolean changeBodyName(String newName, PBody body) {
         if (store.canChangeBodyName(newName, body)) {
             store.changeBodyName(newName, body);
-
-            // Change the name of the body as well as the title of the body's properties pane
-            for (int i = 0; i < propertiesPane.getTabCount(); i++) {
-                if (propertiesPane.getTitleAt(i).equals(body.getName()))
-                    propertiesPane.setTitleAt(i, newName);
-            }
-
             return true;
         }
         return false;
@@ -268,10 +239,10 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       @param e The ActionEvent object
     */
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() instanceof Timer)
+        if (e.getSource() instanceof Timer) {
             repaint();
 
-        else if (e.getSource() instanceof JToggleButton) {
+        } else if (e.getSource() instanceof JToggleButton) {
             // Deselect all the other buttons that are not the current button
             for (JToggleButton bttn : drawingBttns)
                 if (!bttn.equals(e.getSource()))
@@ -308,21 +279,29 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       Pre-condition: The "e" must not be a null value
       @param e The MouseEvent object
     */
+    @Override
     public void mouseClicked(MouseEvent e) {
         mouseHandler.mouseClicked(e, getHeight());
+    }
 
-        // If selected a body
-        if (editMode.equals(EDIT_MODE_CURSOR) && store.getSelectedBody() != null) {
-            // Search for the body in the properties pane. If there is not, show the properties on the screen
-            for (int i = 0; i < propertiesPane.getTabCount(); i++) {
-                String label = propertiesPane.getTitleAt(i);
-                if (label.equals(store.getSelectedBody().getName()))
-                    return;
-            }
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
 
-            // Create a properties tab for that body
-            propertiesPane.add(store.getSelectedBody().getName(), new JScrollPane(new PBodyPropertiesPanel(store.getSelectedBody(), propertiesPane, this)));
-        }
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+
     }
 
     /*
@@ -330,6 +309,7 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       Pre-condition: The "e" must not be a null value
       @param e The MouseEvent object
     */
+    @Override
     public void mouseDragged(MouseEvent e) {
         mouseHandler.mouseDragged(e, this.getHeight());
     }
@@ -339,39 +319,8 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseListene
       Pre-condition: The "e" must not be a null value
       @param e The MouseEvent object
     */
+    @Override
     public void mouseMoved(MouseEvent e) {
         mouseHandler.mouseMoved(e, getHeight());
-    }
-
-    /*
-      Post-condition: Called when a mouse button is pressed in the panel
-      Pre-condition: The "e" must not be a null value
-      @param e The MouseEvent object
-    */
-    public void mousePressed(MouseEvent e) {
-    }
-
-    /*
-      Post-condition: Called when the mouse enters the panel
-      Pre-condition: The "e" must not be a null value
-      @param e The MouseEvent object
-    */
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    /*
-      Post-condition: Called when the mouse exits the panel
-      Pre-condition: The "e" must not be a null value
-      @param e The MouseEvent object
-    */
-    public void mouseExited(MouseEvent e) {
-    }
-
-    /*
-      Post-condition: Called when a mouse button is released in the panel
-      Pre-condition: The "e" must not be a null value
-      @param e The MouseEvent object
-    */
-    public void mouseReleased(MouseEvent e) {
     }
 }

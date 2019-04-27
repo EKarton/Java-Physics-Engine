@@ -11,26 +11,13 @@ import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.editor.codegenerator.PCodeGenerator;
-import com.javaphysicsengine.editor.io.PFileWriter;
 import com.javaphysicsengine.editor.io.PFileReader;
+import com.javaphysicsengine.editor.io.PFileWriter;
 import com.javaphysicsengine.editor.simulation.PSimulationWindow;
 
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
@@ -42,6 +29,7 @@ import java.util.List;
 
 public class PEditorFrame extends JFrame implements ActionListener {
     private PEditorPanel editorPanel = null;
+    private JTabbedPane propertiesPane;
 
     /**
      * Creates a PEditorFrame window object
@@ -90,14 +78,59 @@ public class PEditorFrame extends JFrame implements ActionListener {
      */
     private void addPanels() {
         // Set up the properties pane
-        JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+        propertiesPane = new JTabbedPane();
+        propertiesPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
         // Set up the pane where users can draw on it
-        editorPanel = new PEditorPanel(tabbedPane);
+        PEditorObservableStore store = new PEditorObservableStore();
+        store.getOnAddBodyListeners().add(body -> propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, editorPanel))));
+
+        editorPanel = new PEditorPanel(store);
+
+        store.getOnDeleteBodyListeners().add(objectName -> {
+            // Close the properties tab that shows the properties of the delete object
+            for (int i = 0; i < propertiesPane.getTabCount(); i++) {
+                String label = propertiesPane.getTitleAt(i);
+                if (label.equals(objectName))
+                    propertiesPane.remove(i);
+            }
+        });
+
+        store.getOnClearBodiesListeners().add(() -> {
+            propertiesPane.removeAll();
+        });
+
+        store.getOnSelectedBodyListeners().add(newSelectedBody -> {
+            System.out.println(newSelectedBody);
+
+            if (newSelectedBody != null) {
+                boolean isBodyInPropertiesPane = false;
+                for (int i = 0; i < propertiesPane.getTabCount(); i++) {
+                    String label = propertiesPane.getTitleAt(i);
+                    if (label.equals(store.getSelectedBody().getName()))
+                        isBodyInPropertiesPane = true;
+                }
+
+                // Create a properties tab for that body
+                if (!isBodyInPropertiesPane) {
+                    propertiesPane.add(store.getSelectedBody().getName(), new JScrollPane(new PBodyPropertiesPanel(store.getSelectedBody(), propertiesPane, editorPanel)));
+                }
+            }
+        });
+
+        store.getOnChangeBodyNameListeners().add((bodyWithNewName, oldName) -> {
+            String newName = bodyWithNewName.getName();
+
+            // Change the title of the body's properties pane
+            for (int i = 0; i < propertiesPane.getTabCount(); i++) {
+                if (propertiesPane.getTitleAt(i).equals(oldName))
+                    propertiesPane.setTitleAt(i, newName);
+            }
+        });
+
 
         // Create the split pane to divide the window pane to two
-        JSplitPane windowSplitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, editorPanel, tabbedPane);
+        JSplitPane windowSplitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, editorPanel, propertiesPane);
         windowSplitPanel.setResizeWeight(0.7);  //  Makes the right side smaller than the left side
 
         // Add the split pane to the window
@@ -173,12 +206,15 @@ public class PEditorFrame extends JFrame implements ActionListener {
 
             // Adding the bodies and constraints to the editor
             for (PBody body : bodies) {
-                if (body != null)
+                if (body != null) {
                     editorPanel.addBody(body);
+                    propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, editorPanel)));
+                }
             }
             for (PConstraints constraint : constraints) {
-                if (constraint != null)
+                if (constraint != null) {
                     editorPanel.addConstraint(constraint);
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -315,6 +351,7 @@ public class PEditorFrame extends JFrame implements ActionListener {
                     System.out.println("Created a new file");
                     editorPanel.clearBodies();
                     editorPanel.clearConstraints();
+                    propertiesPane.removeAll();
                     break;
                 case "Load":
                     System.out.println("Opened a file");

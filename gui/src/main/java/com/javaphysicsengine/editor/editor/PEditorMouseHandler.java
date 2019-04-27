@@ -9,6 +9,8 @@ import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.utils.Vector;
 
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_CIRCLE;
 import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_CURSOR;
@@ -16,7 +18,7 @@ import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_POLYGON
 import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_SPRING;
 import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_STRING;
 
-public class PEditorMouseHandler {
+public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
 
     public static final int SNAP_TOOL_POINT_RANGE = 4;
 
@@ -35,12 +37,13 @@ public class PEditorMouseHandler {
         // If it selected an object
         if (editMode.equals(EDIT_MODE_CURSOR) || editMode.equals(EDIT_MODE_SPRING) || editMode.equals(EDIT_MODE_STRING)) {
             store.setSelectedBody(null);
-            if (isMouseSnappedToPoint)
+            if (isMouseSnappedToPoint) {
                 for (PBody body : store.getCreatedBodies())
                     if ((int) body.getCenterPt().getX() == mouseX && (int) (height - body.getCenterPt().getY()) == mouseY) {
                         store.setSelectedBody(body);
                         break;
                     }
+            }
         }
 
         if (editMode.equals(EDIT_MODE_SPRING) || editMode.equals(EDIT_MODE_STRING) && store.getSelectedBody() != null) {
@@ -109,18 +112,27 @@ public class PEditorMouseHandler {
         }
     }
 
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
     public void mousePressed(MouseEvent mouseEvent) {
 
     }
 
+    @Override
     public void mouseReleased(MouseEvent mouseEvent) {
 
     }
 
+    @Override
     public void mouseEntered(MouseEvent mouseEvent) {
 
     }
 
+    @Override
     public void mouseExited(MouseEvent mouseEvent) {
 
     }
@@ -130,8 +142,11 @@ public class PEditorMouseHandler {
         mouseY = mouseEvent.getY();
         isMouseSnappedToPoint = false;
 
-        if (store.getSelectedBody() != null && editMode.equals(EDIT_MODE_CURSOR))
-            store.getSelectedBody().move(new Vector(mouseX, height - mouseY));
+        if (editMode.equals(EDIT_MODE_CURSOR)) {
+            if (store.getSelectedBody() != null) {
+                store.getSelectedBody().move(new Vector(mouseX, height - mouseY));
+            }
+        }
     }
 
     public void mouseMoved(MouseEvent mouseEvent, int height) {
@@ -173,17 +188,14 @@ public class PEditorMouseHandler {
         }
     }
 
-    /*
-      Post-condition: Returns true if the mouse is within a range of 4 pixels of a specified point
-      @param mouseX The x mouse coodinate
-      @param mouseY The y mouse coordinate
-      @param posX The x coordinate of a specified point
-      @param posY The y coordinate of a specified point
-      @return Returns true if the mouse is close to a specified point; else false
-    */
-    private boolean isMouseNearPoint(int mouseX, int mouseY, int posX, int posY) {
-        double distToPoint = Math.pow(mouseX - posX, 2) + Math.pow(mouseY - posY, 2);
-        return distToPoint < SNAP_TOOL_POINT_RANGE * SNAP_TOOL_POINT_RANGE;
+    @Override
+    public void mouseDragged(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent mouseEvent) {
+
     }
 
     public PEditorStore getStore() {
@@ -220,5 +232,18 @@ public class PEditorMouseHandler {
 
     public void setEditMode(String editMode) {
         this.editMode = editMode;
+    }
+
+    /*
+      Post-condition: Returns true if the mouse is within a range of 4 pixels of a specified point
+      @param mouseX The x mouse coodinate
+      @param mouseY The y mouse coordinate
+      @param posX The x coordinate of a specified point
+      @param posY The y coordinate of a specified point
+      @return Returns true if the mouse is close to a specified point; else false
+    */
+    private boolean isMouseNearPoint(int mouseX, int mouseY, int posX, int posY) {
+        double distToPoint = Math.pow(mouseX - posX, 2) + Math.pow(mouseY - posY, 2);
+        return distToPoint < SNAP_TOOL_POINT_RANGE * SNAP_TOOL_POINT_RANGE;
     }
 }

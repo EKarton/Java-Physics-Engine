@@ -4,7 +4,10 @@ import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.utils.Vector;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_CIRCLE;
 import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_POLYGON;
@@ -12,30 +15,25 @@ import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_SPRING;
 import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_STRING;
 
 public class PEditorRenderer {
-    public static final Color BACKGROUND_COLOR = new Color(60, 60, 60);
-    public static final Color CURSOR_COLOR = Color.WHITE;
-    public static final Color OBJECT_TEXT_COLOR = Color.WHITE;
-    public static final Color POBJECT_NAME_TEXT_COLOR = OBJECT_TEXT_COLOR;
-    public static final Color SNAP_POINT_RANGE_COLOR = new Color(207, 176, 41);
-    public static final Color POLYGON_INPROGRESS_EDGE_COLOR = Color.WHITE;
-    public static final Color POLYGON_FINISHED_EDGE_COLOR = Color.BLACK;
-    public static final Color CIRCLE_INPROGRESS_EDGE_COLOR = Color.WHITE;
+    private static final Color BACKGROUND_COLOR = new Color(60, 60, 60);
+    private static final Color CURSOR_COLOR = Color.WHITE;
+    private static final Color OBJECT_TEXT_COLOR = Color.WHITE;
+    private static final Color POBJECT_NAME_TEXT_COLOR = OBJECT_TEXT_COLOR;
+    private static final Color SNAP_POINT_RANGE_COLOR = new Color(207, 176, 41);
+    private static final Color POLYGON_INPROGRESS_EDGE_COLOR = Color.WHITE;
+    private static final Color POLYGON_FINISHED_EDGE_COLOR = Color.BLACK;
+    private static final Color CIRCLE_INPROGRESS_EDGE_COLOR = Color.WHITE;
 
     // Graphic properties showing which parts are visible
     private boolean isBoundingBoxDisplayed = true;
     private boolean isShapeOutlineDisplayed = true;
     private boolean isShapeFillDisplayed = false;
-    private boolean isVelocityVectorsDisplayed = false;
     private boolean isAntiAliasingToggled = false;
 
     private final PEditorStore store;
 
     public PEditorRenderer(PEditorStore store) {
         this.store = store;
-    }
-
-    public boolean isBoundingBoxDisplayed() {
-        return isBoundingBoxDisplayed;
     }
 
     public void setBoundingBoxDisplayed(boolean boundingBoxDisplayed) {
@@ -58,24 +56,12 @@ public class PEditorRenderer {
         isShapeFillDisplayed = shapeFillDisplayed;
     }
 
-    public boolean isVelocityVectorsDisplayed() {
-        return isVelocityVectorsDisplayed;
-    }
-
-    public void setVelocityVectorsDisplayed(boolean velocityVectorsDisplayed) {
-        isVelocityVectorsDisplayed = velocityVectorsDisplayed;
-    }
-
     public boolean isAntiAliasingToggled() {
         return isAntiAliasingToggled;
     }
 
     public void setAntiAliasingToggled(boolean antiAliasingToggled) {
         isAntiAliasingToggled = antiAliasingToggled;
-    }
-
-    public PEditorStore getStore() {
-        return store;
     }
 
     public void renderGraphics(Graphics g, int width, int height, int mouseX, int mouseY, boolean isMouseSnappedToPoint, String mouseState) {
@@ -106,8 +92,9 @@ public class PEditorRenderer {
         }
 
         // Draw the constraints
-        for (PConstraints constraint : store.getCreatedConstraints())
+        for (PConstraints constraint : store.getCreatedConstraints()) {
             constraint.drawConstraints(g, height);
+        }
 
         // Draw the cursor
         g.setColor(CURSOR_COLOR);
@@ -158,6 +145,5 @@ public class PEditorRenderer {
                 g.setColor(Color.YELLOW);
                 g.drawLine((int) store.getAttachedBody1().getCenterPt().getX(), height - (int) store.getAttachedBody1().getCenterPt().getY(), mouseX, mouseY);
             }
-
     }
 }
