@@ -117,15 +117,18 @@ public class PEditorRenderer {
         if (mouseState.equals(EDIT_MODE_POLYGON) && store.getPolyVertices().size() > 0) {
             Vector lastAddedVertex = store.getPolyVertices().get(store.getPolyVertices().size() - 1);
             g.setColor(POLYGON_INPROGRESS_EDGE_COLOR);
-            g.drawLine((int) lastAddedVertex.getX(), (int) lastAddedVertex.getY(), mouseX, mouseY);
+            g.drawLine((int) lastAddedVertex.getX(), (int) (height - lastAddedVertex.getY()), mouseX, mouseY);
 
             // Drawing the going-to-be-drawn polygons
             g.setColor(POLYGON_FINISHED_EDGE_COLOR);
             for (int i = 0; i < store.getPolyVertices().size() - 1; i++) {
-                int x1 = (int) store.getPolyVertices().get(i).getX();
-                int y1 = (int) store.getPolyVertices().get(i).getY();
-                int x2 = (int) store.getPolyVertices().get(i + 1).getX();
-                int y2 = (int) store.getPolyVertices().get(i + 1).getY();
+                Vector vertex1 = store.getPolyVertices().get(i);
+                Vector vector2 = store.getPolyVertices().get(i + 1);
+
+                int x1 = (int) vertex1.getX();
+                int y1 = (int) (height - vertex1.getY());
+                int x2 = (int) vector2.getX();
+                int y2 = (int) (height - vector2.getY());
                 g.drawLine(x1, y1, x2, y2);
             }
         }
@@ -133,10 +136,10 @@ public class PEditorRenderer {
         // Drawing the circle that will be drawn
         else if (mouseState.equals(EDIT_MODE_CIRCLE) && store.getCircleRadius() > 0) {
             int topLeftX = (int) (store.getCircleCenterPt().getX() - store.getCircleRadius());
-            int topLeftY = (int) (store.getCircleCenterPt().getY() - store.getCircleRadius());
+            int topLeftY = (int) (height - store.getCircleCenterPt().getY() - store.getCircleRadius());
             g.setColor(CIRCLE_INPROGRESS_EDGE_COLOR);
             g.drawOval(topLeftX, topLeftY, (int) (store.getCircleRadius() * 2), (int) (store.getCircleRadius() * 2));
-            g.fillOval((int) store.getCircleCenterPt().getX() - 2, (int) store.getCircleCenterPt().getY() - 2, 4, 4);
+            g.fillOval((int) store.getCircleCenterPt().getX() - 2, height - (int) store.getCircleCenterPt().getY() - 2, 4, 4);
         }
 
         // Drawing the constraint that will be drawn

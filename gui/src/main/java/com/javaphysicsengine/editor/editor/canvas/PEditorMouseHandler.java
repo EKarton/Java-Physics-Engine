@@ -78,7 +78,7 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
         } else if (editMode.equals(EDIT_MODE_CIRCLE)) {
             // If the center point is not defined yet, define it
             if (store.getCircleCenterPt().getX() == -1)
-                store.getCircleCenterPt().setXY(mouseX, mouseY);
+                store.getCircleCenterPt().setXY(mouseX, height - mouseY);
 
                 // If the user selects the radius, create the circle object
             else {
@@ -90,41 +90,40 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
 
                 PCircle circle = new PCircle(circleName);
                 circle.setRadius(store.getCircleRadius());
-                circle.setCenterPt(new Vector(store.getCircleCenterPt().getX(), height - store.getCircleCenterPt().getY()));
+                circle.setCenterPt(new Vector(store.getCircleCenterPt().getX(), store.getCircleCenterPt().getY()));
 
                 store.addBody(circle);
                 store.reset();
             }
         } else if (editMode.equals(EDIT_MODE_POLYGON)) {
-            store.getPolyVertices().add(new Vector(mouseX, mouseY));
 
-            // Check if it closed the polygon
-            if (store.getPolyVertices().size() > 2)
-                if (store.getPolyVertices().get(0).equals(store.getPolyVertices().get(store.getPolyVertices().size() - 1))) {
-                    // Generate the body name (the body name must be unique from all the rest)
-                    String polyName = "";
-                    do
-                        polyName = "Polygon " + (int) (Math.random() * (10000));
-                    while (store.getBodyIndexByName(polyName, store.getCreatedBodies()) != -1);
+            boolean isClosingPolygon = store.getPolyVertices().size() > 0 && store.getPolyVertices().get(0).equals(new Vector(mouseX, height - mouseY));
+            boolean isClosingPolygonValid = store.getPolyVertices().size() >= 2;
 
-                    // Create the body
-                    PPolygon polygon = new PPolygon(polyName);
-                    for (int i = 0; i < store.getPolyVertices().size() - 1; i++) // -1 since the last vertex is a copy of the first vertex
-                    {
-                        store.getPolyVertices().get(i).setY(height - store.getPolyVertices().get(i).getY());  // Translate the point since the origin for polygon is bottom left
-                        polygon.getVertices().add(store.getPolyVertices().get(i));
-                    }
-                    polygon.computeCenterOfMass();
+            // See if the mouse is closing the polygon
+            if (isClosingPolygon && isClosingPolygonValid) {
 
-                    store.addBody(polygon);
-                    store.reset();
-                }
+                // Generate the body name (the body name must be unique from all the rest)
+                String polyName;
+                do
+                    polyName = "Polygon " + (int) (Math.random() * (10000));
+                while (store.getBodyIndexByName(polyName, store.getCreatedBodies()) != -1);
+
+                // Create the body
+                PPolygon polygon = new PPolygon(polyName);
+                polygon.getVertices().addAll(store.getPolyVertices());
+                polygon.computeCenterOfMass();
+
+                store.addBody(polygon);
+                store.reset();
+            } else {
+                store.getPolyVertices().add(new Vector(mouseX, height - mouseY));
+            }
         }
     }
 
     @Override
     public void mousePressed(MouseEvent mouseEvent) {
-
     }
 
     @Override
@@ -165,24 +164,32 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
         mouseY = mouseEvent.getY();
         isMouseSnappedToPoint = false;
 
-        // If the mouse is on a certain point on the polygon not made yet
-        if (editMode.equals(EDIT_MODE_POLYGON))
-            for (Vector pt : store.getPolyVertices())
-                if (isMouseNearPoint(getMouseX(), getMouseY(), (int) pt.getX(), (int) pt.getY())) {
-                    // Save the point it is snapped to
+        // Snap to an edge in WIP Polygon if it is creating a polygon
+        if (editMode.equals(EDIT_MODE_POLYGON)) {
+            for (Vector pt : store.getPolyVertices()) {
+                if (areTwoPointsWithinSnapRange(mouseX, mouseY, (int) pt.getX(), (int) (height - pt.getY()))) {
                     setMouseSnappedToPoint(true);
-
                     mouseX = (int) pt.getX();
-                    mouseY = (int) pt.getY();
+                    mouseY = (int) (height - pt.getY());
                     break;
                 }
+            }
+        } else if (editMode.equals(EDIT_MODE_CIRCLE)) {
+
+            // If the mouse is adjusting the radius of the circle
+            if (store.getCircleCenterPt().getX() != -1) {
+                double xMinus = mouseX - store.getCircleCenterPt().getX();
+                double yMinus = (height - mouseY) - store.getCircleCenterPt().getY();
+                store.setCircleRadius(Math.sqrt((xMinus * xMinus) + (yMinus * yMinus)));
+            }
+        }
 
         // Check if it snapped to any of the made bodies
-        if (!isMouseSnappedToPoint())
+        if (!isMouseSnappedToPoint()) {
             for (PBody body : store.getCreatedBodies()) {
                 // Check if it is on its center pt
                 Vector bodyCenterPt = body.getCenterPt();
-                if (isMouseNearPoint(getMouseX(), getMouseY(), (int) bodyCenterPt.getX(), (int) (height - bodyCenterPt.getY()))) {
+                if (areTwoPointsWithinSnapRange(getMouseX(), getMouseY(), (int) bodyCenterPt.getX(), (int) (height - bodyCenterPt.getY()))) {
                     // Save the point it is snapped to
                     setMouseSnappedToPoint(true);
                     mouseX = (int) bodyCenterPt.getX();
@@ -190,12 +197,6 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
                     break;
                 }
             }
-
-        // If the mouse is adjusting the radius of the circle
-        if (editMode.equals(EDIT_MODE_CIRCLE) && store.getCircleCenterPt().getX() != -1) {
-            double xMinus = mouseX - store.getCircleCenterPt().getX();
-            double yMinus = mouseY - store.getCircleCenterPt().getY();
-            store.setCircleRadius(Math.sqrt((xMinus * xMinus) + (yMinus * yMinus)));
         }
     }
 
@@ -220,15 +221,15 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
     }
 
     /*
-      Post-condition: Returns true if the mouse is within a range of 4 pixels of a specified point
-      @param mouseX The x mouse coodinate
-      @param mouseY The y mouse coordinate
-      @param posX The x coordinate of a specified point
-      @param posY The y coordinate of a specified point
+      Post-condition: Returns true if a point is within a range of 4 pixels of another point
+      @param x1 The x mouse coodinate
+      @param y1 The y mouse coordinate
+      @param x2 The x coordinate of a specified point
+      @param y2 The y coordinate of a specified point
       @return Returns true if the mouse is close to a specified point; else false
     */
-    private boolean isMouseNearPoint(int mouseX, int mouseY, int posX, int posY) {
-        double distToPoint = Math.pow(mouseX - posX, 2) + Math.pow(mouseY - posY, 2);
+    private boolean areTwoPointsWithinSnapRange(int x1, int y1, int x2, int y2) {
+        double distToPoint = Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2);
         return distToPoint < SNAP_TOOL_POINT_RANGE * SNAP_TOOL_POINT_RANGE;
     }
 }
