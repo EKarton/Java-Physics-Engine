@@ -9,6 +9,7 @@ package com.javaphysicsengine.editor.editor;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
+import com.javaphysicsengine.editor.editor.store.PEditorStore;
 
 import javax.swing.*;
 import java.awt.*;

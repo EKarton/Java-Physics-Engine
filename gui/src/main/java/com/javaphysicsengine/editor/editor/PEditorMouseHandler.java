@@ -6,6 +6,7 @@ import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.api.body.PPolygon;
 import com.javaphysicsengine.api.body.PSpring;
 import com.javaphysicsengine.api.body.PString;
+import com.javaphysicsengine.editor.editor.store.PEditorStore;
 import com.javaphysicsengine.utils.Vector;
 
 import java.awt.event.MouseEvent;

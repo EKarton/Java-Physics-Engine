@@ -138,11 +138,14 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
                 JTextField txtbox = (JTextField) e.getSource();
                 switch (txtbox.getName()) {
                     case "Name":
-                        boolean nameChangeSuccess = editorPanel.changeBodyName(txtbox.getText(), body);
-                        if (!nameChangeSuccess) {
+
+                        try {
+                            editorPanel.getStore().changeBodyName(txtbox.getText(), body);
+                        } catch (IllegalArgumentException exception) {
                             JOptionPane.showMessageDialog(null, "Name already set to another body!");
                             txtbox.setText(body.getName());
                         }
+
                         break;
                     case "Mass":
                         body.setMass(Double.parseDouble(txtbox.getText()));

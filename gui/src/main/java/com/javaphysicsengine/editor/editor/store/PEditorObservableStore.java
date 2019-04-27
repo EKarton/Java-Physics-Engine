@@ -1,4 +1,4 @@
-package com.javaphysicsengine.editor.editor;
+package com.javaphysicsengine.editor.editor.store;
 
 import com.javaphysicsengine.api.body.PBody;
 

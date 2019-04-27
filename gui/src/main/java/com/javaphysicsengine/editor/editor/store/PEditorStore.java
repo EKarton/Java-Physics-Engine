@@ -1,4 +1,4 @@
-package com.javaphysicsengine.editor.editor;
+package com.javaphysicsengine.editor.editor.store;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PCircle;
@@ -184,6 +184,12 @@ public class PEditorStore {
       @returns Returns true if the name was changed successfully; else false.
     */
     public void changeBodyName(String newName, PBody body) {
+        for (PBody createdBody : createdBodies) {
+            if (createdBody.getName().equals(newName)) {
+                throw new IllegalArgumentException("Name already exists");
+            }
+        }
+
         body.setName(newName);
         sortBodyByName();
     }

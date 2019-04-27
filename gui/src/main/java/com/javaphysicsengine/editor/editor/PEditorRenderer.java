@@ -2,6 +2,7 @@ package com.javaphysicsengine.editor.editor;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
+import com.javaphysicsengine.editor.editor.store.PEditorStore;
 import com.javaphysicsengine.utils.Vector;
 
 import java.awt.Color;

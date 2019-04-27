@@ -11,6 +11,7 @@ import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.editor.codegenerator.PCodeGenerator;
+import com.javaphysicsengine.editor.editor.store.PEditorObservableStore;
 import com.javaphysicsengine.editor.io.PFileReader;
 import com.javaphysicsengine.editor.io.PFileWriter;
 import com.javaphysicsengine.editor.simulation.PSimulationWindow;
