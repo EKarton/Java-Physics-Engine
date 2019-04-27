@@ -37,6 +37,10 @@ public class PEditorRenderer {
         this.store = store;
     }
 
+    public boolean isBoundingBoxDisplayed() {
+        return isBoundingBoxDisplayed;
+    }
+
     public void setBoundingBoxDisplayed(boolean boundingBoxDisplayed) {
         isBoundingBoxDisplayed = boundingBoxDisplayed;
     }

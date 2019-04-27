@@ -563,16 +563,4 @@ public class PEditorMouseHandlerTest {
         assertFalse(handler.isMouseSnappedToPoint());
         assertEquals(100, store.getCircleRadius(), 0.0000001);
     }
-
-    @Test
-    public void isMouseSnappedToPoint() {
-    }
-
-    @Test
-    public void setMouseSnappedToPoint() {
-    }
-
-    @Test
-    public void setEditMode() {
-    }
 }
