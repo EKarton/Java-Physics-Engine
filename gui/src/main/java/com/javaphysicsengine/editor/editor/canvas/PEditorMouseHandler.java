@@ -62,7 +62,7 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
 
             } else if (store.getSelectedBody() != null) {
                 // Create the object
-                PConstraints constraint = null;
+                PConstraints constraint;
                 if (editMode.equals(EDIT_MODE_SPRING)) {
                     constraint = new PSpring(store.getAttachedBody1(), store.getSelectedBody());
                 }
