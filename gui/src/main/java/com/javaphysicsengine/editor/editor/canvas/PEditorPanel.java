@@ -50,8 +50,12 @@ public class PEditorPanel extends JPanel implements ActionListener {
     private JToggleButton[] drawingBttns;// <- Mouse will be on point if it is within a certain pixels away from actual point
 
     /**
-     * Creates the PEditorPane with the drawing buttons
+     * Creates the PEditorPanel. It uses the {@code mouseHandler} as a handler for this panel's mouse events,
+     * and {@code renderer} to render the bodies and constraints on this panel.
+     *
      * @param store the store
+     * @param mouseHandler the mouse handler
+     * @param renderer the graphics renderer
      */
     public PEditorPanel(PEditorStore store, PEditorMouseHandler mouseHandler, PEditorRenderer renderer) {
         super();
@@ -79,7 +83,6 @@ public class PEditorPanel extends JPanel implements ActionListener {
 
     /**
      * Handles events made from the timer or from the edit buttons
-     * Pre-condition: The "e" must not be null
      * @param e The ActionEvent object
      */
     @Override
@@ -119,6 +122,9 @@ public class PEditorPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Adds the edit buttons to this panel
+     */
     private void setupEditButtons() {
         drawingBttns = new JToggleButton[5];
         drawingBttns[0] = createCursorDrawingButton();
@@ -132,6 +138,10 @@ public class PEditorPanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Creates the cursor drawing toggle button
+     * @return a toggle button
+     */
     private JToggleButton createCursorDrawingButton() {
         JToggleButton jToggleButton = new JToggleButton("");
         jToggleButton.setName("" + 0);
@@ -147,6 +157,10 @@ public class PEditorPanel extends JPanel implements ActionListener {
         return jToggleButton;
     }
 
+    /**
+     * Creates the polygon drawing toggle button
+     * @return a toggle button
+     */
     private JToggleButton createPolygonDrawingButton() {
         JToggleButton jToggleButton = new JToggleButton("");
         jToggleButton.setName("" + 1);
@@ -162,6 +176,10 @@ public class PEditorPanel extends JPanel implements ActionListener {
         return jToggleButton;
     }
 
+    /**
+     * Creates the circle drawing toggle button
+     * @return a toggle button
+     */
     private JToggleButton createCircleDrawingButton() {
         JToggleButton jToggleButton = new JToggleButton("");
         jToggleButton.setName("" + 2);
@@ -177,6 +195,10 @@ public class PEditorPanel extends JPanel implements ActionListener {
         return jToggleButton;
     }
 
+    /**
+     * Creates the spring drawing toggle button
+     * @return a toggle button
+     */
     private JToggleButton createSpringDrawingButton() {
         JToggleButton jToggleButton = new JToggleButton("");
         jToggleButton.setName("" + 3);
@@ -192,6 +214,10 @@ public class PEditorPanel extends JPanel implements ActionListener {
         return jToggleButton;
     }
 
+    /**
+     * Creates the string drawing toggle button
+     * @return a toggle button
+     */
     private JToggleButton createStringDrawingButton() {
         JToggleButton jToggleButton = new JToggleButton("");
         jToggleButton.setName("" + 3);
@@ -207,6 +233,9 @@ public class PEditorPanel extends JPanel implements ActionListener {
         return jToggleButton;
     }
 
+    /**
+     * Starts the game loop for rendering the bodies
+     */
     private void startGameLoop() {
         Timer gameTimer = new Timer(1000 / 60, this);
         gameTimer.start();
