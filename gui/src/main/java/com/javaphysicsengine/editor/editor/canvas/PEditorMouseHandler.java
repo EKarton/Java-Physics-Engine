@@ -27,7 +27,7 @@ import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_
 
 public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
 
-    public static final int SNAP_TOOL_POINT_RANGE = 4;
+    private static final int SNAP_TOOL_POINT_RANGE = 4;
 
     private final PEditorStore store;
     private int mouseX = 0;
@@ -199,24 +199,12 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
         }
     }
 
-    public PEditorStore getStore() {
-        return store;
-    }
-
     public int getMouseX() {
         return mouseX;
     }
 
-    public void setMouseX(int mouseX) {
-        this.mouseX = mouseX;
-    }
-
     public int getMouseY() {
         return mouseY;
-    }
-
-    public void setMouseY(int mouseY) {
-        this.mouseY = mouseY;
     }
 
     public boolean isMouseSnappedToPoint() {
@@ -225,10 +213,6 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
 
     public void setMouseSnappedToPoint(boolean mouseSnappedToPoint) {
         isMouseSnappedToPoint = mouseSnappedToPoint;
-    }
-
-    public String getEditMode() {
-        return editMode;
     }
 
     public void setEditMode(String editMode) {

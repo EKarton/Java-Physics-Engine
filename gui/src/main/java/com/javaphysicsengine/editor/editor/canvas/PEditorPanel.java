@@ -47,7 +47,7 @@ public class PEditorPanel extends JPanel implements ActionListener {
     private String editMode = EDIT_MODE_CURSOR;  // <- Either "POLYGON", "CIRCLE", "SPRING", "STRING", "CURSOR"
 
     // The drawing buttons
-    private JToggleButton[] drawingBttns;// <- Mouse will be on point if it is within a certain pixels away from actual point
+    private JToggleButton[] drawingButtons;// <- Mouse will be on point if it is within a certain pixels away from actual point
 
     /**
      * Creates the PEditorPanel. It uses the {@code mouseHandler} as a handler for this panel's mouse events,
@@ -72,6 +72,14 @@ public class PEditorPanel extends JPanel implements ActionListener {
     }
 
     /**
+     * Get the current edit mode
+     * @return the current edit mode
+     */
+    public String getEditMode() {
+        return editMode;
+    }
+
+    /**
      * Draws the bodies and mouse cursor on the screen
      * @param g The Graphics Object used to display the objects on the screen
      */
@@ -92,7 +100,7 @@ public class PEditorPanel extends JPanel implements ActionListener {
 
         } else if (e.getSource() instanceof JToggleButton) {
             // Deselect all the other buttons that are not the current button
-            for (JToggleButton bttn : drawingBttns)
+            for (JToggleButton bttn : drawingButtons)
                 if (!bttn.equals(e.getSource()))
                     bttn.setSelected(false);
 
@@ -100,8 +108,8 @@ public class PEditorPanel extends JPanel implements ActionListener {
             store.reset();
 
             // Grab which one was called
-            JToggleButton curBttn = (JToggleButton) e.getSource();
-            switch (curBttn.getName()) {
+            JToggleButton buttonClicked = (JToggleButton) e.getSource();
+            switch (buttonClicked.getName()) {
                 case "0":
                     editMode = EDIT_MODE_CURSOR;
                     break;
@@ -126,14 +134,14 @@ public class PEditorPanel extends JPanel implements ActionListener {
      * Adds the edit buttons to this panel
      */
     private void setupEditButtons() {
-        drawingBttns = new JToggleButton[5];
-        drawingBttns[0] = createCursorDrawingButton();
-        drawingBttns[1] = createPolygonDrawingButton();
-        drawingBttns[2] = createCircleDrawingButton();
-        drawingBttns[3] = createSpringDrawingButton();
-        drawingBttns[4] = createStringDrawingButton();
+        drawingButtons = new JToggleButton[5];
+        drawingButtons[0] = createCursorDrawingButton();
+        drawingButtons[1] = createPolygonDrawingButton();
+        drawingButtons[2] = createCircleDrawingButton();
+        drawingButtons[3] = createSpringDrawingButton();
+        drawingButtons[4] = createStringDrawingButton();
 
-        for (JToggleButton toggleButton : drawingBttns) {
+        for (JToggleButton toggleButton : drawingButtons) {
             this.add(toggleButton);
         }
     }
