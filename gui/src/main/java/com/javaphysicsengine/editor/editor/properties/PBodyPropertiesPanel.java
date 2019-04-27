@@ -5,10 +5,11 @@
  * @version January 15 2016
  */
 
-package com.javaphysicsengine.editor.editor;
+package com.javaphysicsengine.editor.editor.properties;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PCircle;
+import com.javaphysicsengine.editor.editor.canvas.PEditorPanel;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;

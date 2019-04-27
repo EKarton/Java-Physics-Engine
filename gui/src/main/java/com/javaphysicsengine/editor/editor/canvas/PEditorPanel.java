@@ -5,7 +5,7 @@
   @version January 15 2016
 */
 
-package com.javaphysicsengine.editor.editor;
+package com.javaphysicsengine.editor.editor.canvas;
 
 import com.javaphysicsengine.editor.editor.store.PEditorStore;
 
@@ -13,12 +13,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.net.URL;
 
-public class PEditorPanel extends JPanel implements ActionListener, MouseMotionListener, MouseListener {
+public class PEditorPanel extends JPanel implements ActionListener {
     private static final String CIRCLE_SELECTED_IMAGE_PATH = "icons/circle-selected.png";
     private static final String CIRCLE_UNSELECTED_IMAGE_PATH = "icons/circle-unselected.png";
 
@@ -70,13 +67,13 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseMotionL
             this.add(toggleButton);
         }
 
-        // Initialise the event handlers
-        this.addMouseListener(this);
-        this.addMouseMotionListener(this);
-
         this.store = store;
         this.mouseHandler = new PEditorMouseHandler(store, editMode);
         this.renderer = new PEditorRenderer(store);
+
+        // Initialise the event handlers
+        this.addMouseListener(this.mouseHandler);
+        this.addMouseMotionListener(this.mouseHandler);
 
         // Initialise the game loop
         Timer gameTimer = new Timer(1000 / 60, this);
@@ -216,39 +213,5 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseMotionL
             }
             this.mouseHandler.setEditMode(editMode);
         }
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        mouseHandler.mouseClicked(e, getHeight());
-    }
-
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent mouseEvent) {
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        mouseHandler.mouseDragged(e, this.getHeight());
-    }
-    
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        mouseHandler.mouseMoved(e, getHeight());
     }
 }

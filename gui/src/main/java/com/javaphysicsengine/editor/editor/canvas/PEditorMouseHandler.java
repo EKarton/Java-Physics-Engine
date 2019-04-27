@@ -1,4 +1,4 @@
-package com.javaphysicsengine.editor.editor;
+package com.javaphysicsengine.editor.editor.canvas;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PCircle;
@@ -13,11 +13,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_CIRCLE;
-import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_CURSOR;
-import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_POLYGON;
-import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_SPRING;
-import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_STRING;
+import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_CIRCLE;
+import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_CURSOR;
+import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_POLYGON;
+import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_SPRING;
+import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_STRING;
 
 public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
 
@@ -34,7 +34,10 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
         this.editMode = defaultEditMode;
     }
 
-    public void mouseClicked(MouseEvent mouseEvent, int height) {
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+        int height = mouseEvent.getComponent().getHeight();
+
         // If it selected an object
         if (editMode.equals(EDIT_MODE_CURSOR) || editMode.equals(EDIT_MODE_SPRING) || editMode.equals(EDIT_MODE_STRING)) {
             store.setSelectedBody(null);
@@ -114,11 +117,6 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
     }
 
     @Override
-    public void mouseClicked(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
     public void mousePressed(MouseEvent mouseEvent) {
 
     }
@@ -138,7 +136,10 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
 
     }
 
-    public void mouseDragged(MouseEvent mouseEvent, int height) {
+    @Override
+    public void mouseDragged(MouseEvent mouseEvent) {
+        int height = mouseEvent.getComponent().getHeight();
+
         mouseX = mouseEvent.getX();
         mouseY = mouseEvent.getY();
         isMouseSnappedToPoint = false;
@@ -150,7 +151,10 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
         }
     }
 
-    public void mouseMoved(MouseEvent mouseEvent, int height) {
+    @Override
+    public void mouseMoved(MouseEvent mouseEvent) {
+        int height = mouseEvent.getComponent().getHeight();
+
         mouseX = mouseEvent.getX();
         mouseY = mouseEvent.getY();
         isMouseSnappedToPoint = false;
@@ -187,16 +191,6 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
             double yMinus = mouseY - store.getCircleCenterPt().getY();
             store.setCircleRadius(Math.sqrt((xMinus * xMinus) + (yMinus * yMinus)));
         }
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent mouseEvent) {
-
-    }
-
-    @Override
-    public void mouseMoved(MouseEvent mouseEvent) {
-
     }
 
     public PEditorStore getStore() {

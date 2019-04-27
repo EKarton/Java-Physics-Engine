@@ -1,4 +1,4 @@
-package com.javaphysicsengine.editor.editor;
+package com.javaphysicsengine.editor.editor.canvas;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
@@ -10,10 +10,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_CIRCLE;
-import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_POLYGON;
-import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_SPRING;
-import static com.javaphysicsengine.editor.editor.PEditorPanel.EDIT_MODE_STRING;
+import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_CIRCLE;
+import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_POLYGON;
+import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_SPRING;
+import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_STRING;
 
 public class PEditorRenderer {
     private static final Color BACKGROUND_COLOR = new Color(60, 60, 60);

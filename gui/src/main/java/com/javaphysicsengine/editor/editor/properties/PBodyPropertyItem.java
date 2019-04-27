@@ -7,7 +7,7 @@
  * @version January 15 2016
  */
 
-package com.javaphysicsengine.editor.editor;
+package com.javaphysicsengine.editor.editor.properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
