@@ -133,7 +133,6 @@ public class PEditorStore {
             }
         }
         createdBodies.add(body);
-        sortBodyByName();
     }
 
     /*
@@ -145,11 +144,8 @@ public class PEditorStore {
     }
 
     public void deleteBody(String objectName) {
-        // Search for the index of the object with the object name
-        int bodyIndex = this.getBodyIndexByName(objectName, createdBodies);
-
-        // If there was a -1, then there is an error
-        if (bodyIndex == -1) {
+        PBody body = getBodyFromName(objectName);
+        if (body == null) {
             throw new IllegalArgumentException("Object name does not exist!");
         }
 
@@ -171,7 +167,7 @@ public class PEditorStore {
         }
 
         // Remove the body from the arraylist of bodies
-        createdBodies.remove(bodyIndex);
+        createdBodies.remove(body);
     }
 
     public void clearBodies() {
@@ -197,55 +193,14 @@ public class PEditorStore {
         }
 
         body.setName(newName);
-        sortBodyByName();
     }
 
-    public boolean canChangeBodyName(String newName, PBody body) {
-        // Check if the body name already exists in the list of bodies
-        int bodyFoundIndex = getBodyIndexByName(newName, createdBodies);
-
-        // If the body was found
-        return bodyFoundIndex == -1 || createdBodies.get(bodyFoundIndex).equals(body);
-    }
-
-    /*
-      Post-condition: Sorts the createdBodies[] list in alphabethical order according to body name
-    */
-    public void sortBodyByName() {
-        // Sort the bodies list by name in ascending order using insertion sort
-        for (int i = 1; i < createdBodies.size(); i++) {
-            PBody curBody = createdBodies.get(i);
-            int j = i;
-            while (j > 0 && createdBodies.get(j - 1).getName().compareTo(curBody.getName()) > 0) {
-                createdBodies.set(j, createdBodies.get(j - 1));
-                j--;
+    public PBody getBodyFromName(String bodyName) {
+        for (PBody createdBody : createdBodies) {
+            if (createdBody.getName().equals(bodyName)) {
+                return createdBody;
             }
-            createdBodies.set(j, curBody);
         }
-    }
-
-    /*
-      Post-condition: Returns the index in a list of bodies when found a body with the name name
-      @param name The name of the body to search for
-      @param bodies The list of bodies
-      @return Returns the index of the body with the same name
-    */
-    public int getBodyIndexByName(String name, List<PBody> bodies) {
-        // Do a binary search (already sorted by name in ascending order)
-        int left = 0;
-        int right = bodies.size() - 1;
-
-        while (right >= left) {
-            int mid = (left + right) / 2;
-            PBody curBody = bodies.get(mid);
-
-            if (curBody.getName().compareTo(name) < 0)
-                left = mid + 1;
-            else if (curBody.getName().compareTo(name) > 0)
-                right = mid - 1;
-            else
-                return mid;
-        }
-        return -1;
+        return null;
     }
 }

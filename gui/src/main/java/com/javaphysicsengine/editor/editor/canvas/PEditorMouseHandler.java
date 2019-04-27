@@ -86,7 +86,7 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
                 String circleName;
                 do
                     circleName = "Circle " + (int) (Math.random() * (10000));
-                while (store.getBodyIndexByName(circleName, store.getCreatedBodies()) != -1);
+                while (store.getBodyFromName(circleName) != null);
 
                 PCircle circle = new PCircle(circleName);
                 circle.setRadius(store.getCircleRadius());
@@ -107,7 +107,7 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
                 String polyName;
                 do
                     polyName = "Polygon " + (int) (Math.random() * (10000));
-                while (store.getBodyIndexByName(polyName, store.getCreatedBodies()) != -1);
+                while (store.getBodyFromName(polyName) != null);
 
                 // Create the body
                 PPolygon polygon = new PPolygon(polyName);
