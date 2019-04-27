@@ -84,11 +84,11 @@ public class PEditorFrame extends JFrame implements ActionListener {
 
         // Set up the pane where users can draw on it
         PEditorObservableStore store = new PEditorObservableStore();
-        store.getOnAddBodyListeners().add(body -> propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, editorPanel))));
+        store.getAddBodyListeners().add(body -> propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, editorPanel))));
 
         editorPanel = new PEditorPanel(store);
 
-        store.getOnDeleteBodyListeners().add(objectName -> {
+        store.getDeleteBodyListeners().add(objectName -> {
             // Close the properties tab that shows the properties of the delete object
             for (int i = 0; i < propertiesPane.getTabCount(); i++) {
                 String label = propertiesPane.getTitleAt(i);
@@ -97,11 +97,11 @@ public class PEditorFrame extends JFrame implements ActionListener {
             }
         });
 
-        store.getOnClearBodiesListeners().add(() -> {
+        store.getClearBodiesListeners().add(() -> {
             propertiesPane.removeAll();
         });
 
-        store.getOnSelectedBodyListeners().add(newSelectedBody -> {
+        store.getSelectedBodyListeners().add(newSelectedBody -> {
             System.out.println(newSelectedBody);
 
             if (newSelectedBody != null) {
@@ -119,7 +119,7 @@ public class PEditorFrame extends JFrame implements ActionListener {
             }
         });
 
-        store.getOnChangeBodyNameListeners().add((bodyWithNewName, oldName) -> {
+        store.getChangeBodyNameListeners().add((bodyWithNewName, oldName) -> {
             String newName = bodyWithNewName.getName();
 
             // Change the title of the body's properties pane

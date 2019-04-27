@@ -42,5 +42,4 @@ public class PSimulationWindow extends JFrame {
         panel.turnOffTimer();
         super.dispose();
     }
-
 }

@@ -218,11 +218,6 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseMotionL
         }
     }
 
-    /*
-      Post-condition: Called when the mouse is clicked on the panel
-      Pre-condition: The "e" must not be a null value
-      @param e The MouseEvent object
-    */
     @Override
     public void mouseClicked(MouseEvent e) {
         mouseHandler.mouseClicked(e, getHeight());
@@ -245,24 +240,13 @@ public class PEditorPanel extends JPanel implements ActionListener, MouseMotionL
 
     @Override
     public void mouseExited(MouseEvent mouseEvent) {
-
     }
 
-    /*
-      Post-condition: Called when a mouse button is pressed and the mouse moves in the panel
-      Pre-condition: The "e" must not be a null value
-      @param e The MouseEvent object
-    */
     @Override
     public void mouseDragged(MouseEvent e) {
         mouseHandler.mouseDragged(e, this.getHeight());
     }
-
-    /*
-      Post-condition: Called when the mouse moves in the panel
-      Pre-condition: The "e" must not be a null value
-      @param e The MouseEvent object
-    */
+    
     @Override
     public void mouseMoved(MouseEvent e) {
         mouseHandler.mouseMoved(e, getHeight());

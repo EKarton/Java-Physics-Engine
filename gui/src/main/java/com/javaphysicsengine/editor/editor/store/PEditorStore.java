@@ -119,6 +119,11 @@ public class PEditorStore {
     }
 
     public void addBody(PBody body) {
+        for (PBody createdBody : createdBodies) {
+            if (createdBody.getName().equals(body.getName())) {
+                throw new IllegalArgumentException("Name " + body.getName() + " already exists!");
+            }
+        }
         createdBodies.add(body);
         sortBodyByName();
     }
@@ -129,14 +134,6 @@ public class PEditorStore {
     */
     public void addConstraint(PConstraints constraint) {
         createdConstraints.add(constraint);
-    }
-
-    public boolean canDeleteBody(String objectName) {
-        // Search for the index of the object with the object name
-        int bodyIndex = getBodyIndexByName(objectName, createdBodies);
-
-        // If there was a -1, then there is an error
-        return bodyIndex != -1;
     }
 
     public void deleteBody(String objectName) {

@@ -7,78 +7,58 @@ import java.util.List;
 
 public class PEditorObservableStore extends PEditorStore {
 
-    public interface OnAddBodyListener {
+    public interface AddBodyListener {
         void onAddBody(PBody body);
     }
 
-    public interface OnDeleteBodyListener {
+    public interface DeleteBodyListener {
         void onDeleteBody(String objectName);
     }
 
-    public interface OnClearBodiesListener {
+    public interface ClearBodiesListener {
         void onClearBodies();
     }
 
-    public interface OnSelectedBodyListener {
+    public interface SelectedBodyListener {
         void onSelectedBodyChanged(PBody newBody);
     }
 
-    public interface OnChangeBodyNameListener {
+    public interface ChangeBodyNameListener {
         void onChangedBodyName(PBody bodyWithNewName, String oldName);
     }
 
-    private List<OnAddBodyListener> onAddBodyListeners = new ArrayList<>();
-    private List<OnDeleteBodyListener> onDeleteBodyListeners = new ArrayList<>();
-    private List<OnClearBodiesListener> onClearBodiesListeners = new ArrayList<>();
-    private List<OnSelectedBodyListener> onSelectedBodyListeners = new ArrayList<>();
-    private List<OnChangeBodyNameListener> onChangeBodyNameListeners = new ArrayList<>();
+    private List<AddBodyListener> addBodyListeners = new ArrayList<>();
+    private List<DeleteBodyListener> deleteBodyListeners = new ArrayList<>();
+    private List<ClearBodiesListener> clearBodiesListeners = new ArrayList<>();
+    private List<SelectedBodyListener> selectedBodyListeners = new ArrayList<>();
+    private List<ChangeBodyNameListener> changeBodyNameListeners = new ArrayList<>();
 
-    public List<OnDeleteBodyListener> getOnDeleteBodyListeners() {
-        return onDeleteBodyListeners;
+    public List<DeleteBodyListener> getDeleteBodyListeners() {
+        return deleteBodyListeners;
     }
 
-    public void setOnDeleteBodyListeners(List<OnDeleteBodyListener> onDeleteBodyListeners) {
-        this.onDeleteBodyListeners = onDeleteBodyListeners;
+    public List<AddBodyListener> getAddBodyListeners() {
+        return addBodyListeners;
     }
 
-    public List<OnAddBodyListener> getOnAddBodyListeners() {
-        return onAddBodyListeners;
+    public List<ClearBodiesListener> getClearBodiesListeners() {
+        return clearBodiesListeners;
     }
 
-    public void setOnAddBodyListeners(List<OnAddBodyListener> onAddBodyListeners) {
-        this.onAddBodyListeners = onAddBodyListeners;
+    public List<SelectedBodyListener> getSelectedBodyListeners() {
+        return selectedBodyListeners;
     }
 
-    public List<OnClearBodiesListener> getOnClearBodiesListeners() {
-        return onClearBodiesListeners;
-    }
-
-    public void setOnClearBodiesListeners(List<OnClearBodiesListener> onClearBodiesListeners) {
-        this.onClearBodiesListeners = onClearBodiesListeners;
-    }
-
-    public List<OnSelectedBodyListener> getOnSelectedBodyListeners() {
-        return onSelectedBodyListeners;
-    }
-
-    public void setOnSelectedBodyListeners(List<OnSelectedBodyListener> onSelectedBodyListeners) {
-        this.onSelectedBodyListeners = onSelectedBodyListeners;
-    }
-
-    public List<OnChangeBodyNameListener> getOnChangeBodyNameListeners() {
-        return onChangeBodyNameListeners;
-    }
-
-    public void setOnChangeBodyNameListeners(List<OnChangeBodyNameListener> onChangeBodyNameListeners) {
-        this.onChangeBodyNameListeners = onChangeBodyNameListeners;
+    public List<ChangeBodyNameListener> getChangeBodyNameListeners() {
+        return changeBodyNameListeners;
     }
 
     @Override
     public void addBody(PBody body) {
         super.addBody(body);
 
-        for (OnAddBodyListener onAddBodyListener : onAddBodyListeners) {
-            onAddBodyListener.onAddBody(body);
+        for (AddBodyListener addBodyListener : addBodyListeners) {
+            addBodyListener.onAddBody(body);
         }
     }
 
@@ -86,8 +66,8 @@ public class PEditorObservableStore extends PEditorStore {
     public void deleteBody(String objectName) {
         super.deleteBody(objectName);
 
-        for (OnDeleteBodyListener onDeleteBodyListener : onDeleteBodyListeners) {
-            onDeleteBodyListener.onDeleteBody(objectName);
+        for (DeleteBodyListener deleteBodyListener : deleteBodyListeners) {
+            deleteBodyListener.onDeleteBody(objectName);
         }
     }
 
@@ -95,7 +75,7 @@ public class PEditorObservableStore extends PEditorStore {
     public void clearBodies() {
         super.clearBodies();
 
-        for (OnClearBodiesListener listeners : onClearBodiesListeners) {
+        for (ClearBodiesListener listeners : clearBodiesListeners) {
             listeners.onClearBodies();
         }
     }
@@ -104,7 +84,7 @@ public class PEditorObservableStore extends PEditorStore {
     public void setSelectedBody(PBody selectedBody) {
         super.setSelectedBody(selectedBody);
 
-        for (OnSelectedBodyListener listener : onSelectedBodyListeners) {
+        for (SelectedBodyListener listener : selectedBodyListeners) {
             listener.onSelectedBodyChanged(selectedBody);
         }
     }
@@ -114,7 +94,7 @@ public class PEditorObservableStore extends PEditorStore {
         String oldName = body.getName();
         super.changeBodyName(newName, body);
 
-        for (OnChangeBodyNameListener listener : onChangeBodyNameListeners) {
+        for (ChangeBodyNameListener listener : changeBodyNameListeners) {
             listener.onChangedBodyName(body, oldName);
         }
     }
