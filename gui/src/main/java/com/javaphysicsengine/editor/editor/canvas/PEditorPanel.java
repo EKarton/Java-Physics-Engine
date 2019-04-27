@@ -1,16 +1,19 @@
 /*
-  Purpose: To create the PhysicsAPI Editor Window that is able to define objects by the user, simulate them, and save them.
-  Original Creation Date: January 11 2016
-  @author Emilio Kartono
-  @version January 15 2016
-*/
+ * Purpose: To create the PhysicsAPI Editor Window that is able to define objects by the user, simulate them, and save them.
+ * Original Creation Date: January 11 2016
+ * @author Emilio Kartono
+ * @version January 15 2016
+ */
 
 package com.javaphysicsengine.editor.editor.canvas;
 
 import com.javaphysicsengine.editor.editor.store.PEditorStore;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.Timer;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
@@ -46,16 +49,85 @@ public class PEditorPanel extends JPanel implements ActionListener {
     // The drawing buttons
     private JToggleButton[] drawingBttns;// <- Mouse will be on point if it is within a certain pixels away from actual point
 
-    /*
-      Post-condition: Creates a PEditorPane object
-      Pre-condition: "propertiesPane" must not be null
-      @param propertiesPane The JTabbedPane that will display the properties of the objects created in this PEditorPanel object
-    */
-    public PEditorPanel(PEditorStore store) {
-        // Initialise the fields
+    /**
+     * Creates the PEditorPane with the drawing buttons
+     * @param store the store
+     */
+    public PEditorPanel(PEditorStore store, PEditorMouseHandler mouseHandler, PEditorRenderer renderer) {
         super();
 
-        // Set up the buttons
+        this.store = store;
+        this.mouseHandler = mouseHandler;
+        this.renderer = renderer;
+
+        this.addMouseListener(this.mouseHandler);
+        this.addMouseMotionListener(this.mouseHandler);
+
+        this.setupEditButtons();
+        this.startGameLoop();
+    }
+
+    public PEditorRenderer getRenderer() {
+        return this.renderer;
+    }
+
+    public PEditorStore getStore() {
+        return this.store;
+    }
+
+    /**
+     * Draws the bodies and mouse cursor on the screen
+     * @param g The Graphics Object used to display the objects on the screen
+     */
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        renderer.renderGraphics(g, getWidth(), getHeight(), mouseHandler.getMouseX(), mouseHandler.getMouseY(), mouseHandler.isMouseSnappedToPoint(), editMode);
+    }
+
+    /**
+     * Handles events made from the timer or from the edit buttons
+     * Pre-condition: The "e" must not be null
+     * @param e The ActionEvent object
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof Timer) {
+            repaint();
+
+        } else if (e.getSource() instanceof JToggleButton) {
+            // Deselect all the other buttons that are not the current button
+            for (JToggleButton bttn : drawingBttns)
+                if (!bttn.equals(e.getSource()))
+                    bttn.setSelected(false);
+
+            // Remove all pre-existing drawable objects
+            store.reset();
+
+            // Grab which one was called
+            JToggleButton curBttn = (JToggleButton) e.getSource();
+            switch (curBttn.getName()) {
+                case "0":
+                    editMode = EDIT_MODE_CURSOR;
+                    break;
+                case "1":
+                    editMode = EDIT_MODE_POLYGON;
+                    break;
+                case "2":
+                    editMode = EDIT_MODE_CIRCLE;
+                    break;
+                case "3":
+                    editMode = EDIT_MODE_SPRING;
+                    break;
+                case "4":
+                    editMode = EDIT_MODE_STRING;
+                    break;
+            }
+            this.mouseHandler.setEditMode(editMode);
+        }
+    }
+
+    private void setupEditButtons() {
         drawingBttns = new JToggleButton[5];
         drawingBttns[0] = createCursorDrawingButton();
         drawingBttns[1] = createPolygonDrawingButton();
@@ -66,18 +138,6 @@ public class PEditorPanel extends JPanel implements ActionListener {
         for (JToggleButton toggleButton : drawingBttns) {
             this.add(toggleButton);
         }
-
-        this.store = store;
-        this.mouseHandler = new PEditorMouseHandler(store, editMode);
-        this.renderer = new PEditorRenderer(store);
-
-        // Initialise the event handlers
-        this.addMouseListener(this.mouseHandler);
-        this.addMouseMotionListener(this.mouseHandler);
-
-        // Initialise the game loop
-        Timer gameTimer = new Timer(1000 / 60, this);
-        gameTimer.start();
     }
 
     private JToggleButton createCursorDrawingButton() {
@@ -155,63 +215,8 @@ public class PEditorPanel extends JPanel implements ActionListener {
         return jToggleButton;
     }
 
-    public PEditorRenderer getRenderer() {
-        return this.renderer;
-    }
-
-    public PEditorStore getStore() {
-        return this.store;
-    }
-
-    /*
-      Post-condition: Draws the bodies and mouse cursor on the screen
-      Pre-condition: The "g" must not be a null value
-      @param g The Graphics Object used to display the objects on the screen
-    */
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        renderer.renderGraphics(g, getWidth(), getHeight(), mouseHandler.getMouseX(), mouseHandler.getMouseY(), mouseHandler.isMouseSnappedToPoint(), editMode);
-    }
-
-    /*
-      Post-condition: Handles which cursor button the mouse clicked.
-      Pre-condition: The "e" must not be null
-      @param e The ActionEvent object
-    */
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() instanceof Timer) {
-            repaint();
-
-        } else if (e.getSource() instanceof JToggleButton) {
-            // Deselect all the other buttons that are not the current button
-            for (JToggleButton bttn : drawingBttns)
-                if (!bttn.equals(e.getSource()))
-                    bttn.setSelected(false);
-
-            // Remove all pre-existing drawable objects
-            store.reset();
-
-            // Grab which one was called
-            JToggleButton curBttn = (JToggleButton) e.getSource();
-            switch (curBttn.getName()) {
-                case "0":
-                    editMode = EDIT_MODE_CURSOR;
-                    break;
-                case "1":
-                    editMode = EDIT_MODE_POLYGON;
-                    break;
-                case "2":
-                    editMode = EDIT_MODE_CIRCLE;
-                    break;
-                case "3":
-                    editMode = EDIT_MODE_SPRING;
-                    break;
-                case "4":
-                    editMode = EDIT_MODE_STRING;
-                    break;
-            }
-            this.mouseHandler.setEditMode(editMode);
-        }
+    private void startGameLoop() {
+        Timer gameTimer = new Timer(1000 / 60, this);
+        gameTimer.start();
     }
 }

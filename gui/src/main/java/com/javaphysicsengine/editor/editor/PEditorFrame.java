@@ -11,16 +11,31 @@ import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.editor.codegenerator.PCodeGenerator;
+import com.javaphysicsengine.editor.editor.canvas.PEditorMouseHandler;
 import com.javaphysicsengine.editor.editor.canvas.PEditorPanel;
+import com.javaphysicsengine.editor.editor.canvas.PEditorRenderer;
 import com.javaphysicsengine.editor.editor.properties.PBodyPropertiesPanel;
 import com.javaphysicsengine.editor.editor.store.PEditorObservableStore;
 import com.javaphysicsengine.editor.io.PFileReader;
 import com.javaphysicsengine.editor.io.PFileWriter;
 import com.javaphysicsengine.editor.simulation.PSimulationWindow;
 
-import javax.swing.*;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
@@ -29,6 +44,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
+import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_CURSOR;
 
 public class PEditorFrame extends JFrame implements ActionListener {
     private PEditorPanel editorPanel = null;
@@ -88,7 +105,9 @@ public class PEditorFrame extends JFrame implements ActionListener {
         PEditorObservableStore store = new PEditorObservableStore();
         store.getAddBodyListeners().add(body -> propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, editorPanel))));
 
-        editorPanel = new PEditorPanel(store);
+        PEditorMouseHandler mouseHandler = new PEditorMouseHandler(store, EDIT_MODE_CURSOR);
+        PEditorRenderer renderer = new PEditorRenderer(store);
+        editorPanel = new PEditorPanel(store, mouseHandler, renderer);
 
         store.getDeleteBodyListeners().add(objectName -> {
             // Close the properties tab that shows the properties of the delete object

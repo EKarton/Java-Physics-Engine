@@ -1,3 +1,11 @@
+/*
+ * Purpose: To store and modify all bodies and constraints made by the editor.
+ *          It also stores temporary data for bodies and constraints that are currently being made.
+ *
+ * @author Emilio Kartono
+ * @version April 26 2019
+ */
+
 package com.javaphysicsengine.editor.editor.store;
 
 import com.javaphysicsengine.api.body.PBody;

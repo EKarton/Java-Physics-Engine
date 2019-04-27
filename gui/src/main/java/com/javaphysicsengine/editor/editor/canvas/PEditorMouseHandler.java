@@ -1,3 +1,9 @@
+/*
+ * Purpose: To handle all mouse interactions made from the PEditorPanel
+ * @author Emilio Kartono
+ * @version April 26 2019
+ */
+
 package com.javaphysicsengine.editor.editor.canvas;
 
 import com.javaphysicsengine.api.body.PBody;
