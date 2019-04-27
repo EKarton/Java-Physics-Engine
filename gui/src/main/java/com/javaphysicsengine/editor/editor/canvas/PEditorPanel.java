@@ -67,10 +67,6 @@ public class PEditorPanel extends JPanel implements ActionListener {
         this.startGameLoop();
     }
 
-    public PEditorStore getStore() {
-        return this.store;
-    }
-
     /**
      * Draws the bodies and mouse cursor on the screen
      * @param g The Graphics Object used to display the objects on the screen

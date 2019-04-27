@@ -106,7 +106,7 @@ public class PEditorFrame extends JFrame implements ActionListener {
 
         // Set up the pane where users can draw on it
         store = new PEditorObservableStore();
-        store.getAddBodyListeners().add(body -> propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, editorPanel))));
+        store.getAddBodyListeners().add(body -> propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, store))));
 
         mouseHandler = new PEditorMouseHandler(store, EDIT_MODE_CURSOR);
         renderer = new PEditorRenderer(store);
@@ -138,7 +138,7 @@ public class PEditorFrame extends JFrame implements ActionListener {
 
                 // Create a properties tab for that body
                 if (!isBodyInPropertiesPane) {
-                    propertiesPane.add(store.getSelectedBody().getName(), new JScrollPane(new PBodyPropertiesPanel(store.getSelectedBody(), propertiesPane, editorPanel)));
+                    propertiesPane.add(store.getSelectedBody().getName(), new JScrollPane(new PBodyPropertiesPanel(store.getSelectedBody(), propertiesPane, store)));
                 }
             }
         });
@@ -232,13 +232,13 @@ public class PEditorFrame extends JFrame implements ActionListener {
             // Adding the bodies and constraints to the editor
             for (PBody body : bodies) {
                 if (body != null) {
-                    editorPanel.getStore().addBody(body);
-                    propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, editorPanel)));
+                    store.addBody(body);
+                    propertiesPane.add(body.getName(), new JScrollPane(new PBodyPropertiesPanel(body, propertiesPane, store)));
                 }
             }
             for (PConstraints constraint : constraints) {
                 if (constraint != null) {
-                    editorPanel.getStore().addConstraint(constraint);
+                    store.addConstraint(constraint);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -258,8 +258,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
             FileOutputStream fileWriter = new FileOutputStream(filePath);
 
             PFileWriter pFileWriter = new PFileWriter(fileWriter);
-            pFileWriter.saveBodies(editorPanel.getStore().getCopiesOfBodies());
-            pFileWriter.saveConstraints(editorPanel.getStore().getCopiesOfConstraints());
+            pFileWriter.saveBodies(store.getCopiesOfBodies());
+            pFileWriter.saveConstraints(store.getCopiesOfConstraints());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -271,8 +271,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
      * It will open up a window with the code.
      */
     private void viewJavaCode() {
-        List<PBody> bodies = editorPanel.getStore().getCopiesOfBodies();
-        List<PConstraints> constraints = editorPanel.getStore().getCopiesOfConstraints();
+        List<PBody> bodies = store.getCopiesOfBodies();
+        List<PConstraints> constraints = store.getCopiesOfConstraints();
         PCodeGenerator codeGenerator = new PCodeGenerator();
         List<String> codeLines = codeGenerator.generateApiCode(bodies, constraints);
 
@@ -294,8 +294,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
      * Gets the bodies created in the editorPanel, opens a new window, and simulates it
      */
     private void runSimulation() {
-        List<PBody> bodies = editorPanel.getStore().getCopiesOfBodies();
-        List<PConstraints> constraints = editorPanel.getStore().getCopiesOfConstraints();
+        List<PBody> bodies = store.getCopiesOfBodies();
+        List<PConstraints> constraints = store.getCopiesOfConstraints();
 
         // Relink the bodies attached to constraints to the bodies[] because the bodies attached to constraints[] are copies
         for (PConstraints constraint : constraints) {
@@ -374,8 +374,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
             switch (curItem.getText()) {
                 case "New":
                     System.out.println("Created a new file");
-                    editorPanel.getStore().clearBodies();
-                    editorPanel.getStore().clearConstraints();
+                    store.clearBodies();
+                    store.clearConstraints();
                     propertiesPane.removeAll();
                     break;
                 case "Load":

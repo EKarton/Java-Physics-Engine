@@ -9,17 +9,10 @@ package com.javaphysicsengine.editor.editor.properties;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PCircle;
-import com.javaphysicsengine.editor.editor.canvas.PEditorPanel;
+import com.javaphysicsengine.editor.editor.store.PEditorStore;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import java.awt.Color;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -29,7 +22,7 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
 
     private JPanel colorPanel = new JPanel();  // A panel used to host the color picker
     private JTabbedPane tabbedPane;
-    private PEditorPanel editorPanel;
+    private PEditorStore store;
     private ArrayList<PBodyPropertyItem> propertyItems = new ArrayList<PBodyPropertyItem>();
     private PBody body;
 
@@ -39,13 +32,12 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
      *
      * @param body        The PBody object that will have its properties modified throug GUI components
      * @param currentPane The JTabbedPane that will contain this object
-     * @param editorPanel The PEditorPanel that created this object
      */
-    public PBodyPropertiesPanel(PBody body, JTabbedPane currentPane, PEditorPanel editorPanel) {
+    public PBodyPropertiesPanel(PBody body, JTabbedPane currentPane, PEditorStore store) {
         super();
         this.body = body;
         this.tabbedPane = currentPane;
-        this.editorPanel = editorPanel;
+        this.store = store;
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // Add the "Close Tab" button
@@ -141,7 +133,7 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
                     case "Name":
 
                         try {
-                            editorPanel.getStore().changeBodyName(txtbox.getText(), body);
+                            store.changeBodyName(txtbox.getText(), body);
 
                         } catch (IllegalArgumentException exception) {
                             JOptionPane.showMessageDialog(null, "Name already set to another body!");
@@ -186,7 +178,7 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
                             System.out.println("Tab Removal Error");
                         break;
                     case "Delete Object":
-                        editorPanel.getStore().deleteBody(body.getName());
+                        store.deleteBody(body.getName());
 
                         break;
                 }
