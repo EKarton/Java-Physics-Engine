@@ -34,16 +34,15 @@ public class PCodeGenerator {
         List<String> codeLines = new ArrayList<>();
 
         // Create the java code for the importing libraries
-        codeLines.add("import PhysicsEngine.*;");
-        codeLines.add("import ToolBox.Vector;");
+        codeLines.add("import com.javaphysicsengine.api.*;");
+        codeLines.add("import com.javaphysicsengine.utils.*;");
 
         // Create the java code to make the function (function that will handle creating the world and its bodies and constraints)
-        codeLines.add("");
-        codeLines.add("public void initialisePhysics()");
-        codeLines.add("{");
+        codeLines.add("public class MainClass {");
+        codeLines.add("\tpublic static void main(String[] args) {");
 
         // Create the java code to create the world
-        codeLines.add("    PWorld world = new PWorld();");
+        codeLines.add("\t\tPWorld world = new PWorld();");
         codeLines.add("");
 
         // Create the java code for bodies
@@ -54,12 +53,12 @@ public class PCodeGenerator {
                 bodyType = "PCircle";
 
             // Write the code for all the PBody objects
-            codeLines.add("    " + bodyType + " " + bodyName + " = new " + bodyType + "(\"" + bodyName + "\")");
-            codeLines.add("    " + bodyName + ".setMass(" + body.getMass() + ");");
-            codeLines.add("    " + bodyName + ".setMoveable(" + body.isMoving() + ");");
-            codeLines.add("    " + bodyName + ".setVelocity(" + body.getVelocity() + ");");
-            codeLines.add("    " + bodyName + ".setOutlineColor(" + body.getOutlineColor() + ");");
-            codeLines.add("    " + bodyName + ".setFillColor(" + body.getFillColor() + ");");
+            codeLines.add("\t\t" + bodyType + " " + bodyName + " = new " + bodyType + "(\"" + bodyName + "\")");
+            codeLines.add("\t\t" + bodyName + ".setMass(" + body.getMass() + ");");
+            codeLines.add("\t\t" + bodyName + ".setMoveable(" + body.isMoving() + ");");
+            codeLines.add("\t\t" + bodyName + ".setVelocity(" + body.getVelocity() + ");");
+            codeLines.add("\t\t" + bodyName + ".setOutlineColor(" + body.getOutlineColor() + ");");
+            codeLines.add("\t\t" + bodyName + ".setFillColor(" + body.getFillColor() + ");");
 
             // Adding lines of code special for PPolygon
             if (body instanceof PPolygon) {
@@ -67,18 +66,18 @@ public class PCodeGenerator {
 
                 // Add the vertices
                 for (Vector vertices : bodyPoly.getVertices())
-                    codeLines.add("    " + bodyName + ".getVertices().add(new Vector(" + vertices.toString() + "));");
-                codeLines.add("    " + bodyName + ".computeCenterOfMass();");
+                    codeLines.add("\t\t" + bodyName + ".getVertices().add(new Vector(" + vertices.toString() + "));");
+                codeLines.add("\t\t" + bodyName + ".computeCenterOfMass();");
             }
 
             // Adding lines of code special for PCircle
             else if (body instanceof PCircle) {
                 PCircle bodyCircle = (PCircle) body;
-                codeLines.add("    " + bodyName + ".setRadius(" + bodyCircle.getRadius() + ");");
-                codeLines.add("    " + bodyName + ".setCenterPt(new Vector(" + bodyCircle.getCenterPt() + "));");
+                codeLines.add("\t\t" + bodyName + ".setRadius(" + bodyCircle.getRadius() + ");");
+                codeLines.add("\t\t" + bodyName + ".setCenterPt(new Vector(" + bodyCircle.getCenterPt() + "));");
             }
 
-            codeLines.add("    world.getBodies().add(" + bodyName + ");");
+            codeLines.add("\t\tworld.getBodies().add(" + bodyName + ");");
 
             // Add a space in between different objects
             codeLines.add("");
@@ -86,7 +85,7 @@ public class PCodeGenerator {
 
         // Create the java code for the constraints
         for (PConstraints constraint : constraints) {
-            String constraintName = "Constraint_" + (int) (Math.random() * (1000));
+            String constraintName = "constraint_" + (int) (Math.random() * (1000));
             String attachedBody1Name = constraint.getAttachedBodies()[0].getName();
             String attachedBody2Name = constraint.getAttachedBodies()[1].getName();
             String constraintType = "PSpring";
@@ -94,28 +93,29 @@ public class PCodeGenerator {
                 constraintType = "PString";
 
             // Writing lines of code for all PConstraints
-            codeLines.add("    " + constraintType + " " + constraintName + " = new " + constraintType + "(" + attachedBody1Name + ", " + attachedBody2Name + ")");
+            codeLines.add("\t\t" + constraintType + " " + constraintName + " = new " + constraintType + "(" + attachedBody1Name + ", " + attachedBody2Name + ")");
 
 
             // Writing lines of code for all PSprings
             if (constraint instanceof PSpring) {
                 PSpring springConstraint = (PSpring) constraint;
-                codeLines.add("    " + constraintName + ".setLengthOfSpring(new Vector(" + springConstraint.getLength() + "));");
-                codeLines.add("    " + constraintName + ".setKValue(" + springConstraint.getKValue() + ");");
+                codeLines.add("\t\t" + constraintName + ".setLengthOfSpring(new Vector(" + springConstraint.getLength() + "));");
+                codeLines.add("\t\t" + constraintName + ".setKValue(" + springConstraint.getKValue() + ");");
             }
 
             // Writing lines of code for all PStrings
             if (constraint instanceof PString) {
                 PString stringConstraint = (PString) constraint;
-                codeLines.add("    " + constraintName + ".setLengthOfSpring(new Vector(" + stringConstraint.getLength() + "));");
+                codeLines.add("\t\t" + constraintName + ".setLengthOfSpring(new Vector(" + stringConstraint.getLength() + "));");
             }
-            codeLines.add("    world.getConstraints().add(" + constraintName + ");");
+            codeLines.add("\t\tworld.getConstraints().add(" + constraintName + ");");
 
             // Add a space in between different objects
             codeLines.add("");
         }
 
         // End the function call with the last curly braces
+        codeLines.add("\t}");
         codeLines.add("}");
 
         return codeLines;

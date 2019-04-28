@@ -122,7 +122,6 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
 
     /**
      * Handles modifying the properties of the body each time a GUI component triggers an event
-     *
      * @param e The event
      */
     public void actionPerformed(ActionEvent e) {
@@ -131,7 +130,6 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
                 JTextField txtbox = (JTextField) e.getSource();
                 switch (txtbox.getName()) {
                     case "Name":
-
                         try {
                             store.changeBodyName(txtbox.getText(), body);
 
@@ -139,7 +137,6 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
                             JOptionPane.showMessageDialog(null, "Name already set to another body!");
                             txtbox.setText(body.getName());
                         }
-
                         break;
                     case "Mass":
                         body.setMass(Double.parseDouble(txtbox.getText()));
@@ -183,9 +180,9 @@ public class PBodyPropertiesPanel extends JPanel implements ActionListener {
                         break;
                 }
             } else if (e.getSource() instanceof JCheckBox) {
-                JCheckBox chckbox = (JCheckBox) e.getSource();
-                if (chckbox.getText().equals("Is Moveable"))
-                    body.setMoveable(chckbox.isSelected());
+                JCheckBox checkbox = (JCheckBox) e.getSource();
+                if (checkbox.getText().equals("Is Moveable"))
+                    body.setMoveable(checkbox.isSelected());
             }
         } catch (Exception exception) {
             JOptionPane.showMessageDialog(null, "Input Invalid");
