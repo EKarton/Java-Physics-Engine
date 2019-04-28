@@ -9,8 +9,9 @@ package com.javaphysicsengine.editor.editor;
 
 import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.body.PBody;
-import com.javaphysicsengine.api.body.PBodyFactory;
+import com.javaphysicsengine.api.body.PCircle;
 import com.javaphysicsengine.api.body.PConstraints;
+import com.javaphysicsengine.api.body.PPolygon;
 import com.javaphysicsengine.api.body.PSpring;
 import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.editor.codegenerator.PCodeGenerator;
@@ -286,10 +287,17 @@ public class PEditorFrame extends JFrame implements ActionListener {
     private void runSimulation() {
         PWorld world = new PWorld();
 
-        PBodyFactory factory = new PBodyFactory();
-
         for (PBody body : store.getCreatedBodies()) {
-            world.getBodies().add(factory.createCopy(body));
+            PBody copiedBody;
+
+            if (body instanceof PPolygon) {
+                copiedBody = new PPolygon((PPolygon) body);
+            } else if (body instanceof PCircle) {
+                copiedBody = new PCircle((PCircle) body);
+            } else {
+                throw new IllegalArgumentException("The class type " + body.getClass() + " is not supported!");
+            }
+            world.getBodies().add(copiedBody);
         }
 
         for (PConstraints constraint : store.getCreatedConstraints()) {
