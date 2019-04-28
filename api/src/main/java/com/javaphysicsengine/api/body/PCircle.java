@@ -12,7 +12,6 @@ import java.awt.Graphics;
 
 public class PCircle extends PBody {
 
-    // Geometric properties about the circle
     private double radius = 10;
 
     /**
@@ -75,7 +74,7 @@ public class PCircle extends PBody {
 
     /**
      * Draws the fill of the circle
-     * Pre-condition: The "windowHeight" must be greater than 0
+     *
      * @param g The Graphics Object
      * @param windowHeight The height of the window containing the body being displayed
      */
@@ -93,7 +92,7 @@ public class PCircle extends PBody {
 
     /**
      * Draws the outline of the circle
-     * Pre-condition: "windowHeight" must be greater than 0
+
      * @param g The Graphics Object
      * @param windowHeight The height of the window containing the body being displayed
      */

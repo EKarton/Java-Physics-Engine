@@ -14,7 +14,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 public class PPolygon extends PBody {
-    // Fields representing the geometric and graphic structure of a polygon
+
     private ArrayList<Vector> vertices = new ArrayList<Vector>();
     private PBoundingBox boundingBox;
 
