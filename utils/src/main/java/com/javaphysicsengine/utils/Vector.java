@@ -22,6 +22,10 @@ public class Vector {
         this.y = y;
     }
 
+    public static Vector of(double x, double y) {
+        return new Vector(x, y);
+    }
+
     /*
       Pre-condition: Vectors must not be of null values!
       Post-condition: Subtracts the two vectors

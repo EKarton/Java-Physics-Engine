@@ -9,15 +9,10 @@
 package com.javaphysicsengine.editor.editor.store;
 
 import com.javaphysicsengine.api.body.PBody;
-import com.javaphysicsengine.api.body.PCircle;
 import com.javaphysicsengine.api.body.PConstraints;
-import com.javaphysicsengine.api.body.PPolygon;
-import com.javaphysicsengine.api.body.PSpring;
-import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.utils.Vector;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class PEditorStore {
     private ArrayList<Vector> polyVertices = new ArrayList<Vector>();
@@ -51,6 +46,9 @@ public class PEditorStore {
     }
 
     public void setSelectedBody(PBody selectedBody) {
+        if (!createdBodies.contains(selectedBody)) {
+            throw new IllegalArgumentException("The body " + selectedBody + " does not exist in store!");
+        }
         this.selectedBody = selectedBody;
     }
 
@@ -59,6 +57,9 @@ public class PEditorStore {
     }
 
     public void setAttachedBody1(PBody attachedBody1) {
+        if (!createdBodies.contains(attachedBody1)) {
+            throw new IllegalArgumentException("The body " + selectedBody + " does not exist in store!");
+        }
         this.attachedBody1 = attachedBody1;
     }
 
@@ -78,54 +79,6 @@ public class PEditorStore {
         selectedBody = null;
     }
 
-    public List<PBody> getCopiesOfBodies() {
-        List<PBody> copyOfBodies = new ArrayList<>();
-        for (PBody body : createdBodies) {
-            PBody copiedBody = null;
-            if (body instanceof PPolygon)
-                copiedBody = new PPolygon((PPolygon) body);
-            else if (body instanceof PCircle)
-                copiedBody = new PCircle((PCircle) body);
-
-            if (copiedBody != null)
-                copyOfBodies.add(copiedBody);
-        }
-        return copyOfBodies;
-    }
-
-    /*
-      Post-condition: Returns a copy of all the PConstraints objects created in this panel
-      @return List of all copied PConstraints objects created in this panel
-    */
-    public List<PConstraints> getCopiesOfConstraints() {
-        List<PConstraints> copyOfConstraints = new ArrayList<>();
-        for (PConstraints constraint : createdConstraints) {
-            PBody[] bodiesAttached_Copy = new PBody[2];
-
-            // Making a copy of the bodies attached
-            for (int i = 0; i < bodiesAttached_Copy.length; i++) {
-                PBody bodyAttached = constraint.getAttachedBodies()[i];
-                if (bodyAttached instanceof PPolygon)
-                    bodiesAttached_Copy[i] = new PPolygon((PPolygon) bodyAttached);
-                else if (bodyAttached instanceof PCircle)
-                    bodiesAttached_Copy[i] = new PCircle((PCircle) bodyAttached);
-            }
-
-            // Making a copy of the constraints
-            if (constraint instanceof PSpring) {
-                PSpring springCopy = new PSpring(bodiesAttached_Copy[0], bodiesAttached_Copy[1]);
-                springCopy.setKValue(((PSpring) constraint).getKValue());
-                springCopy.setLength(constraint.getLength());
-                copyOfConstraints.add(springCopy);
-            } else if (constraint instanceof PString) {
-                PString stringCopy = new PString(bodiesAttached_Copy[0], bodiesAttached_Copy[1]);
-                stringCopy.setLength(constraint.getLength());
-                copyOfConstraints.add(stringCopy);
-            }
-        }
-        return copyOfConstraints;
-    }
-
     public void addBody(PBody body) {
         for (PBody createdBody : createdBodies) {
             if (createdBody.getName().equals(body.getName())) {
@@ -140,6 +93,12 @@ public class PEditorStore {
       @param constraint The PContraints object
     */
     public void addConstraint(PConstraints constraint) {
+        for (PBody body : constraint.getAttachedBodies()) {
+            if (!createdBodies.contains(body)) {
+                throw new IllegalArgumentException("The body " + body + " is not in store!");
+            }
+        }
+
         createdConstraints.add(constraint);
     }
 
@@ -170,7 +129,11 @@ public class PEditorStore {
         createdBodies.remove(body);
     }
 
+    /**
+     * Clears all the created bodies and constraints.
+     */
     public void clearBodies() {
+        createdConstraints.clear();
         createdBodies.clear();
     }
 

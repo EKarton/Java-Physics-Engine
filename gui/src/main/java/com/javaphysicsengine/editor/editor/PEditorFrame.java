@@ -258,8 +258,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
             FileOutputStream fileWriter = new FileOutputStream(filePath);
 
             PFileWriter pFileWriter = new PFileWriter(fileWriter);
-            pFileWriter.saveBodies(store.getCopiesOfBodies());
-            pFileWriter.saveConstraints(store.getCopiesOfConstraints());
+            pFileWriter.saveBodies(store.getCreatedBodies());
+            pFileWriter.saveConstraints(store.getCreatedConstraints());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -271,8 +271,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
      * It will open up a window with the code.
      */
     private void viewJavaCode() {
-        List<PBody> bodies = store.getCopiesOfBodies();
-        List<PConstraints> constraints = store.getCopiesOfConstraints();
+        List<PBody> bodies = store.getCreatedBodies();
+        List<PConstraints> constraints = store.getCreatedConstraints();
         PCodeGenerator codeGenerator = new PCodeGenerator();
         List<String> codeLines = codeGenerator.generateApiCode(bodies, constraints);
 
@@ -294,8 +294,8 @@ public class PEditorFrame extends JFrame implements ActionListener {
      * Gets the bodies created in the editorPanel, opens a new window, and simulates it
      */
     private void runSimulation() {
-        List<PBody> bodies = store.getCopiesOfBodies();
-        List<PConstraints> constraints = store.getCopiesOfConstraints();
+        List<PBody> bodies = store.getCreatedBodies();
+        List<PConstraints> constraints = store.getCreatedConstraints();
 
         // Relink the bodies attached to constraints to the bodies[] because the bodies attached to constraints[] are copies
         for (PConstraints constraint : constraints) {
