@@ -40,15 +40,15 @@ public class PString extends PConstraints {
         double lengthPerBody = getLength() / 2.0;
         System.out.println("L:" + getLength());
 
-        if (bodies[0].isMoving() == false || bodies[1].isMoving() == false)
+        if (!bodies[0].isMoving() || !bodies[1].isMoving())
             lengthPerBody = getLength();
 
         double equilPt_X = (bodies[0].getCenterPt().getX() + bodies[1].getCenterPt().getX()) / 2;
         double equilPt_Y = (bodies[0].getCenterPt().getY() + bodies[1].getCenterPt().getY()) / 2;
-        if (bodies[0].isMoving() == false) {
+        if (!bodies[0].isMoving()) {
             equilPt_X = bodies[0].getCenterPt().getX();
             equilPt_Y = bodies[0].getCenterPt().getY();
-        } else if (bodies[1].isMoving() == false) {
+        } else if (!bodies[1].isMoving()) {
             equilPt_X = bodies[1].getCenterPt().getX();
             equilPt_Y = bodies[1].getCenterPt().getY();
         }
@@ -71,7 +71,7 @@ public class PString extends PConstraints {
                 body.setNetForce(centripetalForce_Vector);
 
                 // Move the body to the circumference of the rope
-                if (body.isMoving() == true) {
+                if (body.isMoving()) {
                     Vector displacement = new Vector(distX, distY);
                     displacement.setLength(distance - lengthPerBody);
                     displacement.setXY(displacement.getX() * -1, displacement.getY() * -1);

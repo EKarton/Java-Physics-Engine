@@ -44,6 +44,20 @@ public class PSpring extends PConstraints {
     }
 
     /**
+     * Post-condition: Adds the tension forces to the attached bodies
+     */
+    public void addTensionForce() {
+        // Computing the center of the spring
+        PBody[] bodies = super.getAttachedBodies();
+        Vector equilCenter = new Vector((bodies[0].getCenterPt().getX() + bodies[1].getCenterPt().getX()) / 2,
+                (bodies[0].getCenterPt().getY() + bodies[1].getCenterPt().getY()) / 2);
+
+        // Adding tension to each body separately
+        addTensionForceToBody(getAttachedBodies()[0], equilCenter);
+        addTensionForceToBody(getAttachedBodies()[1], equilCenter);
+    }
+
+    /**
      * Post-condition: Adds the tension forces to a body
      * @param body The body
      * @param equilPt The equilibruim point of the spring
@@ -66,26 +80,8 @@ public class PSpring extends PConstraints {
         Vector tensionForce = new Vector(xMinus, yMinus);
         tensionForce.setLength(tensionForce_Scalar);
 
-        //System.out.println("  Force: " + tensionForce_Scalar);
-
         // Add the tension force to the body
         body.setNetForce((Vector.add(body.getNetForce(), tensionForce)));
-    }
-
-    /**
-     * Post-condition: Adds the tension forces to the attached bodies
-     */
-    public void addTensionForce() {
-        // Computing the center of the spring
-        PBody[] bodies = super.getAttachedBodies();
-        Vector equilCenter = new Vector((bodies[0].getCenterPt().getX() + bodies[1].getCenterPt().getX()) / 2,
-                (bodies[0].getCenterPt().getY() + bodies[1].getCenterPt().getY()) / 2);
-
-        // Adding tension to each body separately
-        //System.out.println("Body 1:");
-        addTensionForceToBody(getAttachedBodies()[0], equilCenter);
-        //System.out.println("Body 2:");
-        addTensionForceToBody(getAttachedBodies()[1], equilCenter);
     }
 
     /**
