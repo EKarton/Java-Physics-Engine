@@ -13,12 +13,4 @@ public class PBodyFactory {
         }
         return copiedBody;
     }
-
-    public PBody createCopy(PPolygon polygon) {
-        return new PPolygon(polygon);
-    }
-
-    public PBody createCopy(PCircle circle) {
-        return new PCircle(circle);
-    }
 }

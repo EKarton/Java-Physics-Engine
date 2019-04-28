@@ -200,12 +200,15 @@ public class PPolygon extends PBody {
      */
     @Override
     public String toString() {
-        String propertiesLine = super.toString() + "Vertices:";
+        StringBuilder propertiesLine = new StringBuilder(super.toString() + "Vertices:");
         for (int i = 0; i < vertices.size(); i++) {
-            propertiesLine += vertices.get(i).getX() + " " + vertices.get(i).getY();
+            propertiesLine.append(vertices.get(i).getX())
+                    .append(" ")
+                    .append(vertices.get(i).getY());
+
             if (i < vertices.size() - 1)
-                propertiesLine += ",";
+                propertiesLine.append(",");
         }
-        return propertiesLine;
+        return propertiesLine.toString();
     }
 }
