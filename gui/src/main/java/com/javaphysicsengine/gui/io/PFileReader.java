@@ -3,7 +3,7 @@
  * @author Emilio Kartono
  * @version January 15 2016
  */
-package com.javaphysicsengine.editor.io;
+package com.javaphysicsengine.gui.io;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PCircle;

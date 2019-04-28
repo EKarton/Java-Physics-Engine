@@ -1,6 +1,6 @@
-package com.javaphysicsengine.editor.editor.canvas;
+package com.javaphysicsengine.gui.editor.canvas;
 
-import com.javaphysicsengine.editor.editor.store.PEditorStore;
+import com.javaphysicsengine.gui.editor.store.PEditorStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,11 +13,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_CIRCLE;
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_CURSOR;
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_POLYGON;
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_SPRING;
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_STRING;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_CIRCLE;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_CURSOR;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_POLYGON;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_SPRING;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_STRING;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;

@@ -1,11 +1,11 @@
 /*
- * Purpose: To generate API code from the bodies made in the editor
+ * Purpose: To generate API code from the bodies made in the gui
  * Original Creation Date: January 11 2016
  * @author Emilio Kartono
  * @version January 15 2016
  */
 
-package com.javaphysicsengine.editor.codegenerator;
+package com.javaphysicsengine.gui.codegenerator;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PCircle;

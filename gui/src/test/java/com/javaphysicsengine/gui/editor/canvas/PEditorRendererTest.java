@@ -1,10 +1,10 @@
-package com.javaphysicsengine.editor.editor.canvas;
+package com.javaphysicsengine.gui.editor.canvas;
 
 import com.javaphysicsengine.api.body.PCircle;
 import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.api.body.PPolygon;
 import com.javaphysicsengine.api.body.PSpring;
-import com.javaphysicsengine.editor.editor.store.PEditorStore;
+import com.javaphysicsengine.gui.editor.store.PEditorStore;
 import com.javaphysicsengine.utils.Vector;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_CIRCLE;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_CIRCLE;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

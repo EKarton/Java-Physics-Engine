@@ -1,20 +1,20 @@
-package com.javaphysicsengine.editor.editor.canvas;
+package com.javaphysicsengine.gui.editor.canvas;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PCircle;
 import com.javaphysicsengine.api.body.PPolygon;
-import com.javaphysicsengine.editor.editor.store.PEditorStore;
+import com.javaphysicsengine.gui.editor.store.PEditorStore;
 import com.javaphysicsengine.utils.Vector;
 import org.junit.Test;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_CIRCLE;
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_CURSOR;
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_POLYGON;
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_SPRING;
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_STRING;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_CIRCLE;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_CURSOR;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_POLYGON;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_SPRING;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_STRING;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

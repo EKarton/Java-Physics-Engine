@@ -31,7 +31,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>com.javaphysicsengine.editor.editor.PEditorFrame</mainClass>
+                  <mainClass>com.javaphysicsengine.gui.editor.PEditorFrame</mainClass>
                 </transformer>
               </transformers>
             </configuration>

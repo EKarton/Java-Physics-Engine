@@ -5,7 +5,7 @@
  * @version January 15 2016
  */
 
-package com.javaphysicsengine.editor.editor;
+package com.javaphysicsengine.gui.editor;
 
 import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.body.PBody;
@@ -14,15 +14,15 @@ import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.api.body.PPolygon;
 import com.javaphysicsengine.api.body.PSpring;
 import com.javaphysicsengine.api.body.PString;
-import com.javaphysicsengine.editor.codegenerator.PCodeGenerator;
-import com.javaphysicsengine.editor.editor.canvas.PEditorMouseHandler;
-import com.javaphysicsengine.editor.editor.canvas.PEditorPanel;
-import com.javaphysicsengine.editor.editor.canvas.PEditorRenderer;
-import com.javaphysicsengine.editor.editor.properties.PBodyPropertiesPanel;
-import com.javaphysicsengine.editor.editor.store.PEditorObservableStore;
-import com.javaphysicsengine.editor.io.PFileReader;
-import com.javaphysicsengine.editor.io.PFileWriter;
-import com.javaphysicsengine.editor.simulation.PSimulationWindow;
+import com.javaphysicsengine.gui.codegenerator.PCodeGenerator;
+import com.javaphysicsengine.gui.editor.canvas.PEditorMouseHandler;
+import com.javaphysicsengine.gui.editor.canvas.PEditorPanel;
+import com.javaphysicsengine.gui.editor.canvas.PEditorRenderer;
+import com.javaphysicsengine.gui.editor.properties.PBodyPropertiesPanel;
+import com.javaphysicsengine.gui.editor.store.PEditorObservableStore;
+import com.javaphysicsengine.gui.io.PFileReader;
+import com.javaphysicsengine.gui.io.PFileWriter;
+import com.javaphysicsengine.gui.simulation.PSimulationWindow;
 
 import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_CURSOR;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_CURSOR;
 
 public class PEditorFrame extends JFrame implements ActionListener {
     private PEditorPanel editorPanel = null;
@@ -88,7 +88,7 @@ public class PEditorFrame extends JFrame implements ActionListener {
     }
 
     /**
-     * Adds the properties pane and the editor pane onto the window
+     * Adds the properties pane and the gui pane onto the window
      */
     private void addPanels() {
         // Set up the properties pane
@@ -206,7 +206,7 @@ public class PEditorFrame extends JFrame implements ActionListener {
     }
 
     /**
-     * It will save the bodies from the editor to a file.
+     * It will save the bodies from the gui to a file.
      * It will show a prompt to the user asking for where to save the file.
      * Note that it must be a full file path.
      */
@@ -220,7 +220,7 @@ public class PEditorFrame extends JFrame implements ActionListener {
             List<PBody> bodies = fileReader.getBodies();
             List<PConstraints> constraints = fileReader.getConstraints();
 
-            // Adding the bodies and constraints to the editor
+            // Adding the bodies and constraints to the gui
             for (PBody body : bodies) {
                 if (body != null) {
                     store.addBody(body);
@@ -258,7 +258,7 @@ public class PEditorFrame extends JFrame implements ActionListener {
     }
 
     /**
-     * View the java code generated from the bodies made in the editor.
+     * View the java code generated from the bodies made in the gui.
      * It will open up a window with the code.
      */
     private void viewJavaCode() {

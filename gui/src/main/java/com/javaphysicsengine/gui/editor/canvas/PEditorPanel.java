@@ -5,9 +5,9 @@
  * @version January 15 2016
  */
 
-package com.javaphysicsengine.editor.editor.canvas;
+package com.javaphysicsengine.gui.editor.canvas;
 
-import com.javaphysicsengine.editor.editor.store.PEditorStore;
+import com.javaphysicsengine.gui.editor.store.PEditorStore;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;

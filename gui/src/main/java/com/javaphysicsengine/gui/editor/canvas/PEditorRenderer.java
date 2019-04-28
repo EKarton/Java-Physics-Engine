@@ -1,8 +1,8 @@
-package com.javaphysicsengine.editor.editor.canvas;
+package com.javaphysicsengine.gui.editor.canvas;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
-import com.javaphysicsengine.editor.editor.store.PEditorStore;
+import com.javaphysicsengine.gui.editor.store.PEditorStore;
 import com.javaphysicsengine.utils.Vector;
 
 import java.awt.Color;
@@ -10,10 +10,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_CIRCLE;
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_POLYGON;
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_SPRING;
-import static com.javaphysicsengine.editor.editor.canvas.PEditorPanel.EDIT_MODE_STRING;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_CIRCLE;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_POLYGON;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_SPRING;
+import static com.javaphysicsengine.gui.editor.canvas.PEditorPanel.EDIT_MODE_STRING;
 
 public class PEditorRenderer {
     private static final Color BACKGROUND_COLOR = new Color(60, 60, 60);

@@ -1,4 +1,4 @@
-package com.javaphysicsengine.editor.editor.store;
+package com.javaphysicsengine.gui.editor.store;
 
 import com.javaphysicsengine.api.body.PCircle;
 import com.javaphysicsengine.utils.Vector;

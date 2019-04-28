@@ -5,11 +5,11 @@
  * @version January 15 2016
  */
 
-package com.javaphysicsengine.editor.editor.properties;
+package com.javaphysicsengine.gui.editor.properties;
 
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PCircle;
-import com.javaphysicsengine.editor.editor.store.PEditorStore;
+import com.javaphysicsengine.gui.editor.store.PEditorStore;
 
 import javax.swing.*;
 import java.awt.*;
