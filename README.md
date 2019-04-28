@@ -34,7 +34,7 @@ To help users create their objects, a snapping tool is used to snap the cursor t
     </p>
 </div>
 
-After creating an object, users are able to edit their object properties. The tabs correspond to the names of their object, and selecting different tabs will display the properties for each corresponding object. After editing an object property, users must type the Enter key to save the changes. Note: every object name must be unique and it is strictly enforced by the app.
+After creating an object, users are able to edit their object properties. Note that each object needs to have a unique name.
 <div width="100%">
     <p align="center">
     <img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/develop-v2.0.0/docs/Images/PropertiesTab2.PNG" width="600px"/>
@@ -48,7 +48,7 @@ Users will be using the Java Physics Engine GUI editor to generate API code from
     </p>
 </div>
 
-In addition, users can generate the API code neede to implement their objects into their own Java objects. They can do this by clicking on View -> View Generated API Code. A new window will appear, and users can copy the code from the window.
+In addition, users can generate the API code needed to implement their objects into their own Java objects. They can do this by clicking on View -> View Generated API Code. A new window will appear, and users can copy the code from the window.
 <div width="100%">
     <p align="center">
 <img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/develop-v2.0.0/docs/Images/SimulationWindow.PNG" width="600px"/>
