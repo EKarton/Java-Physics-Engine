@@ -11,7 +11,7 @@ import com.javaphysicsengine.utils.Vector;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
+import java.util.List;
 
 public class PBoundingBox {
     private double minX;
@@ -23,7 +23,7 @@ public class PBoundingBox {
      * Creates a bounding box based on a list of vertices from a polygon shape
      * @param vertices The vertices of a polygon
      */
-    public PBoundingBox(ArrayList<Vector> vertices) {
+    public PBoundingBox(List<Vector> vertices) {
         recomputeBoundaries(vertices);
     }
 
@@ -31,7 +31,7 @@ public class PBoundingBox {
      * Recomputes a bounding box based on a list of vertices from a polygon shape
      * @param vertices The vertices of a polygon
      */
-    public void recomputeBoundaries(ArrayList<Vector> vertices) {
+    public void recomputeBoundaries(List<Vector> vertices) {
         minX = Double.MAX_VALUE;
         maxX = -Double.MIN_VALUE;
         minY = Double.MAX_VALUE;
@@ -112,7 +112,7 @@ public class PBoundingBox {
 
     /**
      * Draws the bounding box outline on the screen
-     * Pre-condition: The "g" must not be null and the "windowHeight" must be greater than 0
+     *
      * @param g The Graphics Object
      * @param windowHeight The height of the window that will draw the bounding box
      */
