@@ -81,11 +81,11 @@ public class PEditorObservableStore extends PEditorStore {
     }
 
     @Override
-    public void setSelectedBody(PBody selectedBody) {
-        super.setSelectedBody(selectedBody);
+    public void setSelectedBody(PBody newSelectedBody) {
+        super.setSelectedBody(newSelectedBody);
 
         for (SelectedBodyListener listener : selectedBodyListeners) {
-            listener.onSelectedBodyChanged(selectedBody);
+            listener.onSelectedBodyChanged(newSelectedBody);
         }
     }
 

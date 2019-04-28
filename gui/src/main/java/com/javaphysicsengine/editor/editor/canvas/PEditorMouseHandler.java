@@ -46,7 +46,7 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
 
         // If it selected an object
         if (editMode.equals(EDIT_MODE_CURSOR) || editMode.equals(EDIT_MODE_SPRING) || editMode.equals(EDIT_MODE_STRING)) {
-            store.setSelectedBody(null);
+            store.clearSelectedBody();
             if (isMouseSnappedToPoint) {
                 for (PBody body : store.getCreatedBodies())
                     if ((int) body.getCenterPt().getX() == mouseX && (int) (height - body.getCenterPt().getY()) == mouseY) {
@@ -56,23 +56,25 @@ public class PEditorMouseHandler implements MouseMotionListener, MouseListener {
             }
         }
 
-        if (editMode.equals(EDIT_MODE_SPRING) || editMode.equals(EDIT_MODE_STRING) && store.getSelectedBody() != null) {
-            if (store.getAttachedBody1() == null) {
-                store.setAttachedBody1(store.getSelectedBody());
+        if (editMode.equals(EDIT_MODE_SPRING) || editMode.equals(EDIT_MODE_STRING)) {
+            if (store.getSelectedBody() != null) {
+                if (store.getAttachedBody1() == null) {
+                    store.setAttachedBody1(store.getSelectedBody());
+                } else {
+                    assert store.getAttachedBody1() != null;
+                    assert store.getSelectedBody() != null;
 
-            } else if (store.getSelectedBody() != null) {
-                // Create the object
-                PConstraints constraint;
-                if (editMode.equals(EDIT_MODE_SPRING)) {
-                    constraint = new PSpring(store.getAttachedBody1(), store.getSelectedBody());
-                }
-                else {
-                    constraint = new PString(store.getAttachedBody1(), store.getSelectedBody());
-                }
+                    assert store.getAttachedBody1().getCenterPt() != null;
+                    assert store.getSelectedBody().getCenterPt() != null;
 
-                store.getCreatedConstraints().add(constraint);
-                store.setAttachedBody1(null);
-                store.setSelectedBody(null);
+                    PConstraints constraint = editMode.equals(EDIT_MODE_SPRING)
+                            ? new PSpring(store.getAttachedBody1(), store.getSelectedBody())
+                            : new PString(store.getAttachedBody1(), store.getSelectedBody());
+
+                    store.getCreatedConstraints().add(constraint);
+                    store.clearAttachedBody1();
+                    store.clearSelectedBody();
+                }
             }
 
         } else if (editMode.equals(EDIT_MODE_CIRCLE)) {

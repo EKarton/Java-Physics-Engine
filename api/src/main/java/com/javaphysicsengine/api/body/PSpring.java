@@ -98,8 +98,12 @@ public class PSpring extends PConstraints {
         // Draw a line in between the two objects
         g.setColor(Color.GREEN);
         PBody[] bodies = super.getAttachedBodies();
-        g.drawLine((int) bodies[0].getCenterPt().getX(), windowHeight - (int) bodies[0].getCenterPt().getY(),
-                (int) bodies[1].getCenterPt().getX(), windowHeight - (int) bodies[1].getCenterPt().getY());
+
+        int x1 = (int) bodies[0].getCenterPt().getX();
+        int y1 = (int) bodies[0].getCenterPt().getY();
+        int x2 = (int) bodies[1].getCenterPt().getX();
+        int y2 = (int) bodies[1].getCenterPt().getY();
+        g.drawLine(x1, windowHeight - y1, x2, windowHeight - y2);
     }
 
     /**

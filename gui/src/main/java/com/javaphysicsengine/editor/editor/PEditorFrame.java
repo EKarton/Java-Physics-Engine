@@ -9,7 +9,10 @@ package com.javaphysicsengine.editor.editor;
 
 import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.body.PBody;
+import com.javaphysicsengine.api.body.PBodyFactory;
 import com.javaphysicsengine.api.body.PConstraints;
+import com.javaphysicsengine.api.body.PSpring;
+import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.editor.codegenerator.PCodeGenerator;
 import com.javaphysicsengine.editor.editor.canvas.PEditorMouseHandler;
 import com.javaphysicsengine.editor.editor.canvas.PEditorPanel;
@@ -20,22 +23,9 @@ import com.javaphysicsengine.editor.io.PFileReader;
 import com.javaphysicsengine.editor.io.PFileWriter;
 import com.javaphysicsengine.editor.simulation.PSimulationWindow;
 
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
@@ -294,51 +284,37 @@ public class PEditorFrame extends JFrame implements ActionListener {
      * Gets the bodies created in the editorPanel, opens a new window, and simulates it
      */
     private void runSimulation() {
-        List<PBody> bodies = store.getCreatedBodies();
-        List<PConstraints> constraints = store.getCreatedConstraints();
+        PWorld world = new PWorld();
 
-        // Relink the bodies attached to constraints to the bodies[] because the bodies attached to constraints[] are copies
-        for (PConstraints constraint : constraints) {
-            System.out.println("Constraint: " + constraint.getAttachedBodies()[0] + "\n" + constraint.getAttachedBodies()[1]);
+        PBodyFactory factory = new PBodyFactory();
 
-            PBody[] reattachedBodies = new PBody[2];
-            for (int i = 0; i < reattachedBodies.length; i++) {
-                System.out.println("Performing BS");
-                // Do a binary search (already sorted by name in ascending order)
-                int left = 0;
-                int right = bodies.size() - 1;
-                PBody attachedBody = constraint.getAttachedBodies()[i];
-
-                while (right >= left) {
-                    int mid = (left + right) / 2;
-                    PBody curBody = bodies.get(mid);
-
-                    if (curBody.getName().compareTo(attachedBody.getName()) < 0)
-                        left = mid + 1;
-                    else if (curBody.getName().compareTo(attachedBody.getName()) > 0)
-                        right = mid - 1;
-                    else {
-                        reattachedBodies[i] = curBody;
-                        break;
-                    }
-                }
-                System.out.println("Finished BS");
-            }
-
-            // Set the legitamate bodies to the constraints
-            constraint.setAttachedBodies(reattachedBodies[0], reattachedBodies[1]);
+        for (PBody body : store.getCreatedBodies()) {
+            world.getBodies().add(factory.createCopy(body));
         }
 
-        System.out.println("Created Spring");
+        for (PConstraints constraint : store.getCreatedConstraints()) {
+            PBody attachedBody1 = world.getBodies().stream()
+                    .filter(body -> body.getName().equals(constraint.getAttachedBodies()[0].getName()))
+                    .findFirst().orElseThrow(() -> new IllegalArgumentException("Cannot find body in world!"));
 
-        // Create the world and add the constraints and the bodies
-        PWorld world = new PWorld();
-        for (PBody body : bodies)
-            world.getBodies().add(body);
-        for (PConstraints constraint : constraints)
-            world.getConstraints().add(constraint);
+            PBody attachedBody2 = world.getBodies().stream()
+                    .filter(body -> body.getName().equals(constraint.getAttachedBodies()[1].getName()))
+                    .findFirst().orElseThrow(() -> new IllegalArgumentException("Cannot find body in world!"));
 
-        // Create the window
+            // Making a copy of the constraints
+            if (constraint instanceof PSpring) {
+                PSpring springCopy = new PSpring(attachedBody1, attachedBody2);
+                springCopy.setKValue(((PSpring) constraint).getKValue());
+                springCopy.setLength(constraint.getLength());
+                world.getConstraints().add(springCopy);
+
+            } else if (constraint instanceof PString) {
+                PString stringCopy = new PString(attachedBody1, attachedBody2);
+                stringCopy.setLength(constraint.getLength());
+                world.getConstraints().add(stringCopy);
+            }
+        }
+
         new PSimulationWindow(world, 30, renderer.isShapeFillDisplayed(),
                 renderer.isShapeOutlineDisplayed(), renderer.isAntiAliasingToggled())
                 .setVisible(true);

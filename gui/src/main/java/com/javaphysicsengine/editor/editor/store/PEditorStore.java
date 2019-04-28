@@ -45,22 +45,30 @@ public class PEditorStore {
         return selectedBody;
     }
 
-    public void setSelectedBody(PBody selectedBody) {
-        if (!createdBodies.contains(selectedBody)) {
-            throw new IllegalArgumentException("The body " + selectedBody + " does not exist in store!");
+    public void setSelectedBody(PBody newSelectedBody) {
+        if (!createdBodies.contains(newSelectedBody)) {
+            throw new IllegalArgumentException("The body " + newSelectedBody + " does not exist in store!");
         }
-        this.selectedBody = selectedBody;
+        this.selectedBody = newSelectedBody;
+    }
+
+    public void clearSelectedBody() {
+        this.selectedBody = null;
     }
 
     public PBody getAttachedBody1() {
         return attachedBody1;
     }
 
-    public void setAttachedBody1(PBody attachedBody1) {
-        if (!createdBodies.contains(attachedBody1)) {
-            throw new IllegalArgumentException("The body " + selectedBody + " does not exist in store!");
+    public void setAttachedBody1(PBody newAttachedBody) {
+        if (!createdBodies.contains(newAttachedBody)) {
+            throw new IllegalArgumentException("The body " + newAttachedBody + " does not exist in store!");
         }
-        this.attachedBody1 = attachedBody1;
+        this.attachedBody1 = newAttachedBody;
+    }
+
+    public void clearAttachedBody1() {
+        this.attachedBody1 = null;
     }
 
     public ArrayList<PBody> getCreatedBodies() {
