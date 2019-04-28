@@ -18,6 +18,18 @@ public class PCircleTest {
     }
 
     @Test
+    public void constructor_should_make_copy_of_circle_given_circle_passed_to_constructor() {
+        PCircle copyOfCircle = new PCircle(circle);
+
+        circle.setRadius(10);
+        circle.setCenterPt(Vector.of(20, 20));
+
+        // Check that the method calls above did not affect the copy
+        assertEquals(20, copyOfCircle.getRadius(), 0.00001);
+        assertEquals(Vector.of(10, 10), copyOfCircle.getCenterPt());
+    }
+
+    @Test
     public void getRadius_should_return_30_after_setting_radius_to_30() {
         circle.setRadius(30);
         assertEquals(30, circle.getRadius(), 0.00001);

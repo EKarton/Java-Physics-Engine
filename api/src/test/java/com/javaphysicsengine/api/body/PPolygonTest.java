@@ -25,6 +25,21 @@ public class PPolygonTest {
     }
 
     @Test
+    public void constructor_should_make_copy_of_object_given_polygon_instance_is_passed_as_a_parameter() {
+        PPolygon copyOfPolygon = new PPolygon(polygon);
+
+        polygon.rotate(45);
+        polygon.translate(Vector.of(100, 100));
+
+        // Check that the copy is not affected
+        List<Vector> vertices = copyOfPolygon.getVertices();
+        assertEquals(Vector.of(0, 0), vertices.get(0));
+        assertEquals(Vector.of(10, 0), vertices.get(1));
+        assertEquals(Vector.of(10, 10), vertices.get(2));
+        assertEquals(Vector.of(0, 10), vertices.get(3));
+    }
+
+    @Test
     public void getBoundingBox_should_return_bounding_box_with_correct_min_max_values() {
         PBoundingBox polygonBoundingBox = polygon.getBoundingBox();
 
