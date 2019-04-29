@@ -4,9 +4,15 @@ import com.javaphysicsengine.utils.Vector;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.Color;
+import java.awt.Graphics;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class PBodyTest {
 
@@ -116,6 +122,42 @@ public class PBodyTest {
     public void isMoving_should_return_false_when_set_to_static_object() {
         pBody.setMoveable(false);
         assertFalse(pBody.isMoving());
+    }
+
+    @Test
+    public void getFillColor_should_return_red_when_fill_color_set_to_red() {
+        pBody.setFillColor(Color.RED);
+        assertEquals(Color.RED, pBody.getFillColor());
+    }
+
+    @Test
+    public void getOutlineColor_should_return_red_when_outline_color_set_to_red() {
+        pBody.setOutlineColor(Color.RED);
+        assertEquals(Color.RED, pBody.getOutlineColor());
+    }
+
+    @Test
+    public void drawOutline_should_draw_center_point_with_outline() {
+        Graphics graphics = mock(Graphics.class);
+        pBody.drawOutline(graphics, 600);
+
+        verify(graphics, times(1)).drawOval(-2, 598, 4, 4);
+    }
+
+    @Test
+    public void drawFill_should_draw_center_point_with_fill() {
+        Graphics graphics = mock(Graphics.class);
+        pBody.drawFill(graphics, 600);
+
+        verify(graphics, times(1)).fillOval(-2, 598, 4, 4);
+    }
+
+    @Test
+    public void drawBoundingBox_should_draw_bounding_box_wit_outline() {
+        Graphics graphics = mock(Graphics.class);
+        pBody.drawBoundingBox(graphics, 600);
+
+        verify(graphics, times(1)).drawRect(-2, 598, 4, 4);
     }
 
     @Test

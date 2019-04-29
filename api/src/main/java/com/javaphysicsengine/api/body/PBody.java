@@ -183,9 +183,7 @@ public abstract class PBody {
      * @param displacement The displacement to move the body by a certain amount
      */
     public abstract void translate(Vector displacement);
-
-    // ========================================================================================================
-
+    
     /**
      * Returns the fill color of the body
      * @return The fill color of the body
