@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class PSpringTest {
 
@@ -38,5 +39,7 @@ public class PSpringTest {
 
         assertEquals(Vector.of(45.0, 0.0), circle1.getNetForce());
         assertEquals(Vector.of(-45.0, 0.0), circle2.getNetForce());
+
+        fail("Failing");
     }
 }
