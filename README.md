@@ -2,7 +2,7 @@
 
 [![Build Status](https://api.travis-ci.com/EKarton/Java-Physics-Engine.svg?branch=develop-v2.0.0)](https://travis-ci.com/EKarton/Java-Physics-Engine)
 
-[codecov](https://codecov.io/gh/EKarton/Java-Physics-Engine/branch/develop-v2.0.0/graph/badge.svg)](https://codecov.io/gh/EKarton/Java-Physics-Engine)
+[![codecov](https://codecov.io/gh/EKarton/Java-Physics-Engine/branch/develop-v2.0.0/graph/badge.svg)](https://codecov.io/gh/EKarton/Java-Physics-Engine)
 
 ### Description
 The Java Physics Engine aims to incorporate physics capabilities to any Java projects easily. Equipped with advanced physics and object collision algorithms, the Java Physics Engine can simulate and handle object collisions realistically in 2D space. The sky is the limit when it comes to creating games with the Java Physics Engine!
