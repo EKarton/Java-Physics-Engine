@@ -13,7 +13,6 @@
         <module>utils</module>
         <module>api</module>
         <module>gui</module>
-        <module>graphics</module>
     </modules>
 
     <dependencies>
