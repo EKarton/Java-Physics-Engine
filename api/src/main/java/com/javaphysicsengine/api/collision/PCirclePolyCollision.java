@@ -19,7 +19,7 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
     private static ArrayList<Vector> polyVertices;
 
     /**
-     * Post-condition: Returns the points on the circle that are tangents to line only defined by its slope
+     * Returns the points on the circle that are tangents to line only defined by its slope
      * @param normalSlope The slope of the line
      * @return Returns an array of points that are tangents to the line defined only by its slope
      */
@@ -46,14 +46,11 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
         } else {
             // Getting info of line passing through center of circle
             double yIntercept = circleCenterPt.getY() - (normalSlope * circleCenterPt.getX());
-            //Debug.WriteLine("\tY Intercept" + yIntercept);
 
             // Getting the quadratic formula to calculate the tangent
             double a = (1 + (normalSlope * normalSlope));
             double b = -((2 * circleCenterPt.getX()) - (2 * normalSlope * yIntercept) + (2 * normalSlope * circleCenterPt.getY()));
             double c = (circleCenterPt.getX() * circleCenterPt.getX()) + (yIntercept * yIntercept) - (2 * circleCenterPt.getY() * yIntercept) + (circleCenterPt.getY() * circleCenterPt.getY()) - (circleRadius * circleRadius);
-
-            //Debug.WriteLine("\ta: " + a + " b: " + b + " c: " + c);
 
             // Using the quadratic formula to isolate 'x's and find the two tangent points
             double sqrtResult = Math.sqrt(b * b - (4 * a * c));
@@ -68,7 +65,6 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
     /**
      * Post-condition: Returns true if a separating line exist between a circle and a polygon based on a normal.
      *                  Also returns the MTD from the normal if there is no separating line
-     * Pre-condition: "bestOverlap" must not be null
      * @param normalSlope The slope of the normal
      * @param bestOverlap The MTD from the normal
      * @return Returns true if there is a separating line between a circle and a polygon based on a normal. Also returns the MTD from the "bestOverlap" parameter
@@ -103,9 +99,7 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
             if (poi.getY() > maxCircleValues.getY()) maxCircleValues.setY(poi.getY());
         }
 
-        // System.out.println("    MinP:" + minPolyValues + " | MaxP" + maxPolyValues + " | MinC:" + minCircleValues + " | MaxC:" + maxCircleValues);
-        return isOverlap(minCircleValues, maxCircleValues, minPolyValues, maxPolyValues, bestOverlap) == false;
-        // System.out.println("    BestOverlap:" + bestOverlap);
+        return !isOverlap(minCircleValues, maxCircleValues, minPolyValues, maxPolyValues, bestOverlap);
     }
 
     /**
@@ -141,8 +135,6 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
 
             // Calculating the MTD
             double curBestOverlapDistance = (curBestOverlap.getX() * curBestOverlap.getX()) + (curBestOverlap.getY() * curBestOverlap.getY());
-
-            // System.out.println("  CBO:" + curBestOverlap);
 
             if (curBestOverlapDistance < bestOverlapDistance) {
                 bestOverlapDistance = curBestOverlapDistance;
@@ -184,10 +176,8 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
         if (isIntersecting(mtd)) {
             // If the two objects are not touching, they are not colliding!
             if (mtd.getX() == 0 && mtd.getY() == 0) {
-                // System.out.println("MTDs are 0!");
                 return false;
             }
-            // System.out.println("Are colliding!" + " -> " + mtd);
 
             Vector circleTrans = getTranslationVectors(mtd, circleCenterPt, polyCenterPt, circleVelocity, polyVelocity);
             Vector polyTrans = getTranslationVectors(mtd, polyCenterPt, circleCenterPt, polyVelocity, circleVelocity);
@@ -195,8 +185,6 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
             circleTransVector.setXY(circleTrans.getX(), circleTrans.getY());
             polyTransVector.setXY(polyTrans.getX(), polyTrans.getY());
 
-            // System.out.println("Circle Trans: " + circleTransVector);
-            // System.out.println("Poly Trans: " + polyTransVector);
             return true;
         }
         return false;

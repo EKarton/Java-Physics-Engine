@@ -87,7 +87,7 @@ public class PPolyPolyCollision {
      * @param bestOverlap The MTD from the normal
      * @return Returns true if there is a separating line between the two polygons based on a normal. Also returns the MTD from the "bestOverlap" parameter
      */
-    protected static boolean isSeparatingLineExist(double normalSlope, Vector bestOverlap) {
+    private static boolean isSeparatingLineExist(double normalSlope, Vector bestOverlap) {
         // Storing the min/max x and y POI coordinates of poly1
         Vector min1Values = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
         Vector max1Values = new Vector(-Double.MIN_VALUE, -Double.MIN_VALUE);

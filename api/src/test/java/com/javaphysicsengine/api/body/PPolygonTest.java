@@ -4,9 +4,15 @@ import com.javaphysicsengine.utils.Vector;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class PPolygonTest {
 
@@ -128,18 +134,37 @@ public class PPolygonTest {
     }
 
     @Test
-    public void drawBoundingBox() {
+    public void drawBoundingBox_should_draw_bounding_box_outline_in_red() {
+        Graphics graphics = mock(Graphics.class);
+        polygon.drawBoundingBox(graphics, 600);
+
+        verify(graphics, times(1)).setColor(eq(Color.RED));
+        verify(graphics, times(1)).drawRect(3, 593, 4, 4);
     }
 
     @Test
-    public void drawFill() {
+    public void drawFill_should_draw_polygon_with_fill_color() {
+        Graphics graphics = mock(Graphics.class);
+        polygon.setFillColor(Color.GREEN);
+        polygon.drawFill(graphics, 600);
+
+        int[] xCoords = {0, 10, 10, 0};
+        int[] yCoords = {600, 600, 590, 590};
+
+        verify(graphics, times(1)).setColor(eq(Color.GREEN));
+        verify(graphics, times(1)).fillPolygon(xCoords, yCoords, xCoords.length);
     }
 
     @Test
-    public void drawOutline() {
-    }
+    public void drawOutline_should_draw_outline_of_polygon_with_outline_color() {
+        Graphics graphics = mock(Graphics.class);
+        polygon.setOutlineColor(Color.RED);
+        polygon.drawOutline(graphics, 600);
 
-    @Test
-    public void toString1() {
+        int[] xCoords = {0, 10, 10, 0};
+        int[] yCoords = {600, 600, 590, 590};
+
+        verify(graphics, times(1)).setColor(eq(Color.RED));
+        verify(graphics, times(1)).drawPolygon(xCoords, yCoords, xCoords.length);
     }
 }
