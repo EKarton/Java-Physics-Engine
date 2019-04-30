@@ -4,7 +4,14 @@ import com.javaphysicsengine.utils.Vector;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.Color;
+import java.awt.Graphics;
+
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class PCircleTest {
 
@@ -54,5 +61,25 @@ public class PCircleTest {
     public void translate_should_move_center_point_to_20_20_given_translation_vector_is_10_10() {
         circle.translate(Vector.of(10, 10));
         assertEquals(Vector.of(20, 20), circle.getCenterPt());
+    }
+
+    @Test
+    public void drawFill_should_draw_circle_with_fill_color() {
+        Graphics graphics = mock(Graphics.class);
+        circle.setFillColor(Color.RED);
+        circle.drawFill(graphics, 600);
+
+        verify(graphics, times(1)).setColor(eq(Color.RED));
+        verify(graphics, times(1)).fillOval(-10, 570, 40, 40);
+    }
+
+    @Test
+    public void drawOutline_should_draw_outline_of_circle_with_outline_color() {
+        Graphics graphics = mock(Graphics.class);
+        circle.setOutlineColor(Color.RED);
+        circle.drawOutline(graphics, 600);
+
+        verify(graphics, times(1)).setColor(eq(Color.RED));
+        verify(graphics, times(1)).drawOval(-10, 570, 40, 40);
     }
 }
