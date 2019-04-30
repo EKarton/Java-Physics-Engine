@@ -8,6 +8,9 @@
 package com.javaphysicsengine.utils;
 
 public class Vector {
+
+    public static final double EQUALITY_ACCURACY = 0.0001;
+
     private double x;
     private double y;
     private double length = -1;
@@ -121,7 +124,10 @@ public class Vector {
     public boolean equals(Object object) {
         if (object instanceof Vector) {
             Vector vector = (Vector) object;
-            return this.x == vector.x && this.y == vector.y;
+
+            boolean isXEqual = Math.abs(this.x - vector.x) < EQUALITY_ACCURACY;
+            boolean isYEqual = Math.abs(this.y - vector.y) < EQUALITY_ACCURACY;
+            return isXEqual && isYEqual;
         }
         return false;
     }

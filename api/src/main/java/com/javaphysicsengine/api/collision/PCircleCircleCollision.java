@@ -12,6 +12,7 @@ import com.javaphysicsengine.utils.Vector;
 public class PCircleCircleCollision {
     /**
      * Returns the displacement the main circle should move by
+     *
      * @param mtd The minimum translation vector from SAT algorithm
      * @param mainPolyCenterPt The center point of the main circle
      * @param otherPolyCenterPt The center point of the other circle
@@ -21,15 +22,15 @@ public class PCircleCircleCollision {
      */
     private static Vector getTranslationVectors(Vector mtd, Vector mainPolyCenterPt, Vector otherPolyCenterPt, Vector mainPolyVelocity, Vector otherPolyVelocity) {
         // Checking if the velocity of main polygon is 0
-        if (mainPolyVelocity.getX() == 0 && mainPolyVelocity.getY() == 0)
+        if (mainPolyVelocity.getX() == 0 && mainPolyVelocity.getY() == 0) {
             return new Vector(0, 0);
+        }
 
         // Making sure the push vector is pushing the polygons away
         Vector translationVector = new Vector(mtd.getX(), mtd.getY());
 
         Vector displacementBetweenPolygons = Vector.subtract(mainPolyCenterPt, otherPolyCenterPt);
         if (Vector.dotProduct(displacementBetweenPolygons, mtd) < 0) {
-            // // // System.out.println("I am here!");
             translationVector.setX(translationVector.getX() * -1);
             translationVector.setY(translationVector.getY() * -1);
         }
@@ -42,9 +43,10 @@ public class PCircleCircleCollision {
 
         translationVector.setLength(newLength);
 
-        // Checking if the new translation vector is a null (happens if the length is a 0)
-        if (Double.isNaN(translationVector.getX()) && Double.isNaN(translationVector.getY()))
+        // Checking if the new translation vector is a null (happens if the length of translation vector is a 0)
+        if (Double.isNaN(translationVector.getX()) && Double.isNaN(translationVector.getY())) {
             translationVector.setXY(0, 0);
+        }
 
         return translationVector;
     }
