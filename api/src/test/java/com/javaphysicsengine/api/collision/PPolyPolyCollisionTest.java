@@ -22,62 +22,62 @@ public class PPolyPolyCollisionTest {
         @Parameterized.Parameters
         public static Collection getTestData() {
             return Arrays.asList(new Object[][]{
-                    {
-                            createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(0, 0)),
-                            createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(4, 0)), Vector.of(0, 0)),
-                            false,
-                            Vector.of(0, 0),
-                            Vector.of(0, 0),
-                            Vector.of(0, 0)
-                    },
-                    {
-                            createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(0, 0)),
-                            createPPolygon(Arrays.asList(Vector.of(-4, 0), Vector.of(0, 4), Vector.of(0, 0)), Vector.of(0, 0)),
-                            false,
-                            Vector.of(0, 0),
-                            Vector.of(0, 0),
-                            Vector.of(0, 0)
-                    },
-                    {
-                            createPPolygon(Arrays.asList(Vector.of(-4, 0), Vector.of(0, -4), Vector.of(0, 0)), Vector.of(0, 0)),
-                            createPPolygon(Arrays.asList(Vector.of(-4, 0), Vector.of(0, 4), Vector.of(0, 0)), Vector.of(0, 0)),
-                            false,
-                            Vector.of(0, 0),
-                            Vector.of(0, 0),
-                            Vector.of(0, 0)
-                    },
-                    {
-                            createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(0, 0)),
-                            createPPolygon(Arrays.asList(Vector.of(-1, 0), Vector.of(3, 4), Vector.of(3, 0)), Vector.of(0, 0)),
-                            true,
-                            Vector.of(0, 0),
-                            Vector.of(0, 0),
-                            Vector.of(0.5, 0.5)
-                    },
-                    {
-                            createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(0, 0)),
-                            createPPolygon(Arrays.asList(Vector.of(-3, 0), Vector.of(1, 4), Vector.of(-1, 0)), Vector.of(0, 0)),
-                            true,
-                            Vector.of(0, 0),
-                            Vector.of(0, 0),
-                            Vector.of(0.8000, 0.3999)
-                    },
-                    {
-                            createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(-1, -1)),
-                            createPPolygon(Arrays.asList(Vector.of(-1, 0), Vector.of(3, 4), Vector.of(3, 0)), Vector.of(1, 1)),
-                            true,
-                            Vector.of(0.25, 0.25),
-                            Vector.of(-0.25, -0.25),
-                            Vector.of(0.5, 0.5)
-                    },
-                    {
-                            createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(1, 0)),
-                            createPPolygon(Arrays.asList(Vector.of(-3, 0), Vector.of(1, 4), Vector.of(-1, 0)), Vector.of(-1, 0)),
-                            true,
-                            Vector.of(0.4000, 0.1999),
-                            Vector.of(-0.4000, -0.1999),
-                            Vector.of(0.8000, 0.3999)
-                    },
+                {
+                    createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(0, 0)),
+                    createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(4, 0)), Vector.of(0, 0)),
+                    false,
+                    Vector.of(0, 0),
+                    Vector.of(0, 0),
+                    Vector.of(0, 0)
+                },
+                {
+                    createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(0, 0)),
+                    createPPolygon(Arrays.asList(Vector.of(-4, 0), Vector.of(0, 4), Vector.of(0, 0)), Vector.of(0, 0)),
+                    false,
+                    Vector.of(0, 0),
+                    Vector.of(0, 0),
+                    Vector.of(0, 0)
+                },
+                {
+                    createPPolygon(Arrays.asList(Vector.of(-4, 0), Vector.of(0, -4), Vector.of(0, 0)), Vector.of(0, 0)),
+                    createPPolygon(Arrays.asList(Vector.of(-4, 0), Vector.of(0, 4), Vector.of(0, 0)), Vector.of(0, 0)),
+                    false,
+                    Vector.of(0, 0),
+                    Vector.of(0, 0),
+                    Vector.of(0, 0)
+                },
+                {
+                    createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(0, 0)),
+                    createPPolygon(Arrays.asList(Vector.of(-1, 0), Vector.of(3, 4), Vector.of(3, 0)), Vector.of(0, 0)),
+                    true,
+                    Vector.of(0, 0),
+                    Vector.of(0, 0),
+                    Vector.of(0.5, 0.5)
+                },
+                {
+                    createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(0, 0)),
+                    createPPolygon(Arrays.asList(Vector.of(-3, 0), Vector.of(1, 4), Vector.of(-1, 0)), Vector.of(0, 0)),
+                    true,
+                    Vector.of(0, 0),
+                    Vector.of(0, 0),
+                    Vector.of(0.8000, 0.3999)
+                },
+                {
+                    createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(-1, -1)),
+                    createPPolygon(Arrays.asList(Vector.of(-1, 0), Vector.of(3, 4), Vector.of(3, 0)), Vector.of(1, 1)),
+                    true,
+                    Vector.of(0.25, 0.25),
+                    Vector.of(-0.25, -0.25),
+                    Vector.of(0.5, 0.5)
+                },
+                {
+                    createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(1, 0)),
+                    createPPolygon(Arrays.asList(Vector.of(-3, 0), Vector.of(1, 4), Vector.of(-1, 0)), Vector.of(-1, 0)),
+                    true,
+                    Vector.of(0.4000, 0.1999),
+                    Vector.of(-0.4000, -0.1999),
+                    Vector.of(0.8000, 0.3999)
+                },
             });
         }
 
@@ -121,37 +121,6 @@ public class PPolyPolyCollisionTest {
             polygon.computeCenterOfMass();
 
             return polygon;
-        }
-    }
-
-    @RunWith(Parameterized.class)
-    public static class ProjectPointToLineTest {
-
-        @Parameterized.Parameters
-        public static Collection getTestData() {
-            return Arrays.asList(new Object[][]{
-                    { 1, -1, Vector.of(0, 5), Vector.of(3, 2) },
-                    { -1, 4, Vector.of(0, 5), Vector.of(-0.5, 4.5) },
-                    { 0, 4, Vector.of(-5, 5), Vector.of(-5, 4) }
-            });
-        }
-
-        @Parameterized.Parameter
-        public double slopeOfLine;
-
-        @Parameterized.Parameter(value = 1)
-        public double yInterceptOfLine;
-
-        @Parameterized.Parameter(value = 2)
-        public Vector point;
-
-        @Parameterized.Parameter(value = 3)
-        public Vector expectedProjectedPoint;
-
-        @Test
-        public void executeAndVerify() {
-            Vector actualProjectedPoint = PPolyPolyCollision.projectPointToLine(slopeOfLine, yInterceptOfLine, point);
-            assertEquals(expectedProjectedPoint, actualProjectedPoint);
         }
     }
 }

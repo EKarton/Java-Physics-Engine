@@ -16,68 +16,6 @@ import java.util.List;
 public class PPolyPolyCollision {
 
     /**
-     * Post-condition: Returns the point projected to a line defined by the slope and y intercept
-     * Pre-condition: "point" should not be null
-     * @param slopeOfLine The slope of the line
-     * @param yInterceptOfLine The y intercept of the line
-     * @return Returns the projected point
-     */
-    protected static Vector projectPointToLine(double slopeOfLine, double yInterceptOfLine, Vector point) {
-        double perpendicularSlope = -1 / slopeOfLine;
-        double b = point.getY() - (perpendicularSlope * point.getX());
-
-        // Getting point of intersection
-        double x = (b - yInterceptOfLine) / (slopeOfLine - perpendicularSlope);
-        double y = (slopeOfLine * x) + yInterceptOfLine;
-
-        // Special cases where when the slope is infinity (Line is vertical), it will affect the intersection point
-        if (Double.isInfinite(Math.abs(slopeOfLine))) {
-            x = 0;
-            y = point.getY();
-        }
-
-        // Special case where when the line is horizontal, it will affect the intersection point
-        else if (Math.abs(slopeOfLine) == 0) {
-            x = point.getX();
-            y = yInterceptOfLine;
-        }
-
-        return new Vector(x, y);
-    }
-
-    /**
-     * Post-condition: Returns true if two domains interect one another. Also returns the amount of overlap between them
-     * Pre-condition: "min1Values", "max1Values", "min2Values", "max2Values", "overlap" should not be null
-     * @param min1Values The minimum x and y values for the first domain
-     * @param max1Values The maximum x and y values for the first domain
-     * @param min2Values The minimum x and y values for the second domain
-     * @param max2Values The maximum x and y values for the seecond domain
-     * @param overlap The overlap between the two domains
-     * @return Returns true if the two domains overlap; else false. Also returns the amount of overlap in the "overlap" parameter
-     */
-    protected static boolean isOverlap(Vector min1Values, Vector max1Values, Vector min2Values, Vector max2Values, Vector overlap) {
-        // Making the overlap to 0 when domain and ranges of poly1 and poly2 are not intersecting
-        overlap.setXY(0, 0);
-
-        // Checking if the x components overlap
-        double overlapX1 = max1Values.getX() - min2Values.getX(); //maxX1 - minX2;
-        double overlapX2 = max2Values.getX() - min1Values.getX(); //maxX2 - minX1;
-        if (overlapX1 < 0 || overlapX2 < 0)
-            return false;
-
-        // Checking if the y components overlap
-        double overlapY1 = max1Values.getY() - min2Values.getY(); //maxY1 - minY2;
-        double overlapY2 = max2Values.getY() - min1Values.getY(); //maxY2 - minY1;
-        if (overlapY1 < 0 || overlapY2 < 0)
-            return false;
-
-        // Calculating the best overlap by taking the min overlap for each component
-        overlap.setX(Math.min(overlapX1, overlapX2));
-        overlap.setY(Math.min(overlapY1, overlapY2));
-        return true;
-    }
-
-    /**
      * Post-condition: Returns true if a separating line exist between the two polygons based on a normal.
      *                  Also returns the MTD from the normal if there is no separating line
      * Pre-condition: "bestOverlap" must not be null
@@ -92,7 +30,7 @@ public class PPolyPolyCollision {
 
         for (Vector vertex : poly1Vertices) {
             // Getting the projected point of a vertex to the normal
-            Vector poi = projectPointToLine(normalSlope, 13, vertex);
+            Vector poi = PCollisionUtil.projectPointToLine(normalSlope, 13, vertex);
 
             // Checking if the current POI is the new min/max x and y coordinate
             if (poi.getX() < min1Values.getX()) min1Values.setX(poi.getX());
@@ -107,7 +45,7 @@ public class PPolyPolyCollision {
 
         for (Vector vertex : poly2Vertices) {
             // Getting the projected point of a vertex to the normal
-            Vector poi = projectPointToLine(normalSlope, 13, vertex);
+            Vector poi = PCollisionUtil.projectPointToLine(normalSlope, 13, vertex);
 
             // Checking if the current POI is the new min/max x and y coordinate
             if (poi.getX() < min2Values.getX()) min2Values.setX(poi.getX());
@@ -116,7 +54,7 @@ public class PPolyPolyCollision {
             if (poi.getY() > max2Values.getY()) max2Values.setY(poi.getY());
         }
 
-        return !isOverlap(min1Values, max1Values, min2Values, max2Values, bestOverlap);
+        return !PCollisionUtil.doDomainsIntersect(min1Values, max1Values, min2Values, max2Values, bestOverlap);
     }
 
     /**

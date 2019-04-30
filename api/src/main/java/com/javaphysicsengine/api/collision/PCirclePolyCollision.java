@@ -74,7 +74,7 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
         Vector minPolyValues = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
         Vector maxPolyValues = new Vector(-Double.MIN_VALUE, -Double.MIN_VALUE);
         for (Vector vertex : polyVertices) {
-            Vector poi = projectPointToLine(normalSlope, 13, vertex);
+            Vector poi = PCollisionUtil.projectPointToLine(normalSlope, 13, vertex);
 
             // Checking if the current POI is the new min/max x and y coordinate
             if (poi.getX() < minPolyValues.getX()) minPolyValues.setX(poi.getX());
@@ -88,7 +88,7 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
         Vector maxCircleValues = new Vector(-Double.MIN_VALUE, -Double.MIN_VALUE);
         Vector[] tangentPts = getTangentPtsOfCircle(normalSlope);
         for (Vector tangentPt : tangentPts) {
-            Vector poi = projectPointToLine(normalSlope, 13, tangentPt);
+            Vector poi = PCollisionUtil.projectPointToLine(normalSlope, 13, tangentPt);
 
             // Checking if the current POI is the new min/max x and y coordinate
             if (poi.getX() < minCircleValues.getX()) minCircleValues.setX(poi.getX());
@@ -97,7 +97,7 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
             if (poi.getY() > maxCircleValues.getY()) maxCircleValues.setY(poi.getY());
         }
 
-        return !isOverlap(minCircleValues, maxCircleValues, minPolyValues, maxPolyValues, bestOverlap);
+        return !PCollisionUtil.doDomainsIntersect(minCircleValues, maxCircleValues, minPolyValues, maxPolyValues, bestOverlap);
     }
 
     /**
