@@ -3,6 +3,7 @@ package com.javaphysicsengine.api.collision;
 import com.javaphysicsengine.utils.Vector;
 
 public class PCollisionUtil {
+
     /**
      * Projects a point to a line defined by its slope and y intercept.
      *
@@ -46,18 +47,19 @@ public class PCollisionUtil {
      *         Also returns the amount of overlap in the "overlap" parameter
      */
     public static boolean doDomainsIntersect(Vector min1Values, Vector max1Values, Vector min2Values, Vector max2Values, Vector overlap) {
+
         // Making the overlap to 0 when domain and ranges of poly1 and poly2 are not intersecting
         overlap.setXY(0, 0);
 
         // Checking if the x components overlap
-        double overlapX1 = max1Values.getX() - min2Values.getX(); //maxX1 - minX2;
-        double overlapX2 = max2Values.getX() - min1Values.getX(); //maxX2 - minX1;
+        double overlapX1 = max1Values.getX() - min2Values.getX();
+        double overlapX2 = max2Values.getX() - min1Values.getX();
         if (overlapX1 < 0 || overlapX2 < 0)
             return false;
 
         // Checking if the y components overlap
-        double overlapY1 = max1Values.getY() - min2Values.getY(); //maxY1 - minY2;
-        double overlapY2 = max2Values.getY() - min1Values.getY(); //maxY2 - minY1;
+        double overlapY1 = max1Values.getY() - min2Values.getY();
+        double overlapY2 = max2Values.getY() - min1Values.getY();
         if (overlapY1 < 0 || overlapY2 < 0)
             return false;
 

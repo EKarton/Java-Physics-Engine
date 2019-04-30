@@ -236,8 +236,6 @@ public class PWorld {
         Vector impulse = Vector.multiply(normal, totalImpulse);
         body1.setVelocity(Vector.subtract(body1.getVelocity(), Vector.multiply(impulse, body1InversedMass)));
         body2.setVelocity(Vector.add(body2.getVelocity(), Vector.multiply(impulse, body2InversedMass)));
-
-        //// System.out.println("Body 1 Velocity: " + body1.getVelocity() + " Body 2 Velocity: " + body2.getVelocity());
     }
 
     /**
