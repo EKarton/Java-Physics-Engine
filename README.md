@@ -74,6 +74,10 @@ Furthermore, Users are able to render the objects by navigating to Run -> Run Si
 - Change directories to ```gui/target```.
 - Run the GUI editor by changing directories to ```gui/target``` and running the command ```java -jar gui-2.0.jar```.
 
+##### Experimental
+- You can run the tests in parallel by executing ```mvn -T 1C surefire:test``` instead of ```mvn clean install test```
+- You can also disable running the tests by executing ```mvn clean install -DskipTests=true``` instead of ```mvn clean install```
+
 ### Usage
 Please note that this project is used for educational purposes and is not intended to be used commercially. We are not liable for any damages/changes done by this project.
 
