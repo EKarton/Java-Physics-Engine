@@ -131,6 +131,7 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
      * Start the debugger, open the window, and simulate the bodies
      */
     public static void main(String[] args) {
+
         // Create the window with certain properties
         JFrame debugWindow = new JFrame("Physic Engine Debugger");
         debugWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -140,7 +141,7 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
         // Insert the JPanel to the window
         debugWindow.getContentPane().add(new PhysicsDebuggerPanel());
 
-        // Make the window visible (MUST BE PLACED AFTER INSRTING JPANEL!!)
+        // Make the window visible
         debugWindow.setVisible(true);
     }
 
