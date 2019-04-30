@@ -22,12 +22,6 @@ public class PCircle extends PBody {
         super(name);
     }
 
-    public PCircle(String name, int radius, Vector centerPt) {
-        super(name);
-        this.radius = radius;
-        this.setCenterPt(centerPt);
-    }
-
     /**
      * Creates a PCircle object from a pre-existing PCircle object
      * @param existingCircle A pre-existing PCircle object
