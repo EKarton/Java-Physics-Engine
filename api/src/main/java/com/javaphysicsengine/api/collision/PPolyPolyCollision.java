@@ -39,7 +39,7 @@ public class PPolyPolyCollision {
         // Special case where when the line is horizontal, it will affect the intersection point
         else if (Math.abs(slopeOfLine) == 0) {
             x = point.getX();
-            y = 0;
+            y = yInterceptOfLine;
         }
 
         return new Vector(x, y);
