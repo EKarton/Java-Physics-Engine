@@ -28,6 +28,20 @@ public class PBoundingBox {
     }
 
     /**
+     * Constructs a Bounding Box given known minX, minY, maxX, maxY values
+     * @param minX the min X value
+     * @param maxX the max X value
+     * @param minY the min Y value
+     * @param maxY the max Y value
+     */
+    public PBoundingBox(int minX, int maxX, int minY, int maxY) {
+        this.minX = minX;
+        this.maxX = maxX;
+        this.minY = minY;
+        this.maxY = maxY;
+    }
+
+    /**
      * Recomputes a bounding box based on a list of vertices from a polygon shape
      * @param vertices The vertices of a polygon
      */
@@ -123,5 +137,10 @@ public class PBoundingBox {
         g.drawLine((int) minX, (int) (windowHeight - maxY), (int) maxX, (int) (windowHeight - maxY));
         g.drawLine((int) maxX, (int) (windowHeight - maxY), (int) maxX, (int) (windowHeight - minY));
         g.drawLine((int) maxX, (int) (windowHeight - minY), (int) minX, (int) (windowHeight - minY));
+    }
+
+    @Override
+    public String toString() {
+        return "{ (" + minX + ", " + maxX + "), (" + minY + ", " + maxY + ") }";
     }
 }

@@ -27,6 +27,6 @@ public class PBoxBoxCollision {
             return false;
 
         // If box 1 is above box 2
-        return !(box1.getMinY() >= box2.getMaxY());
+        return !(box1.getMinY() > box2.getMaxY());
     }
 }
