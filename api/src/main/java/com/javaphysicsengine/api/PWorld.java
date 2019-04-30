@@ -66,7 +66,7 @@ public class PWorld {
     /**
      * Post-condition: Simulates the bodies for a certain time
      * Pre-condition: "timeEllapsed" should be greater than 0
-     * @param timeEllapsed The time that has ellapsed
+     * @param timeEllapsed The time that has ellapsed in seconds
      */
     public void simulate(double timeEllapsed) {
         // Clear all the forces from all the bodies
@@ -149,7 +149,6 @@ public class PWorld {
                         Vector mtd = new Vector(0, 0);
 
                         if (PPolyPolyCollision.doBodiesCollide(body1, body2, poly1Trans, poly2Trans, mtd)) {
-                            //// System.out.println("Collision!! " + mtd);
                             body1.translate(poly1Trans);
                             body2.translate(poly2Trans);
                             calculateImpulse(body1, body2, mtd);
