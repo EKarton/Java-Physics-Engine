@@ -69,13 +69,12 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
      * @param bestOverlap The MTD from the normal
      * @return Returns true if there is a separating line between a circle and a polygon based on a normal. Also returns the MTD from the "bestOverlap" parameter
      */
-    protected static boolean isSeparatingLineExist(double normalSlope, Vector bestOverlap) {
+    private static boolean isSeparatingLineExist(double normalSlope, Vector bestOverlap) {
         // Projecting the poly's points to the normal and keeping track of its min/max
         Vector minPolyValues = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
         Vector maxPolyValues = new Vector(-Double.MIN_VALUE, -Double.MIN_VALUE);
         for (Vector vertex : polyVertices) {
             Vector poi = projectPointToLine(normalSlope, 13, vertex);
-            // System.out.println("  Poly POI: " + poi);
 
             // Checking if the current POI is the new min/max x and y coordinate
             if (poi.getX() < minPolyValues.getX()) minPolyValues.setX(poi.getX());
@@ -90,7 +89,6 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
         Vector[] tangentPts = getTangentPtsOfCircle(normalSlope);
         for (Vector tangentPt : tangentPts) {
             Vector poi = projectPointToLine(normalSlope, 13, tangentPt);
-            // System.out.println("  Tan Pt:" + tangentPt + " | Circle POI: " + poi);
 
             // Checking if the current POI is the new min/max x and y coordinate
             if (poi.getX() < minCircleValues.getX()) minCircleValues.setX(poi.getX());
@@ -108,30 +106,30 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
      * @param mtd The MTD (minimum translation vector) of the circle and polygon
      * @return Returns whether the circle and the polygon is intersecting; and the MTD stored in the parameter "mtd"
      */
-    protected static boolean isIntersecting(Vector mtd) {
+    private static boolean isIntersecting(Vector mtd) {
         mtd.setXY(0, 0);
         Vector bestOverlap = null;
         double bestOverlapDistance = Double.MAX_VALUE;
 
         // Going through all the sides in the polygon
         for (int i = 0; i < polyVertices.size(); i++) {
-            // Getting the two points that make up a side
+
+            // Getting the two points that make up an edge
             int sidePt1Index = i;
             int sidePt2Index = i + 1;
             if (i == polyVertices.size() - 1)
                 sidePt2Index = 0;
 
-            // Getting the normal slope
+            // Getting the normal slope of the current edge
             Vector sidePt1 = polyVertices.get(sidePt1Index);
             Vector sidePt2 = polyVertices.get(sidePt2Index);
             double normalSlope = -1 / ((sidePt2.getY() - sidePt1.getY()) / (sidePt2.getX() - sidePt1.getX()));
 
-            // System.out.println("SP1:" + sidePt1 + " | SP2:" + sidePt2 + " | NS:" + normalSlope);
-
-            // Getting the current overlap from the current side
+            // Getting the current overlap from the current edge
             Vector curBestOverlap = new Vector(0, 0);
-            if (isSeparatingLineExist(normalSlope, curBestOverlap))  // <- SAT algorithm: If there is a separating line between the polygons, there is no collision
+            if (isSeparatingLineExist(normalSlope, curBestOverlap)) {  // <- SAT algorithm: If there is a separating line between the polygons, there is no collision
                 return false;
+            }
 
             // Calculating the MTD
             double curBestOverlapDistance = (curBestOverlap.getX() * curBestOverlap.getX()) + (curBestOverlap.getY() * curBestOverlap.getY());

@@ -132,7 +132,7 @@ public class PPolyPolyCollision {
      * @param mtd The MTD (minimum translation vector) of the two polygons
      * @return Returns whether the two polygons are intersecting; and the MTD stored in the parameter "mtd"
      */
-    protected static boolean isIntersecting(Vector mtd) {
+    private static boolean isIntersecting(Vector mtd) {
         mtd.setXY(0, 0); // Set MTD to 0 (just in case it is not intersecting)
         Vector bestOverlap = null;
         double bestOverlapDistance = Double.MAX_VALUE;
