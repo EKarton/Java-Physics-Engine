@@ -13,9 +13,6 @@ public class Vector {
     private double x;
     private double y;
 
-    // This is the cached vector length.
-    private double length = -1;
-
     /**
      * Creates a vector object from a x and y value
      * @param x The x coordiante of a vector
@@ -42,8 +39,28 @@ public class Vector {
      * @param v1 The second vector
      * @return The resultant vector
      */
-    public static Vector subtract(Vector v2, Vector v1) {
+    public static Vector minus(Vector v2, Vector v1) {
         return new Vector(v2.getX() - v1.getX(), v2.getY() - v1.getY());
+    }
+
+    public Vector minus(Vector v1) {
+        return Vector.minus(this, v1);
+    }
+
+    public static Vector min(Vector... vectors) {
+        Vector minVector = Vector.of(Double.MAX_VALUE, Double.MAX_VALUE);
+        for (Vector v : vectors) {
+            minVector.setXY(Math.min(minVector.getX(), v.getX()), Math.min(minVector.getY(), v.getY()));
+        }
+        return minVector;
+    }
+
+    public static Vector max(Vector... vectors) {
+        Vector minVector = Vector.of(Double.MIN_VALUE, Double.MIN_VALUE);
+        for (Vector v : vectors) {
+            minVector.setXY(Math.max(minVector.getX(), v.getX()), Math.max(minVector.getY(), v.getY()));
+        }
+        return minVector;
     }
 
     /**
@@ -52,8 +69,12 @@ public class Vector {
      * @param v2 The second vector
      * @return The dot product of two vectors
      */
-    public static double dotProduct(Vector v1, Vector v2) {
+    public static double dot(Vector v1, Vector v2) {
         return (v1.getX() * v2.getX()) + (v1.getY() * v2.getY());
+    }
+
+    public double dot(Vector v2) {
+        return Vector.dot(this, v2);
     }
 
     /**
@@ -66,6 +87,18 @@ public class Vector {
         return new Vector(v.getX() * amount, v.getY() * amount);
     }
 
+    public Vector multiply(double amount) {
+        return Vector.multiply(this, amount);
+    }
+
+    public static Vector multiply(Vector v1, Vector v2) {
+        return new Vector(v1.x * v2.x, v1.y * v2.y);
+    }
+
+    public Vector multiply(Vector v) {
+        return Vector.multiply(this, v);
+    }
+
     /**
      * Adds two vectors
      * @param v1 The first vector
@@ -76,38 +109,42 @@ public class Vector {
         return new Vector(v1.getX() + v2.getX(), v1.getY() + v2.getY());
     }
 
-    /**
-     * Calculates and returns the length of the vector to the origin (a.k.a magnitude of the vector)
-     * @return the magnitude of the vector
-     */
-    public double getLength() {
-        // If the length was not computed before
-        if (length == -1)
-            length = Math.sqrt((x * x) + (y * y));
+    public Vector add(Vector v2) {
+        return Vector.add(this, v2);
+    }
 
-        return length;
+    public double norm() {
+        return (x * x) + (y * y);
+    }
+
+    public double norm2() {
+        return Math.sqrt((x * x) + (y * y));
     }
 
     /**
      * Scales up/down the vector to a given length
      * @param length The length of the new vector
+     * @deprecated Use vector.normalize().multiply(length);
      */
     public void setLength(double length) {
-        normalise();
+        normalized();
         x *= length;
         y *= length;
-        this.length = length;
     }
 
     /**
      * Scales the vector up/down so that the length of the vector is 1.
      * Pre-condition: The x and y values must not be 0
-    */
-    public void normalise() {
-        double curLengthOfVector = getLength();
+     */
+    public void normalized() {
+        double curLengthOfVector = norm2();
         x /= curLengthOfVector;
         y /= curLengthOfVector;
-        this.length = 1;
+    }
+
+    public Vector normalize() {
+        double curLengthOfVector = norm2();
+        return Vector.of(x / curLengthOfVector, y / curLengthOfVector);
     }
 
     /**
@@ -150,6 +187,11 @@ public class Vector {
     public void setXY(double newX, double newY) {
         this.x = newX;
         this.y = newY;
+    }
+
+    public void set(Vector v) {
+        this.x = v.x;
+        this.y = v.y;
     }
 
     /**

@@ -14,177 +14,109 @@ import com.javaphysicsengine.utils.Vector;
 import java.util.ArrayList;
 
 public class PCirclePolyCollision extends PPolyPolyCollision {
-    private static Vector circleCenterPt;
-    private static double circleRadius;
-    private static ArrayList<Vector> polyVertices;
+    private static double isRayHitCircle(Vector rayOrigin, Vector rayDir, Vector origin, double radius) {
+        Vector shiftedOrigin = rayOrigin.minus(origin);
 
-    /**
-     * Returns the points on the circle that are tangents to line only defined by its slope
-     * @param normalSlope The slope of the line
-     * @return Returns an array of points that are tangents to the line defined only by its slope
-     */
-    private static Vector[] getTangentPtsOfCircle(double normalSlope) {
-        Vector[] intersectionPts = new Vector[2];
-        intersectionPts[0] = new Vector(0, 0);
-        intersectionPts[1] = new Vector(0, 0);
+        // See where it hits the circle
+        double a = rayDir.dot(rayDir);
+        double b = 2 * shiftedOrigin.dot(rayDir);
+        double c = shiftedOrigin.dot(shiftedOrigin) - (radius * radius);
+        double delta = b * b - 4 * a * c;
 
-        // If the normal is vertical:
-        if (Double.isInfinite(Math.abs(normalSlope))) {
-            intersectionPts[0].setX(circleCenterPt.getX());
-            intersectionPts[1].setX(circleCenterPt.getX());
-            intersectionPts[0].setY(circleCenterPt.getY() + circleRadius);
-            intersectionPts[1].setY(circleCenterPt.getY() - circleRadius);
+        // If there are no solutions
+        if (delta < 0) {
+            return -1;
         }
 
-        // If the normal is horizontal
-        else if (Math.abs(normalSlope) == 0) {
-            // // // System.out.println("I am here!");
-            intersectionPts[0].setX(circleCenterPt.getX() + circleRadius);
-            intersectionPts[1].setX(circleCenterPt.getX() - circleRadius);
-            intersectionPts[0].setY(circleCenterPt.getY());
-            intersectionPts[1].setY(circleCenterPt.getY());
-        } else {
-            // Getting info of line passing through center of circle
-            double yIntercept = circleCenterPt.getY() - (normalSlope * circleCenterPt.getX());
+        // Getting the solutions to t
+        double t1 = (-b + Math.sqrt(delta)) / (2 * a);
+        double t2 = (-b - Math.sqrt(delta)) / (2 * a);
 
-            // Getting the quadratic formula to calculate the tangent
-            double a = (1 + (normalSlope * normalSlope));
-            double b = -((2 * circleCenterPt.getX()) - (2 * normalSlope * yIntercept) + (2 * normalSlope * circleCenterPt.getY()));
-            double c = (circleCenterPt.getX() * circleCenterPt.getX()) + (yIntercept * yIntercept) - (2 * circleCenterPt.getY() * yIntercept) + (circleCenterPt.getY() * circleCenterPt.getY()) - (circleRadius * circleRadius);
-
-            // Using the quadratic formula to isolate 'x's and find the two tangent points
-            double sqrtResult = Math.sqrt(b * b - (4 * a * c));
-            intersectionPts[0].setX((-b + sqrtResult) / (2 * a));
-            intersectionPts[0].setY((normalSlope * intersectionPts[0].getX()) + yIntercept);
-            intersectionPts[1].setX((-b - sqrtResult) / (2 * a));
-            intersectionPts[1].setY((normalSlope * intersectionPts[1].getX()) + yIntercept);
-        }
-        return intersectionPts;
-    }
-
-    /**
-     * Post-condition: Returns true if a separating line exist between a circle and a polygon based on a normal.
-     *                  Also returns the MTD from the normal if there is no separating line
-     * @param normalSlope The slope of the normal
-     * @param bestOverlap The MTD from the normal
-     * @return Returns true if there is a separating line between a circle and a polygon based on a normal. Also returns the MTD from the "bestOverlap" parameter
-     */
-    private static boolean isSeparatingLineExist(double normalSlope, Vector bestOverlap) {
-        // Projecting the poly's points to the normal and keeping track of its min/max
-        Vector minPolyValues = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
-        Vector maxPolyValues = new Vector(-Double.MIN_VALUE, -Double.MIN_VALUE);
-        for (Vector vertex : polyVertices) {
-            Vector poi = PCollisionUtil.projectPointToLine(normalSlope, 13, vertex);
-
-            // Checking if the current POI is the new min/max x and y coordinate
-            if (poi.getX() < minPolyValues.getX()) minPolyValues.setX(poi.getX());
-            if (poi.getY() < minPolyValues.getY()) minPolyValues.setY(poi.getY());
-            if (poi.getX() > maxPolyValues.getX()) maxPolyValues.setX(poi.getX());
-            if (poi.getY() > maxPolyValues.getY()) maxPolyValues.setY(poi.getY());
-        }
-
-        // Getting the min/max x and y values of projecting the tangent of the circle
-        Vector minCircleValues = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
-        Vector maxCircleValues = new Vector(-Double.MIN_VALUE, -Double.MIN_VALUE);
-        Vector[] tangentPts = getTangentPtsOfCircle(normalSlope);
-        for (Vector tangentPt : tangentPts) {
-            Vector poi = PCollisionUtil.projectPointToLine(normalSlope, 13, tangentPt);
-
-            // Checking if the current POI is the new min/max x and y coordinate
-            if (poi.getX() < minCircleValues.getX()) minCircleValues.setX(poi.getX());
-            if (poi.getY() < minCircleValues.getY()) minCircleValues.setY(poi.getY());
-            if (poi.getX() > maxCircleValues.getX()) maxCircleValues.setX(poi.getX());
-            if (poi.getY() > maxCircleValues.getY()) maxCircleValues.setY(poi.getY());
-        }
-
-        return !PCollisionUtil.doDomainsIntersect(minCircleValues, maxCircleValues, minPolyValues, maxPolyValues, bestOverlap);
-    }
-
-    /**
-     * Post-condition: Returns true if the circle and polygon is intersecting; else false.
-     * Also returns the MTD of the circle and the polygon if they are intersecting
-     * @param mtd The MTD (minimum translation vector) of the circle and polygon
-     * @return Returns whether the circle and the polygon is intersecting; and the MTD stored in the parameter "mtd"
-     */
-    private static boolean isIntersecting(Vector mtd) {
-        mtd.setXY(0, 0);
-        Vector bestOverlap = null;
-        double bestOverlapDistance = Double.MAX_VALUE;
-
-        // Going through all the sides in the polygon
-        for (int i = 0; i < polyVertices.size(); i++) {
-
-            // Getting the two points that make up an edge
-            int sidePt1Index = i;
-            int sidePt2Index = i + 1;
-            if (i == polyVertices.size() - 1)
-                sidePt2Index = 0;
-
-            // Getting the normal slope of the current edge
-            Vector sidePt1 = polyVertices.get(sidePt1Index);
-            Vector sidePt2 = polyVertices.get(sidePt2Index);
-            double normalSlope = -1 / ((sidePt2.getY() - sidePt1.getY()) / (sidePt2.getX() - sidePt1.getX()));
-
-            // Getting the current overlap from the current edge
-            Vector curBestOverlap = new Vector(0, 0);
-            if (isSeparatingLineExist(normalSlope, curBestOverlap)) {  // <- SAT algorithm: If there is a separating line between the polygons, there is no collision
-                return false;
+        double best_t = -1;
+        if (t1 < t2) {
+            if (t1 >= 0) {
+                best_t = t1;
             }
-
-            // Calculating the MTD
-            double curBestOverlapDistance = (curBestOverlap.getX() * curBestOverlap.getX()) + (curBestOverlap.getY() * curBestOverlap.getY());
-
-            if (curBestOverlapDistance < bestOverlapDistance) {
-                bestOverlapDistance = curBestOverlapDistance;
-                bestOverlap = curBestOverlap;
+            else if (t2 >= 0) {
+                best_t = t2;
+            }
+        }
+        else if (t2 <= t1) {
+            if (t2 >= 0) {
+                best_t = t2;
+            }
+            else if (t1 >= 0) {
+                best_t = t1;
             }
         }
 
-        if (bestOverlap == null)
-            return false;
-
-        mtd.setXY(bestOverlap.getX(), bestOverlap.getY());
-        return true;
+        return best_t;
     }
 
     /**
      * Pre-condition: "circle1", "circle2", "circle1TransVector", "circle2TransVector", "mtd" must not be null
      * Post-condition: Determines whether a circle and polygon is colliding, and returns the displacements each body should move by as well as the minimum translation vector
+     *
+     * Note: vertices in poly must be in clockwise order!
+     *
      * @param circle The circle
      * @param poly The polygon
-     * @param circleTransVector The displacement the circle should move by if they are colliding
-     * @param polyTransVector The displacement the polygon should move by if they are colliding
-     * @param mtd Returns the minimum translation vector from SAT algorithm
-     * @return Returns true if the two circles are colliding; else false. Also returns the MTD which is stored in the "mtd" parameter
+     * @return Returns the results of the collision
      */
-    public static boolean doBodiesCollide(PCircle circle, PPolygon poly, Vector circleTransVector, Vector polyTransVector, Vector mtd) {
+    public static PCollisionResult doBodiesCollide(PCircle circle, PPolygon poly) {
         // Saving the properties of the bodies to the global variables
-        circleCenterPt = circle.getCenterPt();
-        circleRadius = circle.getRadius();
-        Vector circleVelocity = circle.getVelocity();
-        polyVertices = poly.getVertices();
-        Vector polyCenterPt = poly.getCenterPt();
-        Vector polyVelocity = poly.getVelocity();
+        Vector circleCenterPt = circle.getCenterPt();
+        double circleRadius = circle.getRadius();
+        ArrayList<Vector> polyVertices = poly.getVertices();
 
-        // The translation vectors for both bodies will be 0 when there is no intersection
-        circleTransVector.setXY(0, 0);
-        polyTransVector.setXY(0, 0);
+        double bestOverlapDistance = Double.MAX_VALUE;
+        Vector bestMtv = Vector.of(0, 0);
+        Vector bestCircleMtv = Vector.of(0, 0);
+        Vector bestPolyMtv = Vector.of(0, 0);
 
-        // Determining if the bodies intersect or not
-        if (isIntersecting(mtd)) {
-            // If the two objects are not touching, they are not colliding!
-            if (mtd.getX() == 0 && mtd.getY() == 0) {
-                return false;
+        // Going through all the sides in the polygon
+        for (int i = 0; i < polyVertices.size(); i++) {
+
+            // The two points that make up an edge
+            Vector sidePt1 = polyVertices.get(i);
+            Vector sidePt2 = i + 1 < polyVertices.size() ? polyVertices.get(i + 1) : polyVertices.get(0);
+
+            // Compute the normal of the edge
+            Vector normal = Vector.of(sidePt2.getY() - sidePt1.getY(), -1 * (sidePt2.getX() - sidePt1.getX())).normalize();
+
+            // Compute the length of the edge
+            double edgeLength = sidePt2.minus(sidePt1).norm2();
+
+            // Compute the two edge directions
+            Vector edgeDir1 = sidePt2.minus(sidePt1).normalize();
+            Vector edgeDir2 = sidePt1.minus(sidePt2).normalize();
+
+            double edgeDir1_t = isRayHitCircle(sidePt1, edgeDir1, circle.getCenterPt(), circle.getRadius());
+            double edgeDir2_t = isRayHitCircle(sidePt2, edgeDir2, circle.getCenterPt(), circle.getRadius());
+            boolean isIntersect = (0 <= edgeDir1_t && edgeDir1_t <= edgeLength) ||
+                    (0 <= edgeDir2_t && edgeDir2_t <= edgeLength);
+
+            if (isIntersect) {
+
+                // Project the center of the circle to the edgeDir
+                double scalarProj = edgeDir1.dot(circleCenterPt.minus(sidePt1)) / edgeDir1.norm();
+                Vector vectorProj = edgeDir1.multiply(scalarProj).add(sidePt1);
+
+                // Compute the mtd
+                double mtd = circleRadius - vectorProj.minus(circleCenterPt).norm2();
+                double f1 = circle.getVelocity().norm() / (circle.getVelocity().norm() + poly.getVelocity().norm());
+                double f2 = poly.getVelocity().norm() / (circle.getVelocity().norm() + poly.getVelocity().norm());
+
+                if (0 < mtd && mtd < bestOverlapDistance) {
+                    bestOverlapDistance = mtd;
+                    bestMtv = normal.multiply(mtd);
+
+                    bestCircleMtv = circle.isMoving() ? normal.multiply(mtd * f1) : Vector.of(0, 0);
+                    bestPolyMtv = poly.isMoving() ? normal.multiply(mtd * f2 * -1) : Vector.of(0, 0);
+                }
             }
-
-            Vector circleTrans = getTranslationVectors(mtd, circleCenterPt, polyCenterPt, circleVelocity, polyVelocity);
-            Vector polyTrans = getTranslationVectors(mtd, polyCenterPt, circleCenterPt, polyVelocity, circleVelocity);
-
-            circleTransVector.setXY(circleTrans.getX(), circleTrans.getY());
-            polyTransVector.setXY(polyTrans.getX(), polyTrans.getY());
-
-            return true;
         }
-        return false;
+
+        return new PCollisionResult(bestMtv.norm() > 0, bestCircleMtv, bestPolyMtv, bestMtv);
     }
 }

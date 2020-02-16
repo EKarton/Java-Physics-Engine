@@ -323,7 +323,7 @@ public class PEditorFrame extends JFrame implements ActionListener {
             }
         }
 
-        new PSimulationWindow(world, 30, renderer.isShapeFillDisplayed(),
+        new PSimulationWindow(world, 64, renderer.isShapeFillDisplayed(),
                 renderer.isShapeOutlineDisplayed(), renderer.isAntiAliasingToggled())
                 .setVisible(true);
     }

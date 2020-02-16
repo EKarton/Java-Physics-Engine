@@ -153,17 +153,17 @@ public class PPolyPolyCollision {
         // Making sure the push vector is pushing the polygons away
         Vector translationVector = new Vector(mtd.getX(), mtd.getY());
 
-        Vector displacementBetweenPolygons = Vector.subtract(mainPolyCenterPt, otherPolyCenterPt);
-        if (Vector.dotProduct(displacementBetweenPolygons, mtd) < 0) {
+        Vector displacementBetweenPolygons = Vector.minus(mainPolyCenterPt, otherPolyCenterPt);
+        if (Vector.dot(displacementBetweenPolygons, mtd) < 0) {
             // // System.out.println("I am here!");
             translationVector.setX(translationVector.getX() * -1);
             translationVector.setY(translationVector.getY() * -1);
         }
 
         // Get the ratio of the translation vector when both objects are moving
-        double curLength = translationVector.getLength();
-        double lengthOfMainVelocity = mainPolyVelocity.getLength();
-        double lengthOfOtherVelocity = otherPolyVelocity.getLength();
+        double curLength = translationVector.norm2();
+        double lengthOfMainVelocity = mainPolyVelocity.norm2();
+        double lengthOfOtherVelocity = otherPolyVelocity.norm2();
         double newLength = curLength * (lengthOfMainVelocity / (lengthOfMainVelocity + lengthOfOtherVelocity));
 
         translationVector.setLength(newLength);

@@ -9,16 +9,10 @@ package com.javaphysicsengine.api;
 
 import com.javaphysicsengine.api.body.PCircle;
 import com.javaphysicsengine.api.body.PPolygon;
-import com.javaphysicsengine.api.body.PString;
 import com.javaphysicsengine.utils.Vector;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.Timer;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -27,7 +21,7 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
     // Fields controlling the animation and graphics of the JPanel
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 600;
-    private final double FPS = 60;
+    private final double FPS = 1;
     private final double TIME_MULTIPLIER = 1;
 
     // Field storing the efficiency of the physics engine (based on the amount of time it takes to simulate the objects)
@@ -97,30 +91,43 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
     pEngine.getBodies().add(poly90);
     */
 
-        PPolygon ground = new PPolygon("Ground");
-        ground.getVertices().add(new Vector(0, 0));
-        ground.getVertices().add(new Vector(0, 100));
-        ground.getVertices().add(new Vector(1000, 100));
-        ground.getVertices().add(new Vector(1000, 0));
-        ground.computeCenterOfMass();
-        ground.setMoveable(false);
-        pEngine.getBodies().add(ground);
+//        PPolygon ground = new PPolygon("Ground");
+//        ground.getVertices().add(new Vector(0, 0));
+//        ground.getVertices().add(new Vector(0, 100));
+//        ground.getVertices().add(new Vector(1000, 100));
+//        ground.getVertices().add(new Vector(1000, 0));
+//        ground.computeCenterOfMass();
+//        ground.setMoveable(false);
+//        pEngine.getBodies().add(ground);
+//
+//
+//        PCircle circle3 = new PCircle("KIJIJI");
+//        circle3.setCenterPt(new Vector(600, 500));
+//        circle3.setMoveable(false);
+//        circle3.setRadius(90);
+//        pEngine.getBodies().add(circle3);
+//
+//        PCircle circle4 = new PCircle("KIJIJI");
+//        circle4.setCenterPt(new Vector(400, 500));
+//        circle4.setRadius(90);
+//        pEngine.getBodies().add(circle4);
+//
+//        PString string2 = new PString(circle3, circle4);
+//        pEngine.getConstraints().add(string2);
 
+        PPolygon triangle = new PPolygon("Triangle");
+        triangle.setMoveable(false);
+        triangle.getVertices().add(new Vector(600, 600));
+        triangle.getVertices().add(new Vector(240, 240));
+        triangle.getVertices().add(new Vector(600, 240));
+        triangle.computeCenterOfMass();
+        pEngine.getBodies().add(triangle);
 
-        PCircle circle3 = new PCircle("KIJIJI");
-        circle3.setCenterPt(new Vector(600, 500));
-        circle3.setMoveable(false);
-        circle3.setRadius(90);
-        pEngine.getBodies().add(circle3);
-
-        PCircle circle4 = new PCircle("KIJIJI");
-        circle4.setCenterPt(new Vector(400, 500));
-        circle4.setRadius(90);
-        pEngine.getBodies().add(circle4);
-
-        PString string2 = new PString(circle3, circle4);
-        pEngine.getConstraints().add(string2);
-
+        PCircle circle = new PCircle("Circle");
+        circle.setCenterPt(Vector.of(420, 640));
+        circle.setRadius(40);
+        circle.setMass(1);
+        pEngine.getBodies().add(circle);
 
         // Create the game timer
         Timer gameTimer = new Timer((int) (1000.0 / FPS / TIME_MULTIPLIER), this);

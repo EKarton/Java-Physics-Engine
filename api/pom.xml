@@ -11,6 +11,10 @@
     <artifactId>api</artifactId>
     <name>api</name>
 
+    <properties>
+<!--        <nd4j.version>1.0.0-alpha</nd4j.version>-->
+    </properties>
+
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
@@ -18,5 +22,10 @@
             <artifactId>utils</artifactId>
             <version>2.0</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.nd4j</groupId>-->
+<!--            <artifactId>nd4j-native-platform</artifactId>-->
+<!--            <version>${nd4j.version}</version>-->
+<!--        </dependency>-->
     </dependencies>
 </project>

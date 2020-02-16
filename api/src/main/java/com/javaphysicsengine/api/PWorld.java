@@ -14,6 +14,7 @@ import com.javaphysicsengine.api.body.PPolygon;
 import com.javaphysicsengine.api.collision.PBoxBoxCollision;
 import com.javaphysicsengine.api.collision.PCircleCircleCollision;
 import com.javaphysicsengine.api.collision.PCirclePolyCollision;
+import com.javaphysicsengine.api.collision.PCollisionResult;
 import com.javaphysicsengine.api.collision.PPolyPolyCollision;
 import com.javaphysicsengine.utils.Vector;
 
@@ -24,9 +25,6 @@ import java.util.ArrayList;
 public class PWorld {
     // Physic properties about this world
     private static final double GRAVITY_ACCELERATION = -9.81;
-
-    // The number of pixels that represent 1 meter
-    private static final double SCALE = 100;
 
     // List containing the physical bodies and joints
     private ArrayList<PBody> bodies = new ArrayList<PBody>();
@@ -87,72 +85,71 @@ public class PWorld {
                 PBody firstBody = bodies.get(i);
                 PBody secondBody = bodies.get(j);
 
-                // If a circle and polygon collided
-                if (firstBody instanceof PCircle && secondBody instanceof PPolygon) {
-                    PCircle circle = (PCircle) firstBody;
-                    PPolygon poly = (PPolygon) secondBody;
+                if (firstBody.isMoving() || secondBody.isMoving()) {
 
-                    Vector circleTrans = new Vector(0, 0);
-                    Vector polyTrans = new Vector(0, 0);
-                    Vector mtd = new Vector(0, 0);
+                    // If a circle and polygon collided
+                    if (firstBody instanceof PCircle && secondBody instanceof PPolygon) {
+                        PCircle circle = (PCircle) firstBody;
+                        PPolygon poly = (PPolygon) secondBody;
 
-                    if (PCirclePolyCollision.doBodiesCollide(circle, poly, circleTrans, polyTrans, mtd)) {
-                        circle.translate(circleTrans);
-                        poly.translate(polyTrans);
-                        calculateImpulse(circle, poly, mtd);
-                        positionalCorrection(circle, poly, mtd);
+                        PCollisionResult result = PCirclePolyCollision.doBodiesCollide(circle, poly);
+
+                        if (result.isHasCollided()) {
+                            circle.translate(result.getBody1Mtv());
+                            poly.translate(result.getBody2Mtv());
+                            calculateImpulse(circle, poly, result.getMtv());
+                            positionalCorrection(circle, poly, result.getMtv());
+                        }
                     }
-                }
 
-                // If a polygon and a circle collided
-                else if (firstBody instanceof PPolygon && secondBody instanceof PCircle) {
-                    PCircle circle = (PCircle) secondBody;
-                    PPolygon poly = (PPolygon) firstBody;
+                    // If a polygon and a circle collided
+                    else if (firstBody instanceof PPolygon && secondBody instanceof PCircle) {
+                        PCircle circle = (PCircle) secondBody;
+                        PPolygon poly = (PPolygon) firstBody;
 
-                    Vector circleTrans = new Vector(0, 0);
-                    Vector polyTrans = new Vector(0, 0);
-                    Vector mtd = new Vector(0, 0);
+                        PCollisionResult result = PCirclePolyCollision.doBodiesCollide(circle, poly);
 
-                    if (PCirclePolyCollision.doBodiesCollide(circle, poly, circleTrans, polyTrans, mtd)) {
-                        circle.translate(circleTrans);
-                        poly.translate(polyTrans);
-                        calculateImpulse(circle, poly, mtd);
-                        positionalCorrection(circle, poly, mtd);
+                        if (result.isHasCollided()) {
+                            circle.translate(result.getBody1Mtv());
+                            poly.translate(result.getBody2Mtv());
+                            calculateImpulse(circle, poly, result.getMtv());
+                            positionalCorrection(circle, poly, result.getMtv());
+                        }
                     }
-                }
 
-                // If a circle and a circle collided
-                else if (firstBody instanceof PCircle && secondBody instanceof PCircle) {
-                    PCircle circle1 = (PCircle) firstBody;
-                    PCircle circle2 = (PCircle) secondBody;
-                    Vector mtd = new Vector(0, 0);
-                    Vector circle1TransVector = new Vector(0, 0);
-                    Vector circle2TransVector = new Vector(0, 0);
-
-                    if (PCircleCircleCollision.doBodiesCollide(circle1, circle2, circle1TransVector, circle2TransVector, mtd)) {
-                        // System.out.println("Circles collided!");
-                        circle1.translate(circle1TransVector);
-                        circle2.translate(circle2TransVector);
-                        calculateImpulse(circle1, circle2, mtd);
-                        positionalCorrection(circle1, circle2, mtd);
-                    }
-                }
-
-                // If a polygon and a polygon collided
-                else if (firstBody instanceof PPolygon && secondBody instanceof PPolygon) {
-                    PPolygon body1 = (PPolygon) firstBody;
-                    PPolygon body2 = (PPolygon) secondBody;
-
-                    if (PBoxBoxCollision.doBodiesCollide(body1.getBoundingBox(), body2.getBoundingBox())) {
-                        Vector poly1Trans = new Vector(0, 0);
-                        Vector poly2Trans = new Vector(0, 0);
+                    // If a circle and a circle collided
+                    else if (firstBody instanceof PCircle && secondBody instanceof PCircle) {
+                        PCircle circle1 = (PCircle) firstBody;
+                        PCircle circle2 = (PCircle) secondBody;
                         Vector mtd = new Vector(0, 0);
+                        Vector circle1TransVector = new Vector(0, 0);
+                        Vector circle2TransVector = new Vector(0, 0);
 
-                        if (PPolyPolyCollision.doBodiesCollide(body1, body2, poly1Trans, poly2Trans, mtd)) {
-                            body1.translate(poly1Trans);
-                            body2.translate(poly2Trans);
-                            calculateImpulse(body1, body2, mtd);
-                            positionalCorrection(body1, body2, mtd);
+                        if (PCircleCircleCollision.doBodiesCollide(circle1, circle2, circle1TransVector, circle2TransVector, mtd)) {
+                            // System.out.println("Circles collided!");
+                            circle1.translate(circle1TransVector);
+                            circle2.translate(circle2TransVector);
+                            calculateImpulse(circle1, circle2, mtd);
+                            positionalCorrection(circle1, circle2, mtd);
+                        }
+                    }
+
+                    // If a polygon and a polygon collided
+                    else if (firstBody instanceof PPolygon && secondBody instanceof PPolygon) {
+                        PPolygon body1 = (PPolygon) firstBody;
+                        PPolygon body2 = (PPolygon) secondBody;
+
+                        if (PBoxBoxCollision.doBodiesCollide(body1.getBoundingBox(), body2.getBoundingBox())) {
+                            Vector poly1Trans = new Vector(0, 0);
+                            Vector poly2Trans = new Vector(0, 0);
+                            Vector mtd = new Vector(0, 0);
+
+                            if (PPolyPolyCollision.doBodiesCollide(body1, body2, poly1Trans, poly2Trans, mtd)) {
+                                body1.translate(poly1Trans);
+                                body2.translate(poly2Trans);
+                                calculateImpulse(body1, body2, mtd);
+                                positionalCorrection(body1, body2, mtd);
+                            }
                         }
                     }
                 }
@@ -165,8 +162,9 @@ public class PWorld {
      */
     private void addForces() {
         for (PBody body : bodies) {
-            if (!body.isMoving())
+            if (!body.isMoving()) {
                 continue;
+            }
 
             // Adding gravitational force
             body.getNetForce().setY(body.getNetForce().getY() + GRAVITY_ACCELERATION * body.getMass());
@@ -184,8 +182,9 @@ public class PWorld {
      */
     private void translateBodies(double timeEllapsed) {
         for (PBody body : bodies) {
-            if (!body.isMoving())
+            if (!body.isMoving()) {
                 continue;
+            }
 
             // Getting the acceleration from force ( Force = mass * acceleration )
             double accelerationX = body.getNetForce().getX() / body.getMass();
@@ -196,8 +195,8 @@ public class PWorld {
             body.getVelocity().setY(body.getVelocity().getY() + accelerationY * timeEllapsed);
 
             // Getting the amount to translate by (Velocity = displacement / time)
-            double dx = body.getVelocity().getX() * timeEllapsed * SCALE;
-            double dy = body.getVelocity().getY() * timeEllapsed * SCALE;
+            double dx = body.getVelocity().getX() * timeEllapsed;
+            double dy = body.getVelocity().getY() * timeEllapsed;
 
             // Translate the body
             body.translate(new Vector(dx, dy));
@@ -221,10 +220,10 @@ public class PWorld {
         if (!body2.isMoving())
             body2InversedMass = 0;
 
-        Vector rv = Vector.subtract(body2.getVelocity(), body1.getVelocity());
+        Vector rv = Vector.minus(body2.getVelocity(), body1.getVelocity());
         Vector normal = new Vector(mtd.getX(), mtd.getY());
-        normal.normalise();
-        double velAlongNormal = Vector.dotProduct(normal, rv);
+        normal.normalized();
+        double velAlongNormal = Vector.dot(normal, rv);
 
         // Getting the total impulse of the two bodies as a system
         double coefficientOfResitution = 0.8;
@@ -233,7 +232,7 @@ public class PWorld {
 
         // Apply impulse to each object
         Vector impulse = Vector.multiply(normal, totalImpulse);
-        body1.setVelocity(Vector.subtract(body1.getVelocity(), Vector.multiply(impulse, body1InversedMass)));
+        body1.setVelocity(Vector.minus(body1.getVelocity(), Vector.multiply(impulse, body1InversedMass)));
         body2.setVelocity(Vector.add(body2.getVelocity(), Vector.multiply(impulse, body2InversedMass)));
     }
 
@@ -254,9 +253,9 @@ public class PWorld {
         if (!body2.isMoving())
             body2InversedMass = 0;
 
-        double penetrationDepth = mtd.getLength();
+        double penetrationDepth = mtd.norm2();
         Vector normal = new Vector(mtd.getX(), mtd.getY());
-        normal.normalise();
+        normal.normalized();
 
         final double percent = 0.01f; // usually 20% to 80%
         final double slop = 0.1f; // usually 0.01 to 0.1

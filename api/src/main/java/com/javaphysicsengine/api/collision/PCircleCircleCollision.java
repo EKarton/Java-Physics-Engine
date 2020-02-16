@@ -29,16 +29,16 @@ public class PCircleCircleCollision {
         // Making sure the push vector is pushing the polygons away
         Vector translationVector = new Vector(mtd.getX(), mtd.getY());
 
-        Vector displacementBetweenPolygons = Vector.subtract(mainPolyCenterPt, otherPolyCenterPt);
-        if (Vector.dotProduct(displacementBetweenPolygons, mtd) < 0) {
+        Vector displacementBetweenPolygons = Vector.minus(mainPolyCenterPt, otherPolyCenterPt);
+        if (Vector.dot(displacementBetweenPolygons, mtd) < 0) {
             translationVector.setX(translationVector.getX() * -1);
             translationVector.setY(translationVector.getY() * -1);
         }
 
         // Get the ratio of the translation vector when both objects are moving
-        double curLength = translationVector.getLength();
-        double lengthOfMainVelocity = mainPolyVelocity.getLength();
-        double lengthOfOtherVelocity = otherPolyVelocity.getLength();
+        double curLength = translationVector.norm2();
+        double lengthOfMainVelocity = mainPolyVelocity.norm2();
+        double lengthOfOtherVelocity = otherPolyVelocity.norm2();
         double newLength = curLength * (lengthOfMainVelocity / (lengthOfMainVelocity + lengthOfOtherVelocity));
 
         translationVector.setLength(newLength);
@@ -63,10 +63,8 @@ public class PCircleCircleCollision {
      */
     public static boolean doBodiesCollide(PCircle circle1, PCircle circle2, Vector circle1TransVector, Vector circle2TransVector, Vector mtd) {
         // Compute the distance between the two circles as well as the sum of their radiuses
-        double centerPtDistance = Math.pow(circle1.getCenterPt().getX() - circle2.getCenterPt().getX(), 2) + Math.pow(circle1.getCenterPt().getY() - circle2.getCenterPt().getY(), 2);
+        double centerPtDistance = Vector.minus(circle1.getCenterPt(), circle2.getCenterPt()).norm(); //  Math.pow(circle1.getCenterPt().getX() - circle2.getCenterPt().getX(), 2) + Math.pow(circle1.getCenterPt().getY() - circle2.getCenterPt().getY(), 2);
         double radiusSum = circle1.getRadius() + circle2.getRadius();
-
-        // // System.out.println("CD: " + centerPtDistance + " | RS: " + radiusSum);
 
         // If there is a collision
         if (centerPtDistance < radiusSum * radiusSum) {
@@ -74,9 +72,8 @@ public class PCircleCircleCollision {
             centerPtDistance = Math.sqrt(centerPtDistance);
 
             // Calculate the MTD
-            Vector mtdVector = Vector.subtract(circle1.getCenterPt(), circle2.getCenterPt());
+            Vector mtdVector = Vector.minus(circle1.getCenterPt(), circle2.getCenterPt());
             mtdVector.setLength(radiusSum - centerPtDistance);
-            // // System.out.println("MTD: " + mtdVector);
 
             // Get the translation vector
             Vector circle1Trans = getTranslationVectors(mtdVector, circle1.getCenterPt(), circle2.getCenterPt(), circle1.getVelocity(), circle2.getVelocity());

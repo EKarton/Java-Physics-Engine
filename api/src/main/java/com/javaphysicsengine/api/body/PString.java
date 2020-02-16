@@ -63,7 +63,7 @@ public class PString extends PConstraints {
             System.out.println("DistX:" + distX + " DistY:" + distY + " DIST:" + distance);
 
             if (distance > lengthPerBody) {
-                double centripetalForce_Scalar = body.getMass() * Math.pow(body.getVelocity().getLength(), 2) / lengthPerBody;
+                double centripetalForce_Scalar = body.getMass() * Math.pow(body.getVelocity().norm2(), 2) / lengthPerBody;
                 Vector centripetalForce_Vector = new Vector(-distX, -distY);
                 centripetalForce_Vector.setLength(centripetalForce_Scalar);
                 System.out.println("CF:" + centripetalForce_Vector);

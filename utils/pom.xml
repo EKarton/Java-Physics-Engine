@@ -11,6 +11,9 @@
     <artifactId>utils</artifactId>
     <name>utils</name>
 
+    <properties>
+    </properties>
+
     <url>http://maven.apache.org</url>
     <dependencies>
     </dependencies>

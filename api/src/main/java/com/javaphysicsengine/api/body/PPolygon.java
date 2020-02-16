@@ -117,8 +117,8 @@ public class PPolygon extends PBody {
 
             // Getting the new rotated x and y coordinates based on the unit circle
             double angleToRotateBy = alphaAngle - getAngle() + newAngle;
-            vertex.setY(Trigonometry.sin(angleToRotateBy) * vertex.getLength() + getCenterPt().getY());
-            vertex.setX(Trigonometry.cos(angleToRotateBy) * vertex.getLength() + getCenterPt().getX());
+            vertex.setY(Trigonometry.sin(angleToRotateBy) * vertex.norm2() + getCenterPt().getY());
+            vertex.setX(Trigonometry.cos(angleToRotateBy) * vertex.norm2() + getCenterPt().getX());
         }
 
         if (boundingBox != null)
@@ -132,7 +132,7 @@ public class PPolygon extends PBody {
      */
     public void move(Vector newCenterPt) {
         // Compute the displacement from the old centerPt to the new centerPt and call the translate()
-        Vector displacement = Vector.subtract(newCenterPt, getCenterPt());
+        Vector displacement = Vector.minus(newCenterPt, getCenterPt());
         translate(displacement);
     }
 
