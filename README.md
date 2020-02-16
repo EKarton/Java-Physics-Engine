@@ -22,45 +22,17 @@ This project consists of several components, each responsible for performing a c
     </p>
 </div>
 
-Using the Object Creation Toolbar, users are able to create various objects.
+When a user launches the GUI editor, they will be able to create objects using the GUI editor:
 <div width="100%">
     <p align="center">
-    <img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/develop-v2.0.0/docs/Images/Toolbar.PNG" width="600px"/>
+    <img src="docs/Images/Main-Screen.png" width="600px"/>
     </p>
 </div>
 
-To help users create their objects, a snapping tool is used to snap the cursor to the nearest critical point (ex: points to line edges, center of mass, etc). This only occurs during object creation, and when the cursor is close to a critical point.
+When the user clicks on the "Run Simulation" button (in the menu bar), they will be able to see the simulation of their objects:
 <div width="100%">
     <p align="center">
-    <img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/develop-v2.0.0/docs/Images/SnappingTool.PNG" width="600px"/>
-    </p>
-</div>
-
-After creating an object, users are able to edit their object properties. Note that each object needs to have a unique name.
-<div width="100%">
-    <p align="center">
-    <img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/develop-v2.0.0/docs/Images/PropertiesTab2.PNG" width="600px"/>
-    </p>
-</div>
-
-Users will be using the Java Physics Engine GUI editor to generate API code from the objects made in the editor. 
-<div width="100%">
-    <p align="center">
-<img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/develop-v2.0.0/docs/Images/GeneratedAPICode.PNG" width="600px"/>
-    </p>
-</div>
-
-In addition, users can generate the API code needed to implement their objects into their own Java objects. They can do this by clicking on View -> View Generated API Code. A new window will appear, and users can copy the code from the window.
-<div width="100%">
-    <p align="center">
-<img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/develop-v2.0.0/docs/Images/SimulationWindow.PNG" width="600px"/>
-    </p>
-</div>
-
-Furthermore, Users are able to render the objects by navigating to Run -> Run Simulation. A new window will appear, simulating the objects in real time.
-<div width="100%">
-    <p align="center">
-        <img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/develop-v2.0.0/docs/Images/GeneratedAPICode.PNG" width="600px"/>
+    <img src="docs/Images/Simulation-Window.png" width="600px"/>
     </p>
 </div>
 
