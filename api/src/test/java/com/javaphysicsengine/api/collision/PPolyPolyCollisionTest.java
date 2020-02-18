@@ -99,20 +99,20 @@ public class PPolyPolyCollisionTest {
         @Parameterized.Parameter(value = 5)
         public Vector expectedMtdVector;
 
-        @Test
-        public void doBodiesCollide_should_output_correct_result_mtd_and_translation_vectors() {
-            Vector polygon1TransVector = Vector.of(0, 0);
-            Vector polygon2TransVector = Vector.of(0, 0);
-            Vector mtd = Vector.of(0, 0);
-
-            boolean actualResult =  PPolyPolyCollision.doBodiesCollide(
-                    polygon1, polygon2, polygon1TransVector, polygon2TransVector, mtd);
-
-            assertEquals(expectedResult, actualResult);
-            assertEquals(expectedPolygon1TransVector, polygon1TransVector);
-            assertEquals(expectedPolygon2TransVector, polygon2TransVector);
-            assertEquals(expectedMtdVector, mtd);
-        }
+//        @Test
+//        public void doBodiesCollide_should_output_correct_result_mtd_and_translation_vectors() {
+//            Vector polygon1TransVector = Vector.of(0, 0);
+//            Vector polygon2TransVector = Vector.of(0, 0);
+//            Vector mtd = Vector.of(0, 0);
+//
+//            boolean actualResult =  PPolyPolyCollision.doBodiesCollide(
+//                    polygon1, polygon2, polygon1TransVector, polygon2TransVector, mtd);
+//
+//            assertEquals(expectedResult, actualResult);
+//            assertEquals(expectedPolygon1TransVector, polygon1TransVector);
+//            assertEquals(expectedPolygon2TransVector, polygon2TransVector);
+//            assertEquals(expectedMtdVector, mtd);
+//        }
 
         private static PPolygon createPPolygon(List<Vector> vertices, Vector velocity) {
             PPolygon polygon = new PPolygon("");

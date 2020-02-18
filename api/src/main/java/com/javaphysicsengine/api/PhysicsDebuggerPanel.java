@@ -115,19 +115,40 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
 //        PString string2 = new PString(circle3, circle4);
 //        pEngine.getConstraints().add(string2);
 
-        PPolygon triangle = new PPolygon("Triangle");
-        triangle.setMoveable(false);
-        triangle.getVertices().add(new Vector(600, 600));
-        triangle.getVertices().add(new Vector(240, 240));
-        triangle.getVertices().add(new Vector(600, 240));
-        triangle.computeCenterOfMass();
-        pEngine.getBodies().add(triangle);
+//        PPolygon triangle = new PPolygon("Triangle");
+//        triangle.setMoveable(false);
+//        triangle.getVertices().add(new Vector(600, 600));
+//        triangle.getVertices().add(new Vector(240, 240));
+//        triangle.getVertices().add(new Vector(600, 240));
+//        triangle.computeCenterOfMass();
+//        pEngine.getBodies().add(triangle);
+//
+//        PCircle circle = new PCircle("Circle");
+//        circle.setCenterPt(Vector.of(420, 640));
+//        circle.setRadius(40);
+//        circle.setMass(1);
+//        pEngine.getBodies().add(circle);
 
-        PCircle circle = new PCircle("Circle");
-        circle.setCenterPt(Vector.of(420, 640));
-        circle.setRadius(40);
-        circle.setMass(1);
-        pEngine.getBodies().add(circle);
+        PPolygon polygon1 = new PPolygon(("Box1"));
+        polygon1.getVertices().add(new Vector(400, 100));
+        polygon1.getVertices().add(new Vector(600, 100));
+        polygon1.getVertices().add(new Vector(600, 300));
+        polygon1.getVertices().add(new Vector(400, 300));
+        polygon1.computeCenterOfMass();
+        polygon1.setMoveable(false);
+        pEngine.getBodies().add(polygon1);
+
+        PPolygon polygon2 = new PPolygon(("Box1"));
+        polygon2.getVertices().add(new Vector(400, 400));
+        polygon2.getVertices().add(new Vector(600, 400));
+        polygon2.getVertices().add(new Vector(600, 600));
+        polygon2.getVertices().add(new Vector(400, 600));
+        polygon2.computeCenterOfMass();
+        polygon2.setMoveable(true);
+        polygon2.setVelocity(Vector.of(0, -10));
+        pEngine.getBodies().add(polygon2);
+
+
 
         // Create the game timer
         Timer gameTimer = new Timer((int) (1000.0 / FPS / TIME_MULTIPLIER), this);

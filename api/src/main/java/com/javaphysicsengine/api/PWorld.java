@@ -139,17 +139,15 @@ public class PWorld {
                         PPolygon body1 = (PPolygon) firstBody;
                         PPolygon body2 = (PPolygon) secondBody;
 
-                        if (PBoxBoxCollision.doBodiesCollide(body1.getBoundingBox(), body2.getBoundingBox())) {
-                            Vector poly1Trans = new Vector(0, 0);
-                            Vector poly2Trans = new Vector(0, 0);
-                            Vector mtd = new Vector(0, 0);
+                        PCollisionResult result = PPolyPolyCollision.doBodiesCollide(body1, body2);
 
-                            if (PPolyPolyCollision.doBodiesCollide(body1, body2, poly1Trans, poly2Trans, mtd)) {
-                                body1.translate(poly1Trans);
-                                body2.translate(poly2Trans);
-                                calculateImpulse(body1, body2, mtd);
-                                positionalCorrection(body1, body2, mtd);
-                            }
+                        if (result.isHasCollided()) {
+                            System.out.println("hasCollided: true");
+
+                            body1.translate(result.getBody1Mtv());
+                            body2.translate(result.getBody2Mtv());
+                            calculateImpulse(body1, body2, result.getMtv());
+                            positionalCorrection(body1, body2, result.getMtv());
                         }
                     }
                 }
