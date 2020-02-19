@@ -31,6 +31,16 @@ public abstract class PBody {
     private Color outlineColor = Color.BLACK;
     private Color fillColor = Color.BLUE;
 
+    public Color getNormalVectorColor() {
+        return normalVectorColor;
+    }
+
+    public void setNormalVectorColor(Color normalVectorColor) {
+        this.normalVectorColor = normalVectorColor;
+    }
+
+    private Color normalVectorColor = Color.RED;
+
     /**
      * Creates a PBody object with a certain name attached
      * Pre-condition: "bodyName" must not be null
@@ -224,6 +234,9 @@ public abstract class PBody {
      */
     public void drawOutline(Graphics g, int windowHeight) {
         g.drawOval((int) getCenterPt().getX() - 2, windowHeight - (int) getCenterPt().getY() - 2, 4, 4);
+
+        // Draw the name
+        g.drawString(this.getName(), (int) this.getCenterPt().getX(), windowHeight - (int) this.getCenterPt().getY());
     }
 
     /**

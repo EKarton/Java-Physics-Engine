@@ -15,9 +15,23 @@ import java.util.List;
 
 public class PPolyPolyCollision {
 
+    private Vector getProjectionBounds(List<Vector> vertices, Vector normal) {
+        double minT1 = 1000000000;
+        double maxT1 = -1000000000;
+
+        for (Vector poly1Vertex : vertices) {
+            double scalarProj = normal.dot(poly1Vertex);
+
+            minT1 = Math.min(minT1, scalarProj);
+            maxT1 = Math.max(maxT1, scalarProj);
+        }
+
+        return Vector.of(minT1, maxT1);
+    }
+
     /**
      * Computes the MTV using the separating axis theorem
-     * It returns the MTV of polygon2 w.r.t polygon 1
+     * It returns the MTV for polygon2
      * If there is no intersection, then it returns NULL
      */
     private static Vector getSeparatingAxis(List<Vector> poly1Vertices, List<Vector> poly2Vertices) {
@@ -30,15 +44,16 @@ public class PPolyPolyCollision {
 
             Vector sidePt1 = poly1Vertices.get(i);
             Vector sidePt2 = i + 1 < poly1Vertices.size() ? poly1Vertices.get(i + 1) : poly1Vertices.get(0);
+            Vector edge = sidePt2.minus(sidePt1);
 
-            Vector normal = Vector.of(sidePt2.getY() - sidePt1.getY(), -1 * (sidePt2.getX() - sidePt1.getX())).normalize();
+            Vector normal = Vector.of(edge.getY(), -1 * edge.getX()).normalize();
 
             // Project all poly1's vertices onto the normal and get its bounds
             double minT1 = 1000000000;
             double maxT1 = -1000000000;
 
             for (Vector poly1Vertex : poly1Vertices) {
-                double scalarProj = normal.dot(poly1Vertex.minus(sidePt1));
+                double scalarProj = normal.dot(poly1Vertex);
 
                 minT1 = Math.min(minT1, scalarProj);
                 maxT1 = Math.max(maxT1, scalarProj);
@@ -49,27 +64,24 @@ public class PPolyPolyCollision {
             double maxT2 = -1000000000;
 
             for (Vector poly2Vertex : poly2Vertices) {
-                double scalarProj = normal.dot(poly2Vertex.minus(sidePt1));
+                double scalarProj = normal.dot(poly2Vertex);
 
                 minT2 = Math.min(minT2, scalarProj);
                 maxT2 = Math.max(maxT2, scalarProj);
             }
 
-            // See if the bounds intersect
-            double minT = Math.max(minT1, minT2);
-            double maxT = Math.min(maxT1, maxT2);
+            boolean isIntersecting = minT1 < maxT2 && maxT1 > minT2; // p1.x < p2.y && p1.y > p2.x; //maxT1 >= minT2 && maxT2 >= minT1;
 
-            boolean isNotIntersect = minT >= maxT;
-            if (isNotIntersect) {
-                return null;
-
-            } else {
-                double mtd = maxT - minT;
+            if (isIntersecting) {
+                double mtd = minT1 < maxT2 ? maxT1 - minT2 : maxT2 - minT1;
 
                 if (mtd < bestMtd) {
                     bestMtd = mtd;
                     bestMtv = normal.multiply(mtd);
                 }
+
+            } else {
+                return null;
             }
         }
 
@@ -98,24 +110,20 @@ public class PPolyPolyCollision {
             return new PCollisionResult(false, null, null, null);
         }
 
-        System.out.println("mtv1: " + mtv1 + " mtv2: " + mtv2);
-
         Vector bestMtv;
         Vector body1Mtv;
         Vector body2Mtv;
 
-        if (mtv1.norm2() > mtv2.norm2()) {
+        if (mtv2.norm() <= mtv1.norm()) {
             bestMtv = mtv2;
             body1Mtv = mtv2.multiply(f1);
             body2Mtv = mtv2.multiply(-1).multiply(f2);
 
         } else {
             bestMtv = mtv1;
-            body1Mtv = mtv1.multiply(f1);
-            body2Mtv = mtv1.multiply(-1).multiply(f2);
+            body1Mtv = mtv1.multiply(-1).multiply(f1);
+            body2Mtv = mtv1.multiply(f2);
         }
-
-        System.out.println("bestMtv: " + bestMtv);
 
         return new PCollisionResult(true, body1Mtv, body2Mtv, bestMtv);
     }

@@ -129,20 +129,39 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
 //        circle.setMass(1);
 //        pEngine.getBodies().add(circle);
 
-        PPolygon polygon1 = new PPolygon(("Box1"));
-        polygon1.getVertices().add(new Vector(400, 100));
-        polygon1.getVertices().add(new Vector(600, 100));
-        polygon1.getVertices().add(new Vector(600, 300));
-        polygon1.getVertices().add(new Vector(400, 300));
-        polygon1.computeCenterOfMass();
-        polygon1.setMoveable(false);
-        pEngine.getBodies().add(polygon1);
+//        PPolygon polygon1 = new PPolygon(("Box1"));
+//        polygon1.getVertices().add(new Vector(400, 100));
+//        polygon1.getVertices().add(new Vector(600, 100));
+//        polygon1.getVertices().add(new Vector(600, 300));
+//        polygon1.getVertices().add(new Vector(400, 300));
+//        polygon1.computeCenterOfMass();
+//        polygon1.setMoveable(false);
+//        pEngine.getBodies().add(polygon1);
+//
+//        PPolygon polygon2 = new PPolygon(("Box2"));
+//        polygon2.getVertices().add(new Vector(450, 200));
+//        polygon2.getVertices().add(new Vector(550, 200));
+//        polygon2.getVertices().add(new Vector(550, 400));
+//        polygon2.getVertices().add(new Vector(450, 400));
+//        polygon2.computeCenterOfMass();
+//        polygon2.setMoveable(true);
+//        polygon2.setVelocity(Vector.of(0, -10));
+//        polygon2.translate(Vector.of(0, 10));
+//        pEngine.getBodies().add(polygon2);
+
+        PPolygon triangle = new PPolygon("Triangle");
+        triangle.setMoveable(false);
+        triangle.getVertices().add(new Vector(600, 600));
+        triangle.getVertices().add(new Vector(240, 240));
+        triangle.getVertices().add(new Vector(600, 240));
+        triangle.computeCenterOfMass();
+        pEngine.getBodies().add(triangle);
 
         PPolygon polygon2 = new PPolygon(("Box1"));
-        polygon2.getVertices().add(new Vector(400, 400));
-        polygon2.getVertices().add(new Vector(600, 400));
-        polygon2.getVertices().add(new Vector(600, 600));
-        polygon2.getVertices().add(new Vector(400, 600));
+        polygon2.getVertices().add(new Vector(300, 400));
+        polygon2.getVertices().add(new Vector(500, 400));
+        polygon2.getVertices().add(new Vector(500, 600));
+        polygon2.getVertices().add(new Vector(300, 600));
         polygon2.computeCenterOfMass();
         polygon2.setMoveable(true);
         polygon2.setVelocity(Vector.of(0, -10));

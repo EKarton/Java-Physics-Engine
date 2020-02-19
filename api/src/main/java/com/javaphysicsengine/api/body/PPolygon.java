@@ -186,11 +186,30 @@ public class PPolygon extends PBody {
         }
 
         // Draw the polygon onto the screen
-        g.setColor(getOutlineColor());
+        g.setColor(this.getOutlineColor());
         g.drawPolygon(xCoords, yCoords, xCoords.length);
 
         // Draw the center of mass
         super.drawOutline(g, windowHeight);
+
+        // Draw the normals
+        for (int i = 0; i < vertices.size(); i++) {
+            Vector sidePt1 = vertices.get(i);
+            Vector sidePt2 = i + 1 < vertices.size() ? vertices.get(i + 1) : vertices.get(0);
+
+            Vector midPt = sidePt1.add(sidePt2).multiply(0.5);
+
+            Vector normal = Vector.of(sidePt2.getY() - sidePt1.getY(), -1 * (sidePt2.getX() - sidePt1.getX())).normalize();
+            Vector endPt = normal.multiply(10).add(midPt);
+
+            int x1 = (int) midPt.getX();
+            int y1 = windowHeight - (int) midPt.getY();
+            int x2 = (int) endPt.getX();
+            int y2 = windowHeight - (int) endPt.getY();
+
+            g.setColor(this.getNormalVectorColor());
+            g.drawLine(x1, y1, x2, y2);
+        }
     }
 
     /**

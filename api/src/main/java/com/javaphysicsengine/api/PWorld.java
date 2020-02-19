@@ -140,9 +140,9 @@ public class PWorld {
                         PPolygon body2 = (PPolygon) secondBody;
 
                         PCollisionResult result = PPolyPolyCollision.doBodiesCollide(body1, body2);
+//                        System.out.println("hasCollided: " + result.isHasCollided());
 
                         if (result.isHasCollided()) {
-                            System.out.println("hasCollided: true");
 
                             body1.translate(result.getBody1Mtv());
                             body2.translate(result.getBody2Mtv());
