@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class PWorld {
     // Physic properties about this world
-    private static final double GRAVITY_ACCELERATION = -9.81;
+    private static final Vector GRAVITY = Vector.of(0, -9.81);
     private static final double SCALE = 100;
 
     // List containing the physical bodies and joints
@@ -111,7 +111,9 @@ public class PWorld {
             }
 
             // Adding gravitational force
-            body.getNetForce().setY(body.getNetForce().getY() + GRAVITY_ACCELERATION * body.getMass());
+            Vector gravitationalForce = GRAVITY.multiply(body.getMass());
+            Vector newNetForce = body.getNetForce().add(gravitationalForce);
+            body.setNetForce(newNetForce);
         }
 
         // Adding forces from constraints
@@ -132,19 +134,17 @@ public class PWorld {
             }
 
             // Getting the acceleration from force ( Force = mass * acceleration )
-            double accelerationX = body.getNetForce().getX() / body.getMass();
-            double accelerationY = body.getNetForce().getY() / body.getMass();
+            Vector acceleration = body.getNetForce().multiply(1 / body.getMass());
 
             // Calculating the new velocity ( V2 = V1 + at)
-            body.getVelocity().setX(body.getVelocity().getX() + accelerationX * timeEllapsed);
-            body.getVelocity().setY(body.getVelocity().getY() + accelerationY * timeEllapsed);
+            Vector velocity = body.getVelocity().add(acceleration.multiply(timeEllapsed));
+            body.setVelocity(velocity);
 
             // Getting the amount to translate by (Velocity = displacement / time)
-            double dx = body.getVelocity().getX() * timeEllapsed * SCALE;
-            double dy = body.getVelocity().getY() * timeEllapsed * SCALE;
+            Vector translation = velocity.multiply(timeEllapsed).multiply(SCALE);
 
             // Translate the body
-            body.translate(new Vector(dx, dy));
+            body.translate(translation);
         }
     }
 
@@ -159,7 +159,7 @@ public class PWorld {
         double body1InversedMass = body1.isMoving() ? 1 / body1.getMass() : 0;
         double body2InversedMass = body2.isMoving() ? 1 / body2.getMass() : 0;
 
-        Vector rv = Vector.minus(body2.getVelocity(), body1.getVelocity());
+        Vector rv = body2.getVelocity().minus(body1.getVelocity());
         Vector normal = mtv.normalize();
         double velAlongNormal = normal.dot(rv);
 
