@@ -52,7 +52,7 @@ public class PPolyPolyCollisionTest {
                     true,
                     Vector.of(0, 0),
                     Vector.of(0.4999999999999999, -0.4999999999999999),
-                    Vector.of(0.4999999999999999, -0.4999999999999999)
+                    Vector.of(-0.4999999999999999, 0.4999999999999999)
                 },
                 {
                     createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(0, 0), true),
@@ -60,7 +60,7 @@ public class PPolyPolyCollisionTest {
                     true,
                     Vector.of(0, 0),
                     Vector.of(-0.7999999999999999, 0.39999999999999997),
-                    Vector.of(-0.7999999999999999, 0.39999999999999997)
+                    Vector.of(0.7999999999999999, -0.39999999999999997)
                 },
                 {
                     createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(0, 0), true),
@@ -68,7 +68,7 @@ public class PPolyPolyCollisionTest {
                     true,
                     Vector.of(0, 0),
                     Vector.of(0, 1),
-                    Vector.of(0, 1)
+                    Vector.of(0, -1)
                 },
                 {
                     createPPolygon(Arrays.asList(Vector.of(0, 0), Vector.of(4, 4), Vector.of(0, 4)), Vector.of(1, 0), true),
@@ -76,7 +76,7 @@ public class PPolyPolyCollisionTest {
                     true,
                     Vector.of(0.39999999999999997, -0.19999999999999998),
                     Vector.of(-0.39999999999999997, 0.19999999999999998),
-                    Vector.of(-0.7999999999999999, 0.39999999999999997)
+                    Vector.of(0.7999999999999999, -0.39999999999999997)
                 },
                 {
                     createPPolygon(Arrays.asList(Vector.of(600, 600), Vector.of(240, 240), Vector.of(600, 240)), Vector.of(0, 0), false),
@@ -84,7 +84,7 @@ public class PPolyPolyCollisionTest {
                     true,
                     Vector.of(0, 0),
                     Vector.of(-50, 50),
-                    Vector.of(-50, 50)
+                    Vector.of(50, -50)
                 },
                 {
                     createPPolygon(Arrays.asList(Vector.of(400, 100), Vector.of(600, 100), Vector.of(600, 300), Vector.of(400, 300)), Vector.of(0, 0), false),
@@ -92,7 +92,7 @@ public class PPolyPolyCollisionTest {
                     true,
                     Vector.of(0, 0),
                     Vector.of(0, 90),
-                    Vector.of(0, 90),
+                    Vector.of(0, -90),
                 }
             });
         }
@@ -107,22 +107,22 @@ public class PPolyPolyCollisionTest {
         public boolean expectedResult;
 
         @Parameterized.Parameter(value = 3)
-        public Vector expectedPolygon1TransVector;
+        public Vector expectedPoly1Mtv;
 
         @Parameterized.Parameter(value = 4)
-        public Vector expectedPolygon2TransVector;
+        public Vector expectedPoly2Mtv;
 
         @Parameterized.Parameter(value = 5)
-        public Vector expectedMtdVector;
+        public Vector expectedMtv;
 
         @Test
         public void doBodiesCollide_should_output_correct_result_mtd_and_translation_vectors() {
             PCollisionResult result = PPolyPolyCollision.doBodiesCollide(polygon1, polygon2);
 
             assertEquals(expectedResult, result.isHasCollided());
-            assertEquals(expectedPolygon1TransVector, result.getBody1Mtv());
-            assertEquals(expectedPolygon2TransVector, result.getBody2Mtv());
-            assertEquals(expectedMtdVector, result.getMtv());
+            assertEquals(expectedPoly1Mtv, result.getBody1Mtv());
+            assertEquals(expectedPoly2Mtv, result.getBody2Mtv());
+            assertEquals(expectedMtv, result.getMtv());
         }
 
         private static PPolygon createPPolygon(List<Vector> vertices, Vector velocity, boolean isMoving) {

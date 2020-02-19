@@ -88,22 +88,22 @@ public class PCirclePolyCollisionTest {
     public boolean expectedResult;
 
     @Parameterized.Parameter(value = 3)
-    public Vector expectedTranslationVectorForCircle;
+    public Vector expectedCircleMtv;
 
     @Parameterized.Parameter(value = 4)
-    public Vector expectedTranslationVectorForPolygon;
+    public Vector expectedPolyMtv;
 
     @Parameterized.Parameter(value = 5)
-    public Vector expectedMtdVector;
+    public Vector expectedMtv;
 
     @Test
     public void doBodiesCollide() {
         PCollisionResult result =  PCirclePolyCollision.doBodiesCollide(circle, polygon);
 
         assertEquals(expectedResult, result.isHasCollided());
-        assertEquals(expectedTranslationVectorForCircle, result.getBody1Mtv());
-        assertEquals(expectedTranslationVectorForPolygon, result.getBody2Mtv());
-        assertEquals(expectedMtdVector, result.getMtv());
+        assertEquals(expectedCircleMtv, result.getBody1Mtv());
+        assertEquals(expectedPolyMtv, result.getBody2Mtv());
+        assertEquals(expectedMtv, result.getMtv());
     }
 
     private static PPolygon createPPolygon(List<Vector> vertices, Vector velocity, boolean isMoving) {

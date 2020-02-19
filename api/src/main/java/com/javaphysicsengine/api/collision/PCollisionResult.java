@@ -4,7 +4,7 @@ import com.javaphysicsengine.utils.Vector;
 
 /**
  * Stores the result of a collision
- * Note that the mtv must go in the direction that body2 is translating to
+ * Note that the mtv must go in the direction of body1Mtv
  */
 public class PCollisionResult {
     private final boolean hasCollided;

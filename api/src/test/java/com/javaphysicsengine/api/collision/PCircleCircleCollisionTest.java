@@ -18,52 +18,52 @@ public class PCircleCircleCollisionTest {
     public static Collection getTestData() {
         return Arrays.asList(new Object[][]{
                 {
-                    createPCircle(10, Vector.of(0, 0), Vector.of(0, 0)),
-                    createPCircle(10, Vector.of(15, 15), Vector.of(0, 0)),
+                    createPCircle(10, Vector.of(0, 0), Vector.of(0, 0), true),
+                    createPCircle(10, Vector.of(15, 15), Vector.of(0, 0), true),
                     false,
-                    Vector.of(0, 0),
-                    Vector.of(0, 0),
-                    Vector.of(0, 0)
+                    null,
+                    null,
+                    null
                 },
                 {
-                    createPCircle(10, Vector.of(0, 0), Vector.of(0, 0)),
-                    createPCircle(20, Vector.of(15, 15), Vector.of(0, 0)),
+                    createPCircle(10, Vector.of(0, 0), Vector.of(0, 0), true),
+                    createPCircle(20, Vector.of(15, 15), Vector.of(1, 0), true),
                     true,
                     Vector.of(0, 0),
-                    Vector.of(0, 0),
-                    Vector.of(-6.213203435596425, -6.213203435596425)
+                    Vector.of(0.7071067811865475, 0.7071067811865475),
+                    Vector.of(-0.7071067811865475, -0.7071067811865475)
                 },
                 {
-                    createPCircle(10, Vector.of(0, 0), Vector.of(0, 0)),
-                    createPCircle(20, Vector.of(-15, 0), Vector.of(0, 0)),
+                    createPCircle(10, Vector.of(0, 0), Vector.of(0, 0), true),
+                    createPCircle(20, Vector.of(-15, 0), Vector.of(1, 0), true),
                     true,
                     Vector.of(0, 0),
-                    Vector.of(0, 0),
-                    Vector.of(15.0, 0.0)
+                    Vector.of(-1.0, 0.0),
+                    Vector.of(1.0, 0.0)
                 },
                 {
-                    createPCircle(10, Vector.of(0, 0), Vector.of(12, 0)),
-                    createPCircle(10, Vector.of(9, 0), Vector.of(-12, 0)),
+                    createPCircle(10, Vector.of(0, 0), Vector.of(12, 0), true),
+                    createPCircle(10, Vector.of(9, 0), Vector.of(-12, 0), true),
                     true,
-                    Vector.of(-5.5, 0.0),
-                    Vector.of(5.5, -0.0),
-                    Vector.of(-11.0, 0.0)
+                    Vector.of(-0.5, 0.0),
+                    Vector.of(0.5, 0.0),
+                    Vector.of(-1.0, 0.0)
                 },
                 {
-                    createPCircle(10, Vector.of(0, 0), Vector.of(12, 0)),
-                    createPCircle(10, Vector.of(9, 0), Vector.of(-10, 0)),
+                    createPCircle(10, Vector.of(0, 0), Vector.of(12, 0), true),
+                    createPCircle(10, Vector.of(9, 0), Vector.of(-10, 0), true),
                     true,
-                    Vector.of(-6.0, 0.0),
-                    Vector.of(5.0, -0.0),
-                    Vector.of(-11.0, 0.0)
+                    Vector.of(-0.5901639344262295, 0.0),
+                    Vector.of(0.4098360655737705, 0),
+                    Vector.of(-1.0, 0.0)
                 },
                 {
-                    createPCircle(10, Vector.of(0, 0), Vector.of(2, 2)),
-                    createPCircle(10, Vector.of(5, 5), Vector.of(-2, -3)),
+                    createPCircle(10, Vector.of(0, 0), Vector.of(2, 2), true),
+                    createPCircle(10, Vector.of(5, 5), Vector.of(-2, -3), true),
                     true,
-                    Vector.of(-4.0189, -4.0189),
-                    Vector.of(5.1231, 5.1231),
-                    Vector.of(-9.1421, -9.1421)
+                    Vector.of(-0.2693740118805895, -0.2693740118805895),
+                    Vector.of(0.43773276930595795, 0.43773276930595795),
+                    Vector.of(-0.7071067811865475, -0.7071067811865475)
                 }
         });
     }
@@ -78,13 +78,13 @@ public class PCircleCircleCollisionTest {
     public boolean expectedResult;
 
     @Parameterized.Parameter(value = 3)
-    public Vector expectedTranslationVectorForCircle1;
+    public Vector expectedCircle1Mtv;
 
     @Parameterized.Parameter(value = 4)
-    public Vector expectedTranslationVectorForCircle2;
+    public Vector expectedCircle2Mtv;
 
     @Parameterized.Parameter(value = 5)
-    public Vector expectedMtdVector;
+    public Vector expectedMtv;
 
     @Test
     public void doBodiesCollide() {
@@ -92,16 +92,17 @@ public class PCircleCircleCollisionTest {
         PCollisionResult result = PCircleCircleCollision.doBodiesCollide(circle1, circle2);
 
         assertEquals(expectedResult, result.isHasCollided());
-        assertEquals(expectedTranslationVectorForCircle1, result.getBody1Mtv());
-        assertEquals(expectedTranslationVectorForCircle2, result.getBody2Mtv());
-        assertEquals(expectedMtdVector, result.getMtv());
+        assertEquals(expectedCircle1Mtv, result.getBody1Mtv());
+        assertEquals(expectedCircle2Mtv, result.getBody2Mtv());
+        assertEquals(expectedMtv, result.getMtv());
     }
 
-    private static PCircle createPCircle(int radius, Vector centerPt, Vector velocity) {
+    private static PCircle createPCircle(int radius, Vector centerPt, Vector velocity, boolean isMoving) {
         PCircle newPCircle = new PCircle("");
         newPCircle.setCenterPt(centerPt);
         newPCircle.setRadius(radius);
         newPCircle.setVelocity(velocity);
+        newPCircle.setMoveable(isMoving);
 
         return newPCircle;
     }

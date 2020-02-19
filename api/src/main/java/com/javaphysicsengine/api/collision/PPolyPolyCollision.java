@@ -105,12 +105,12 @@ public class PPolyPolyCollision {
         Vector body2Mtv;
 
         if (mtv2.norm() <= mtv1.norm()) {
-            bestMtv = mtv2.multiply(-1);
+            bestMtv = mtv2;
             body1Mtv = mtv2.multiply(f1);
             body2Mtv = mtv2.multiply(-1).multiply(f2);
 
         } else {
-            bestMtv = mtv1;
+            bestMtv = mtv1.multiply(-1);
             body1Mtv = mtv1.multiply(-1).multiply(f1);
             body2Mtv = mtv1.multiply(f2);
         }
