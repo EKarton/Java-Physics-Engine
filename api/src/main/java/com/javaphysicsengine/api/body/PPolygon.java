@@ -7,13 +7,17 @@
 
 package com.javaphysicsengine.api.body;
 
+import com.javaphysicsengine.api.collision.PCircleCircleCollision;
+import com.javaphysicsengine.api.collision.PCirclePolyCollision;
+import com.javaphysicsengine.api.collision.PCollisionResult;
+import com.javaphysicsengine.api.collision.PPolyPolyCollision;
 import com.javaphysicsengine.utils.Trigonometry;
 import com.javaphysicsengine.utils.Vector;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-public class PPolygon extends PBody {
+public class PPolygon extends PBody implements PCollidable {
 
     private ArrayList<Vector> vertices = new ArrayList<Vector>();
     private PBoundingBox boundingBox;
@@ -229,5 +233,26 @@ public class PPolygon extends PBody {
                 propertiesLine.append(",");
         }
         return propertiesLine.toString();
+    }
+
+    @Override
+    public PCollisionResult hasCollidedWith(PCollidable body) {
+        PCollisionResult result;
+
+        if (body instanceof PCircle) {
+            result = PCirclePolyCollision.doBodiesCollide((PCircle) body, this);
+
+            // Note: since we are not comparing this obj with the incoming obj, the directions are flipped
+            result = new PCollisionResult(result.isHasCollided(), result.getBody2Mtv(),
+                    result.getBody1Mtv(), result.getMtv().multiply(-1));
+
+        } else if (body instanceof PPolygon) {
+            result = PPolyPolyCollision.doBodiesCollide(this, (PPolygon) body);
+
+        } else {
+            throw new IllegalArgumentException("Body cannot detect and handle collisions!");
+        }
+
+        return result;
     }
 }

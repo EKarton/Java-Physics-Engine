@@ -8,14 +8,9 @@
 package com.javaphysicsengine.api;
 
 import com.javaphysicsengine.api.body.PBody;
-import com.javaphysicsengine.api.body.PCircle;
+import com.javaphysicsengine.api.body.PCollidable;
 import com.javaphysicsengine.api.body.PConstraints;
-import com.javaphysicsengine.api.body.PPolygon;
-import com.javaphysicsengine.api.collision.PBoxBoxCollision;
-import com.javaphysicsengine.api.collision.PCircleCircleCollision;
-import com.javaphysicsengine.api.collision.PCirclePolyCollision;
 import com.javaphysicsengine.api.collision.PCollisionResult;
-import com.javaphysicsengine.api.collision.PPolyPolyCollision;
 import com.javaphysicsengine.utils.Vector;
 
 import java.awt.Color;
@@ -85,69 +80,20 @@ public class PWorld {
                 PBody firstBody = bodies.get(i);
                 PBody secondBody = bodies.get(j);
 
-                if (firstBody.isMoving() || secondBody.isMoving()) {
+                boolean isCollidable = (firstBody instanceof PCollidable && secondBody instanceof PCollidable) &&
+                    (firstBody.isMoving() || secondBody.isMoving());
 
-                    // If a circle and polygon collided
-                    if (firstBody instanceof PCircle && secondBody instanceof PPolygon) {
-                        PCircle circle = (PCircle) firstBody;
-                        PPolygon poly = (PPolygon) secondBody;
+                if (isCollidable) {
+                    PCollidable collidable1 = (PCollidable) firstBody;
+                    PCollidable collidable2 = (PCollidable) secondBody;
 
-                        PCollisionResult result = PCirclePolyCollision.doBodiesCollide(circle, poly);
+                    PCollisionResult result = collidable1.hasCollidedWith(collidable2);
 
-                        if (result.isHasCollided()) {
-                            circle.translate(result.getBody1Mtv());
-                            poly.translate(result.getBody2Mtv());
-                            calculateImpulse(circle, poly, result.getMtv());
-                            positionalCorrection(circle, poly, result.getMtv());
-                        }
-                    }
-
-                    // If a polygon and a circle collided
-                    else if (firstBody instanceof PPolygon && secondBody instanceof PCircle) {
-                        PCircle circle = (PCircle) secondBody;
-                        PPolygon poly = (PPolygon) firstBody;
-
-                        PCollisionResult result = PCirclePolyCollision.doBodiesCollide(circle, poly);
-
-                        if (result.isHasCollided()) {
-
-                            circle.translate(result.getBody1Mtv());
-                            poly.translate(result.getBody2Mtv());
-                            calculateImpulse(circle, poly, result.getMtv());
-                            positionalCorrection(circle, poly, result.getMtv());
-                        }
-                    }
-
-                    // If a circle and a circle collided
-                    else if (firstBody instanceof PCircle && secondBody instanceof PCircle) {
-                        PCircle circle1 = (PCircle) firstBody;
-                        PCircle circle2 = (PCircle) secondBody;
-
-                        PCollisionResult result = PCircleCircleCollision.doBodiesCollide(circle1, circle2);
-
-                        if (result.isHasCollided()) {
-
-                            circle1.translate(result.getBody1Mtv());
-                            circle2.translate(result.getBody2Mtv());
-                            calculateImpulse(circle1, circle2, result.getMtv());
-                            positionalCorrection(circle1, circle2, result.getMtv());
-                        }
-                    }
-
-                    // If a polygon and a polygon collided
-                    else if (firstBody instanceof PPolygon && secondBody instanceof PPolygon) {
-                        PPolygon body1 = (PPolygon) firstBody;
-                        PPolygon body2 = (PPolygon) secondBody;
-
-                        PCollisionResult result = PPolyPolyCollision.doBodiesCollide(body1, body2);
-
-                        if (result.isHasCollided()) {
-
-                            body1.translate(result.getBody1Mtv());
-                            body2.translate(result.getBody2Mtv());
-                            calculateImpulse(body1, body2, result.getMtv());
-                            positionalCorrection(body1, body2, result.getMtv());
-                        }
+                    if (result.isHasCollided()) {
+                        firstBody.translate(result.getBody1Mtv());
+                        secondBody.translate(result.getBody2Mtv());
+                        calculateImpulse(firstBody, secondBody, result.getMtv());
+                        positionalCorrection(firstBody, secondBody, result.getMtv());
                     }
                 }
             }

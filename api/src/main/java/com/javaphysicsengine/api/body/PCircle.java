@@ -6,11 +6,14 @@
  */
 package com.javaphysicsengine.api.body;
 
+import com.javaphysicsengine.api.collision.PCircleCircleCollision;
+import com.javaphysicsengine.api.collision.PCirclePolyCollision;
+import com.javaphysicsengine.api.collision.PCollisionResult;
 import com.javaphysicsengine.utils.Vector;
 
 import java.awt.Graphics;
 
-public class PCircle extends PBody {
+public class PCircle extends PBody implements PCollidable {
 
     private double radius = 10;
 
@@ -116,5 +119,22 @@ public class PCircle extends PBody {
     @Override
     public String toString() {
         return super.toString() + "Radius:" + radius + ";";
+    }
+
+    @Override
+    public PCollisionResult hasCollidedWith(PCollidable body) {
+        PCollisionResult result;
+
+        if (body instanceof PCircle) {
+            result = PCircleCircleCollision.doBodiesCollide(this, (PCircle) body);
+
+        } else if (body instanceof PPolygon) {
+            result = PCirclePolyCollision.doBodiesCollide(this, (PPolygon) body);
+
+        } else {
+            throw new IllegalArgumentException("Body cannot detect and handle collisions!");
+        }
+
+        return result;
     }
 }
