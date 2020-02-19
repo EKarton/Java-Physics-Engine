@@ -88,17 +88,13 @@ public class PCircleCircleCollisionTest {
 
     @Test
     public void doBodiesCollide() {
-        Vector circle1TranslationVector = Vector.of(0, 0);
-        Vector circle2TranslationVector = Vector.of(0, 0);
-        Vector mtd = Vector.of(0, 0);
 
-        boolean actualResult =  PCircleCircleCollision.doBodiesCollide(
-                circle1, circle2, circle1TranslationVector, circle2TranslationVector, mtd);
+        PCollisionResult result = PCircleCircleCollision.doBodiesCollide(circle1, circle2);
 
-        assertEquals(expectedResult, actualResult);
-        assertEquals(expectedTranslationVectorForCircle1, circle1TranslationVector);
-        assertEquals(expectedTranslationVectorForCircle2, circle2TranslationVector);
-        assertEquals(expectedMtdVector, mtd);
+        assertEquals(expectedResult, result.isHasCollided());
+        assertEquals(expectedTranslationVectorForCircle1, result.getBody1Mtv());
+        assertEquals(expectedTranslationVectorForCircle2, result.getBody2Mtv());
+        assertEquals(expectedMtdVector, result.getMtv());
     }
 
     private static PCircle createPCircle(int radius, Vector centerPt, Vector velocity) {

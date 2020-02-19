@@ -110,6 +110,7 @@ public class PWorld {
                         PCollisionResult result = PCirclePolyCollision.doBodiesCollide(circle, poly);
 
                         if (result.isHasCollided()) {
+
                             circle.translate(result.getBody1Mtv());
                             poly.translate(result.getBody2Mtv());
                             calculateImpulse(circle, poly, result.getMtv());
@@ -121,16 +122,15 @@ public class PWorld {
                     else if (firstBody instanceof PCircle && secondBody instanceof PCircle) {
                         PCircle circle1 = (PCircle) firstBody;
                         PCircle circle2 = (PCircle) secondBody;
-                        Vector mtd = new Vector(0, 0);
-                        Vector circle1TransVector = new Vector(0, 0);
-                        Vector circle2TransVector = new Vector(0, 0);
 
-                        if (PCircleCircleCollision.doBodiesCollide(circle1, circle2, circle1TransVector, circle2TransVector, mtd)) {
-                            // System.out.println("Circles collided!");
-                            circle1.translate(circle1TransVector);
-                            circle2.translate(circle2TransVector);
-                            calculateImpulse(circle1, circle2, mtd);
-                            positionalCorrection(circle1, circle2, mtd);
+                        PCollisionResult result = PCircleCircleCollision.doBodiesCollide(circle1, circle2);
+
+                        if (result.isHasCollided()) {
+
+                            circle1.translate(result.getBody1Mtv());
+                            circle2.translate(result.getBody2Mtv());
+                            calculateImpulse(circle1, circle2, result.getMtv());
+                            positionalCorrection(circle1, circle2, result.getMtv());
                         }
                     }
 
@@ -140,7 +140,6 @@ public class PWorld {
                         PPolygon body2 = (PPolygon) secondBody;
 
                         PCollisionResult result = PPolyPolyCollision.doBodiesCollide(body1, body2);
-//                        System.out.println("hasCollided: " + result.isHasCollided());
 
                         if (result.isHasCollided()) {
 
@@ -169,8 +168,9 @@ public class PWorld {
         }
 
         // Adding forces from constraints
-        for (PConstraints constraint : constraints)
+        for (PConstraints constraint : constraints) {
             constraint.addTensionForce();
+        }
     }
 
     /**
