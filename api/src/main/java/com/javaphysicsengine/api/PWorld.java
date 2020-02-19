@@ -20,10 +20,11 @@ import java.util.ArrayList;
 public class PWorld {
     // Physic properties about this world
     private static final double GRAVITY_ACCELERATION = -9.81;
+    private static final double SCALE = 100;
 
     // List containing the physical bodies and joints
-    private ArrayList<PBody> bodies = new ArrayList<PBody>();
-    private ArrayList<PConstraints> constraints = new ArrayList<PConstraints>();
+    private ArrayList<PBody> bodies = new ArrayList<>();
+    private ArrayList<PConstraints> constraints = new ArrayList<>();
 
     /**
      * Post-condition: Returns the list of bodies added to the world
@@ -139,8 +140,8 @@ public class PWorld {
             body.getVelocity().setY(body.getVelocity().getY() + accelerationY * timeEllapsed);
 
             // Getting the amount to translate by (Velocity = displacement / time)
-            double dx = body.getVelocity().getX() * timeEllapsed;
-            double dy = body.getVelocity().getY() * timeEllapsed;
+            double dx = body.getVelocity().getX() * timeEllapsed * SCALE;
+            double dy = body.getVelocity().getY() * timeEllapsed * SCALE;
 
             // Translate the body
             body.translate(new Vector(dx, dy));

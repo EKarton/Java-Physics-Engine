@@ -30,6 +30,7 @@ public abstract class PBody {
     // The graphic properties of the object
     private Color outlineColor = Color.BLACK;
     private Color fillColor = Color.BLUE;
+    private Color normalVectorColor = Color.RED;
 
     public Color getNormalVectorColor() {
         return normalVectorColor;
@@ -38,8 +39,6 @@ public abstract class PBody {
     public void setNormalVectorColor(Color normalVectorColor) {
         this.normalVectorColor = normalVectorColor;
     }
-
-    private Color normalVectorColor = Color.RED;
 
     /**
      * Creates a PBody object with a certain name attached
