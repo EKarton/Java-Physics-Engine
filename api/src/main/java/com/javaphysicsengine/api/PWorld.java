@@ -13,9 +13,9 @@ import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.api.collision.PCollisionResult;
 import com.javaphysicsengine.utils.Vector;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PWorld {
     // Physic properties about this world
@@ -25,6 +25,8 @@ public class PWorld {
     // List containing the physical bodies and joints
     private ArrayList<PBody> bodies = new ArrayList<>();
     private ArrayList<PConstraints> constraints = new ArrayList<>();
+
+    public ConcurrentLinkedQueue<Vector> pointsToDraw = new ConcurrentLinkedQueue<>();
 
     /**
      * Post-condition: Returns the list of bodies added to the world
@@ -53,8 +55,18 @@ public class PWorld {
             body.drawOutline(g, 600);
 
         // Drawing the constraints
-        for (PConstraints constraint : constraints)
+        for (PConstraints constraint : constraints) {
             constraint.drawConstraints(g, 600);
+        }
+
+        // Draw all of the points
+        for (Vector pt : pointsToDraw) {
+            System.out.println("Drawing " + pt);
+            int topLeftX = (int) (pt.getX() - 10);
+            int topLeftY = 600 - (int) (pt.getY() + 10);
+            g.setColor(Color.GREEN);
+            g.fillOval(topLeftX, topLeftY, 10 * 2, 10 * 2);
+        }
     }
 
     /**
@@ -91,9 +103,11 @@ public class PWorld {
                     PCollisionResult result = collidable1.hasCollidedWith(collidable2);
 
                     if (result.isHasCollided()) {
+                        pointsToDraw.add(result.getContactPt());
+
                         firstBody.translate(result.getBody1Mtv());
                         secondBody.translate(result.getBody2Mtv());
-                        calculateImpulse(firstBody, secondBody, result.getMtv());
+                        calculateImpulse(firstBody, secondBody, result.getMtv(), result.getContactPt());
                         positionalCorrection(firstBody, secondBody, result.getMtv());
                     }
                 }
@@ -136,15 +150,21 @@ public class PWorld {
             // Getting the acceleration from force ( Force = mass * acceleration )
             Vector acceleration = body.getNetForce().multiply(1 / body.getMass());
 
-            // Calculating the new velocity ( V2 = V1 + at)
+            // Calculating the new velocity ( V' = V + at)
             Vector velocity = body.getVelocity().add(acceleration.multiply(timeEllapsed));
             body.setVelocity(velocity);
 
+            // Calculating the new angular velocity (AngularVelocity' = AngularVelocity + torque * (1 / inertia) * time)
+            double angularVelocity = body.getAngularVelocity() + (body.getTorque() * (1 / body.getInertia()) * timeEllapsed);
+            body.setAngularVelocity(angularVelocity);
+
             // Getting the amount to translate by (Velocity = displacement / time)
             Vector translation = velocity.multiply(timeEllapsed).multiply(SCALE);
-
-            // Translate the body
             body.translate(translation);
+
+            // Rotate the body (angle += AngularVelocity' * time)
+            double newAngle = body.getAngle() + (body.getAngularVelocity() * timeEllapsed);
+            body.rotate(newAngle);
         }
     }
 
@@ -155,23 +175,43 @@ public class PWorld {
      * @param body2 The second body involved in the collision
      * @param mtv The MTD of the two bodies
      */
-    private void calculateImpulse(PBody body1, PBody body2, Vector mtv) {
+    private void calculateImpulse(PBody body1, PBody body2, Vector mtv, Vector contactPt) {
         double body1InversedMass = body1.isMoving() ? 1 / body1.getMass() : 0;
         double body2InversedMass = body2.isMoving() ? 1 / body2.getMass() : 0;
+
+        double body1InverseInertia = body1.getInertia() != 0 ? 1.0f / body1.getInertia() : 0;
+        double body2InverseInertia = body2.getInertia() != 0 ? 1.0f / body2.getInertia() : 0;
 
         Vector rv = body2.getVelocity().minus(body1.getVelocity());
         Vector normal = mtv.normalize();
         double velAlongNormal = normal.dot(rv);
 
+        Vector r1 = contactPt.minus(body1.getCenterPt());
+        Vector r2 = contactPt.minus(body2.getCenterPt());
+
+        double r1crossN = r1.cross(normal);
+        double r2crossN = r2.cross(normal);
+
         // Getting the total impulse of the two bodies as a system
         double coefficientOfResitution = 0.8;
         double totalImpulse = -(1.0f + coefficientOfResitution) * velAlongNormal;
-        totalImpulse /= (body1InversedMass + body2InversedMass);
+        totalImpulse /= (body1InversedMass + body2InversedMass +
+                (r1crossN * r1crossN * body1InverseInertia) +
+                (r2crossN * r2crossN * body2InverseInertia));
 
-        // Apply impulse to each object
-        Vector impulse = Vector.multiply(normal, totalImpulse);
-        body1.setVelocity(body1.getVelocity().minus(impulse.multiply(body1InversedMass)));
-        body2.setVelocity(body2.getVelocity().add(impulse.multiply(body2InversedMass)));
+        // Compute impulse of each object
+        Vector body2Impulse = Vector.multiply(normal, totalImpulse);
+        Vector body1Impulse = body2Impulse.multiply(-1);
+
+        // Apply the impulse to the translation velocities
+        body1.setVelocity(body1.getVelocity().add(body1Impulse.multiply(body1InversedMass)));
+        body2.setVelocity(body2.getVelocity().add(body2Impulse.multiply(body2InversedMass)));
+
+        // Apply the impulse to the angular velocity
+        body1.setAngularVelocity(body1.getAngularVelocity() + (body1InverseInertia * r1.cross(body1Impulse)));
+        body2.setAngularVelocity(body2.getAngularVelocity() + (body2InverseInertia * r2.cross(body2Impulse)));
+
+        System.out.println(body1.getAngularVelocity() + " | " + body2.getAngularVelocity());
     }
 
     /**

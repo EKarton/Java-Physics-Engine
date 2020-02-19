@@ -22,7 +22,10 @@ public abstract class PBody {
 
     private Vector netForce = new Vector(0, 0);
     private Vector velocity = new Vector(0, 0);
-    private double angle = 0;
+    private double angle = 0; // In radians
+
+    private double angularVelocity = 0; // In radians
+    private double torque = 0;
 
     private String name;
     private boolean isMoving = true;
@@ -157,6 +160,24 @@ public abstract class PBody {
 
     public void setAngle(double angle) {
         this.angle = angle;
+    }
+
+    public abstract double getInertia();
+
+    public double getAngularVelocity() {
+        return angularVelocity;
+    }
+
+    public void setAngularVelocity(double angularVelocity) {
+        this.angularVelocity = angularVelocity;
+    }
+
+    public double getTorque() {
+        return torque;
+    }
+
+    public void setTorque(double torque) {
+        this.torque = torque;
     }
 
     /**

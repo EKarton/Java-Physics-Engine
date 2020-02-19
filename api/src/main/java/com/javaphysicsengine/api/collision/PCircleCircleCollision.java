@@ -13,7 +13,7 @@ public class PCircleCircleCollision {
 
     public static PCollisionResult doBodiesCollide(PCircle circle1, PCircle circle2) {
 
-        double centerPtDistance = Vector.minus(circle1.getCenterPt(), circle2.getCenterPt()).norm();
+        double centerPtDistance = Vector.minus(circle1.getCenterPt(), circle2.getCenterPt()).norm1();
         double radiusSum = circle1.getRadius() + circle2.getRadius();
 
         boolean isIntersecting = centerPtDistance < radiusSum * radiusSum;
@@ -31,16 +31,19 @@ public class PCircleCircleCollision {
             Vector mtv = circle1.getCenterPt().minus(circle2.getCenterPt()).normalize();
             mtv.multiply(mtd);
 
+            // Calculate the contact point
+            Vector contactPt = mtv.normalize().multiply(-1 * circle1.getRadius()).add(circle1.getCenterPt());
+
             // Compute how much MTD each object gets
-            double f1 = circle1.isMoving() ? circle1.getVelocity().norm() / (circle1.getVelocity().norm() + circle2.getVelocity().norm()) : 0;
-            double f2 = circle2.isMoving() ? circle2.getVelocity().norm() / (circle1.getVelocity().norm() + circle2.getVelocity().norm()) : 0;
+            double f1 = circle1.isMoving() ? circle1.getVelocity().norm1() / (circle1.getVelocity().norm1() + circle2.getVelocity().norm1()) : 0;
+            double f2 = circle2.isMoving() ? circle2.getVelocity().norm1() / (circle1.getVelocity().norm1() + circle2.getVelocity().norm1()) : 0;
 
             // Get the translation vector
             Vector circle1Trans = mtv.multiply(f1);
             Vector circle2Trans = mtv.multiply(-1).multiply(f2);
 
-            return new PCollisionResult(true, circle1Trans, circle2Trans, mtv);
+            return new PCollisionResult(true, circle1Trans, circle2Trans, mtv, contactPt);
         }
-        return new PCollisionResult(false, null, null, null);
+        return new PCollisionResult(false, null, null, null, null);
     }
 }

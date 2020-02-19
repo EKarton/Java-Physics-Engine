@@ -84,8 +84,8 @@ public class PPolyPolyCollision {
         ArrayList<Vector> poly2Vertices = body2.getVertices();
 
         // The weighted velocities
-        double f1 = body1.isMoving() ? body1.getVelocity().norm() / (body1.getVelocity().norm() + body2.getVelocity().norm()) : 0;
-        double f2 = body2.isMoving() ? body2.getVelocity().norm() / (body1.getVelocity().norm() + body2.getVelocity().norm()) : 0;
+        double f1 = body1.isMoving() ? body1.getVelocity().norm1() / (body1.getVelocity().norm1() + body2.getVelocity().norm1()) : 0;
+        double f2 = body2.isMoving() ? body2.getVelocity().norm1() / (body1.getVelocity().norm1() + body2.getVelocity().norm1()) : 0;
 
         // Note: with SAT we can terminate early as soon as there is a separating axis
         Vector mtv1 = getSeparatingAxis(poly1Vertices, poly2Vertices);
@@ -104,7 +104,7 @@ public class PPolyPolyCollision {
         Vector body1Mtv;
         Vector body2Mtv;
 
-        if (mtv2.norm() <= mtv1.norm()) {
+        if (mtv2.norm1() <= mtv1.norm1()) {
             bestMtv = mtv2;
             body1Mtv = mtv2.multiply(f1);
             body2Mtv = mtv2.multiply(-1).multiply(f2);

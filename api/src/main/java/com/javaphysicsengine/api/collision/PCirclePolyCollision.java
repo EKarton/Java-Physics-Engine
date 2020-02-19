@@ -99,13 +99,13 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
             if (isIntersect) {
 
                 // Project the center of the circle to the edgeDir
-                double scalarProj = edgeDir1.dot(circleCenterPt.minus(sidePt1)) / edgeDir1.norm();
+                double scalarProj = edgeDir1.dot(circleCenterPt.minus(sidePt1)) / edgeDir1.norm1();
                 Vector vectorProj = edgeDir1.multiply(scalarProj).add(sidePt1);
 
                 // Compute the mtd
                 double mtd = circleRadius - vectorProj.minus(circleCenterPt).norm2();
-                double f1 = circle.getVelocity().norm() / (circle.getVelocity().norm() + poly.getVelocity().norm());
-                double f2 = poly.getVelocity().norm() / (circle.getVelocity().norm() + poly.getVelocity().norm());
+                double f1 = circle.getVelocity().norm1() / (circle.getVelocity().norm1() + poly.getVelocity().norm1());
+                double f2 = poly.getVelocity().norm1() / (circle.getVelocity().norm1() + poly.getVelocity().norm1());
 
                 if (0 < mtd && mtd < bestOverlapDistance) {
                     bestOverlapDistance = mtd;
@@ -117,6 +117,6 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
             }
         }
 
-        return new PCollisionResult(bestMtv.norm() > 0, bestCircleMtv, bestPolyMtv, bestMtv);
+        return new PCollisionResult(bestMtv.norm1() > 0, bestCircleMtv, bestPolyMtv, bestMtv);
     }
 }

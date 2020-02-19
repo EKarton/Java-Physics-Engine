@@ -75,6 +75,11 @@ public class PCircle extends PBody implements PCollidable {
         getCenterPt().setX(getCenterPt().getX() + displacement.getX());
     }
 
+    @Override
+    public double getInertia() {
+        return (Math.PI * Math.pow(radius, 4)) / 4;
+    }
+
     /**
      * Draws the fill of the circle
      *
@@ -109,6 +114,11 @@ public class PCircle extends PBody implements PCollidable {
 
         // Draw the center of mass
         super.drawOutline(g, windowHeight);
+
+        // Draw its orientation
+        double x = radius * Math.sin(getAngle()) + getCenterPt().getX();
+        double y = radius * Math.cos(getAngle()) + getCenterPt().getY();
+        g.drawLine((int) getCenterPt().getX(), windowHeight - (int) getCenterPt().getY(), (int) x, windowHeight - (int) y);
     }
 
     /**

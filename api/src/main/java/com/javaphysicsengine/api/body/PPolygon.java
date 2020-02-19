@@ -7,14 +7,13 @@
 
 package com.javaphysicsengine.api.body;
 
-import com.javaphysicsengine.api.collision.PCircleCircleCollision;
+import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.collision.PCirclePolyCollision;
 import com.javaphysicsengine.api.collision.PCollisionResult;
 import com.javaphysicsengine.api.collision.PPolyPolyCollision;
-import com.javaphysicsengine.utils.Trigonometry;
 import com.javaphysicsengine.utils.Vector;
 
-import java.awt.Graphics;
+import java.awt.*;
 import java.util.ArrayList;
 
 public class PPolygon extends PBody implements PCollidable {
@@ -81,6 +80,18 @@ public class PPolygon extends PBody implements PCollidable {
         boundingBox = new PBoundingBox(vertices);
     }
 
+    @Override
+    public double getInertia() {
+        return 1;
+
+//        double inertia = 0;
+//        for (Vector vertex : vertices) {
+//            inertia = vertex.minus(this.getCenterPt()).norm1();
+//        }
+//
+//        return (inertia / vertices.size()) * getMass();
+    }
+
     /**
      * Translates the polygon by an amount
      * @param displacement The displacement to move the body by a certain amount
@@ -109,24 +120,22 @@ public class PPolygon extends PBody implements PCollidable {
      * @param newAngle The angle of the body
      */
     public void rotate(double newAngle) {
+        System.out.println(newAngle);
         // Rotate all the vertices around its center of mass
+
         for (Vector vertex : vertices) {
-            // Shifting the vertex so that the centerPt is (0, 0)
-            vertex.setX(vertex.getX() - getCenterPt().getX());
-            vertex.setY(vertex.getY() - getCenterPt().getY());
+            Vector shiftedVertex = vertex.minus(this.getCenterPt());
+            double newX = Math.cos(newAngle) * shiftedVertex.getX() - Math.sin(newAngle) * shiftedVertex.getY();
+            double newY = Math.sin(newAngle) * shiftedVertex.getX() + Math.cos(newAngle) * shiftedVertex.getY();
 
-            // Getting the angle made by the vertex and the origin
-            double betaAngle = Math.abs(Trigonometry.inverseOfTan(vertex.getY() / vertex.getX()));
-            double alphaAngle = Trigonometry.convertBetaToThetaAngle(vertex.getX(), vertex.getY(), betaAngle);
-
-            // Getting the new rotated x and y coordinates based on the unit circle
-            double angleToRotateBy = alphaAngle - getAngle() + newAngle;
-            vertex.setY(Trigonometry.sin(angleToRotateBy) * vertex.norm2() + getCenterPt().getY());
-            vertex.setX(Trigonometry.cos(angleToRotateBy) * vertex.norm2() + getCenterPt().getX());
+            Vector rotatedVertex = Vector.of(newX, newY).add(this.getCenterPt());
+            vertex.set(rotatedVertex);
         }
 
-        if (boundingBox != null)
+        if (boundingBox != null) {
             boundingBox.recomputeBoundaries(vertices);
+        }
+
         super.setAngle(newAngle);
     }
 

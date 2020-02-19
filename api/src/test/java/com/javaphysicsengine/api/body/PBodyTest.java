@@ -22,6 +22,11 @@ public class PBodyTest {
     public void setup() {
         pBody = new PBody("My body") {
             @Override
+            public double getInertia() {
+                return 0;
+            }
+
+            @Override
             public void move(Vector newCenterPt) { }
 
             @Override
@@ -47,6 +52,11 @@ public class PBodyTest {
     public void constructor_should_hard_copy_body_when_given_another_body() {
         PBody anotherBody = new PBody("My other body") {
             @Override
+            public double getInertia() {
+                return 0;
+            }
+
+            @Override
             public void move(Vector newCenterPt) { }
 
             @Override
@@ -63,6 +73,11 @@ public class PBodyTest {
         anotherBody.setMoveable(false);
 
         pBody = new PBody(anotherBody) {
+            @Override
+            public double getInertia() {
+                return 0;
+            }
+
             @Override
             public void move(Vector newCenterPt) { }
 

@@ -113,7 +113,15 @@ public class Vector {
         return Vector.add(this, v2);
     }
 
-    public double norm() {
+    public static double cross(Vector v1, Vector v2) {
+        return v1.x * v2.y - v1.y * v2.x;
+    }
+
+    public double cross(Vector v2) {
+        return Vector.cross(this, v2);
+    }
+
+    public double norm1() {
         return (x * x) + (y * y);
     }
 

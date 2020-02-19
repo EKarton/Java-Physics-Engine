@@ -9,12 +9,11 @@ package com.javaphysicsengine.gui.simulation;
 import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.body.PBody;
 import com.javaphysicsengine.api.body.PConstraints;
+import com.javaphysicsengine.utils.Vector;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -79,8 +78,17 @@ public class PSimulationPanel extends JPanel implements ActionListener {
         }
 
         // Draw the springs
-        for (PConstraints constraint : world.getConstraints())
+        for (PConstraints constraint : world.getConstraints()) {
             constraint.drawConstraints(g, this.getHeight());
+        }
+
+        // Draw all of the points
+        for (Vector pt : world.pointsToDraw) {
+            int topLeftX = (int) (pt.getX() - 1);
+            int topLeftY = this.getHeight() - (int) (pt.getY() + 1);
+            g.setColor(Color.GREEN);
+            g.fillOval(topLeftX, topLeftY, 2, 2);
+        }
     }
 
     /**
