@@ -15,18 +15,18 @@ import java.util.List;
 
 public class PPolyPolyCollision {
 
-    private Vector getProjectionBounds(List<Vector> vertices, Vector normal) {
-        double minT1 = 1000000000;
-        double maxT1 = -1000000000;
+    private static Vector getProjectionBounds(List<Vector> vertices, Vector proj) {
+        double minScalar = 1000000000;
+        double maxScalar = -1000000000;
 
         for (Vector poly1Vertex : vertices) {
-            double scalarProj = normal.dot(poly1Vertex);
+            double scalarProj = proj.dot(poly1Vertex);
 
-            minT1 = Math.min(minT1, scalarProj);
-            maxT1 = Math.max(maxT1, scalarProj);
+            minScalar = Math.min(minScalar, scalarProj);
+            maxScalar = Math.max(maxScalar, scalarProj);
         }
 
-        return Vector.of(minT1, maxT1);
+        return Vector.of(minScalar, maxScalar);
     }
 
     /**
@@ -49,31 +49,21 @@ public class PPolyPolyCollision {
             Vector normal = Vector.of(edge.getY(), -1 * edge.getX()).normalize();
 
             // Project all poly1's vertices onto the normal and get its bounds
-            double minT1 = 1000000000;
-            double maxT1 = -1000000000;
-
-            for (Vector poly1Vertex : poly1Vertices) {
-                double scalarProj = normal.dot(poly1Vertex);
-
-                minT1 = Math.min(minT1, scalarProj);
-                maxT1 = Math.max(maxT1, scalarProj);
-            }
+            Vector bounds1 = getProjectionBounds(poly1Vertices, normal);
 
             // Project all poly2's vertices onto the normal and get its bounds
-            double minT2 = 1000000000;
-            double maxT2 = -1000000000;
+            Vector bounds2 = getProjectionBounds(poly2Vertices, normal);
 
-            for (Vector poly2Vertex : poly2Vertices) {
-                double scalarProj = normal.dot(poly2Vertex);
-
-                minT2 = Math.min(minT2, scalarProj);
-                maxT2 = Math.max(maxT2, scalarProj);
-            }
-
-            boolean isIntersecting = minT1 < maxT2 && maxT1 > minT2; // p1.x < p2.y && p1.y > p2.x; //maxT1 >= minT2 && maxT2 >= minT1;
+            boolean isIntersecting = bounds1.getX() < bounds2.getY() && bounds1.getY() > bounds2.getX();
 
             if (isIntersecting) {
-                double mtd = minT1 < maxT2 ? maxT1 - minT2 : maxT2 - minT1;
+                double mtd;
+                if (bounds1.getX() < bounds2.getY()) {
+                    mtd = bounds1.getY() - bounds2.getX();
+
+                } else {
+                    mtd = bounds2.getY() - bounds1.getX();
+                }
 
                 if (mtd < bestMtd) {
                     bestMtd = mtd;
