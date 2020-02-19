@@ -150,72 +150,55 @@ public class PWorld {
 
     /**
      * Post-condition: Calculates the impulse and applies them to two bodies
-     * Pre-condition: "body1", "body2", "mtd" should not be null
+     * Pre-condition: "body1", "body2", "mtv" should not be null
      * @param body1 The first body involved in the collision
      * @param body2 The second body involved in the collision
-     * @param mtd The MTD of the two bodies
+     * @param mtv The MTD of the two bodies
      */
-    private void calculateImpulse(PBody body1, PBody body2, Vector mtd) {
-        double body1InversedMass = 1 / body1.getMass();
-        double body2InversedMass = 1 / body2.getMass();
-
-        if (!body1.isMoving())
-            body1InversedMass = 0;
-
-        if (!body2.isMoving())
-            body2InversedMass = 0;
+    private void calculateImpulse(PBody body1, PBody body2, Vector mtv) {
+        double body1InversedMass = body1.isMoving() ? 1 / body1.getMass() : 0;
+        double body2InversedMass = body2.isMoving() ? 1 / body2.getMass() : 0;
 
         Vector rv = Vector.minus(body2.getVelocity(), body1.getVelocity());
-        Vector normal = new Vector(mtd.getX(), mtd.getY());
-        normal.normalized();
-        double velAlongNormal = Vector.dot(normal, rv);
+        Vector normal = mtv.normalize();
+        double velAlongNormal = normal.dot(rv);
 
         // Getting the total impulse of the two bodies as a system
         double coefficientOfResitution = 0.8;
         double totalImpulse = -(1.0f + coefficientOfResitution) * velAlongNormal;
-        totalImpulse /= (body1InversedMass) + (body2InversedMass);
+        totalImpulse /= (body1InversedMass + body2InversedMass);
 
         // Apply impulse to each object
         Vector impulse = Vector.multiply(normal, totalImpulse);
-        body1.setVelocity(Vector.minus(body1.getVelocity(), Vector.multiply(impulse, body1InversedMass)));
-        body2.setVelocity(Vector.add(body2.getVelocity(), Vector.multiply(impulse, body2InversedMass)));
+        body1.setVelocity(body1.getVelocity().minus(impulse.multiply(body1InversedMass)));
+        body2.setVelocity(body2.getVelocity().add(impulse.multiply(body2InversedMass)));
     }
 
     /**
      * Post-condition: Moves the two bodies by a slight bit after a collision occured (to prevent gittering)
-     * Pre-condition: "body1", "body2", "mtd" should not be null
+     * Pre-condition: "body1", "body2", "mtv" should not be null
      * @param body1 The first body involved in the collision
      * @param body2 The second body involved in the collision
-     * @param mtd The MTD of the two bodies
+     * @param mtv The MTD of the two bodies
      */
-    private void positionalCorrection(PBody body1, PBody body2, Vector mtd) {
-        double body1InversedMass = 1 / body1.getMass();
-        double body2InversedMass = 1 / body2.getMass();
+    private void positionalCorrection(PBody body1, PBody body2, Vector mtv) {
+        final double PERCENT = 0.01f; // usually 20% to 80%
+        final double SLOP = 0.1f; // usually 0.01 to 0.1
 
-        if (!body1.isMoving())
-            body1InversedMass = 0;
+        double body1InversedMass = body1.isMoving() ? 1 / body1.getMass() : 0;
+        double body2InversedMass = body2.isMoving() ? 1 / body2.getMass() : 0;
 
-        if (!body2.isMoving())
-            body2InversedMass = 0;
+        double penetrationDepth = mtv.norm2();
+        Vector normal = mtv.normalize();
 
-        double penetrationDepth = mtd.norm2();
-        Vector normal = new Vector(mtd.getX(), mtd.getY());
-        normal.normalized();
-
-        final double percent = 0.01f; // usually 20% to 80%
-        final double slop = 0.1f; // usually 0.01 to 0.1
-        Vector correction = Vector.multiply(Vector.multiply(normal, percent), Math.max(penetrationDepth - slop, 0.0f) / (body1InversedMass + body2InversedMass));
+        Vector correction = normal.multiply(PERCENT)
+                .multiply(Math.max(penetrationDepth - SLOP, 0.0f))
+                .multiply(body1InversedMass + body2InversedMass);
 
         // Move the first body by a certain amount
-        Vector body1Trans = new Vector(0, 0);
-        body1Trans.setX(-correction.getX() * body1InversedMass);
-        body1Trans.setY(-correction.getY() * body1InversedMass);
-        body1.translate(body1Trans);
+        body1.translate(correction.multiply(-1 * body1InversedMass));
 
         // Move the second body by a certain amount
-        Vector body2Trans = new Vector(0, 0);
-        body2Trans.setX(correction.getX() * body2InversedMass);
-        body2Trans.setY(correction.getY() * body2InversedMass);
-        body2.translate(body2Trans);
+        body2.translate(correction.multiply(body2InversedMass));
     }
 }
