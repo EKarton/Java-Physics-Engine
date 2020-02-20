@@ -13,11 +13,6 @@ public class Vector {
     private double x;
     private double y;
 
-    /**
-     * Creates a vector object from a x and y value
-     * @param x The x coordiante of a vector
-     * @param y The y coordinate of a vector
-     */
     public Vector(double x, double y) {
         this.x = x;
         this.y = y;
@@ -28,22 +23,10 @@ public class Vector {
         this.y = oldVector.y;
     }
 
-    /**
-     * Creates a vector object from a x and y value
-     * @param x The x coordiante of a vector
-     * @param y The y coordinate of a vector
-     * @return A vector object with the specified x and y value
-     */
     public static Vector of(double x, double y) {
         return new Vector(x, y);
     }
 
-    /**
-     * Subtracts the two vectors
-     * @param v2 The first vector
-     * @param v1 The second vector
-     * @return The resultant vector
-     */
     public static Vector minus(Vector v2, Vector v1) {
         return new Vector(v2.getX() - v1.getX(), v2.getY() - v1.getY());
     }
@@ -68,12 +51,6 @@ public class Vector {
         return minVector;
     }
 
-    /**
-     * Performs the dot product of two vectors
-     * @param v1 The first vector
-     * @param v2 The second vector
-     * @return The dot product of two vectors
-     */
     public static double dot(Vector v1, Vector v2) {
         return (v1.getX() * v2.getX()) + (v1.getY() * v2.getY());
     }
@@ -82,14 +59,8 @@ public class Vector {
         return Vector.dot(this, v2);
     }
 
-    /**
-     * Performs scalar multiplication on a vector
-     * @param v The vector
-     * @param amount The amount to multiply each component in the vector by
-     * @return The resultant vector
-     */
     public static Vector multiply(Vector v, double amount) {
-        return new Vector(v.getX() * amount, v.getY() * amount);
+        return new Vector(v.x * amount, v.y * amount);
     }
 
     public Vector multiply(double amount) {
@@ -104,22 +75,12 @@ public class Vector {
         return Vector.multiply(this, v);
     }
 
-    /**
-     * Adds two vectors
-     * @param v1 The first vector
-     * @param v2 The second vector
-     * @return The resultant vector
-     */
     public static Vector add(Vector v1, Vector v2) {
         return new Vector(v1.getX() + v2.getX(), v1.getY() + v2.getY());
     }
 
     public Vector add(Vector v2) {
         return Vector.add(this, v2);
-    }
-
-    public Vector addsi(Vector v, double amount) {
-        return Vector.of(x + v.x * amount, y + v.y * amount);
     }
 
     public static double cross(Vector v1, Vector v2) {
@@ -138,10 +99,6 @@ public class Vector {
         return Vector.cross(this, amount);
     }
 
-    public static Vector cross(double a, Vector v) {
-        return Vector.of(v.y * -a, v.x * a);
-    }
-
     public double norm1() {
         return (x * x) + (y * y);
     }
@@ -150,21 +107,12 @@ public class Vector {
         return Math.sqrt((x * x) + (y * y));
     }
 
-    /**
-     * Scales up/down the vector to a given length
-     * @param length The length of the new vector
-     * @deprecated Use vector.normalize().multiply(length);
-     */
     public void setLength(double length) {
         normalized();
         x *= length;
         y *= length;
     }
 
-    /**
-     * Scales the vector up/down so that the length of the vector is 1.
-     * Pre-condition: The x and y values must not be 0
-     */
     public void normalized() {
         double curLengthOfVector = norm2();
         x /= curLengthOfVector;
@@ -176,43 +124,22 @@ public class Vector {
         return Vector.of(x / curLengthOfVector, y / curLengthOfVector);
     }
 
-    /**
-     * Gets the x component of the vector
-     * @return The x component of the vector
-     */
     public double getX() {
         return this.x;
     }
 
-    /**
-     * Set the x component of the vector
-     * @param newX the new X value
-     */
     public void setX(double newX) {
         this.x = newX;
     }
 
-    /**
-     * Gets the y component of the vector
-     * @return The y component of the vector
-     */
     public double getY() {
         return this.y;
     }
 
-    /**
-     * Sets the y component of the vector
-     * @param newY The new y vector
-     */
     public void setY(double newY) {
         this.y = newY;
     }
 
-    /**
-     * Sets the x and y component of the vector
-     * @param newX The new X component
-     * @param newY The new Y component
-     */
     public void setXY(double newX, double newY) {
         this.x = newX;
         this.y = newY;
