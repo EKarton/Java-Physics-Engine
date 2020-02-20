@@ -155,13 +155,20 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
         circle.setMass(1);
         pEngine.getBodies().add(circle);
 
-//        PPolygon polygon = new PPolygon("Box");
-//        polygon.getVertices().add(Vector.of(300, 400));
-//        polygon.getVertices().add(Vector.of(340, 400));
-//        polygon.getVertices().add(Vector.of(340, 440));
-//        polygon.getVertices().add(Vector.of(300, 440));
-//        polygon.computeCenterOfMass();
-//        pEngine.getBodies().add(polygon);
+        PCircle circle5 = new PCircle("Circle");
+        circle5.setCenterPt(Vector.of(510, 240));
+        circle5.setRadius(20);
+        circle5.setMass(1);
+        circle5.setVelocity(Vector.of(0, 10));
+        pEngine.getBodies().add(circle5);
+
+        PPolygon polygon = new PPolygon("Box");
+        polygon.getVertices().add(Vector.of(300, 400));
+        polygon.getVertices().add(Vector.of(340, 400));
+        polygon.getVertices().add(Vector.of(340, 440));
+        polygon.getVertices().add(Vector.of(300, 440));
+        polygon.computeCenterOfMass();
+        pEngine.getBodies().add(polygon);
 
         for (int i = 0; i < 20; i++) {
             PCircle circle2 = new PCircle("Circle2");

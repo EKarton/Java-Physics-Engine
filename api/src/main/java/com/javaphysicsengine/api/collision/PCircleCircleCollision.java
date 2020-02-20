@@ -43,8 +43,8 @@ public class PCircleCircleCollision {
             Vector contactPt = mtv.normalize().multiply(-1 * circle1.getRadius()).add(circle1.getCenterPt());
             contactPt.add(circle1Trans);
 
-            contactPt = mtv.normalize().multiply(circle2.getRadius()).add(circle2.getCenterPt());
-            contactPt.add(circle2Trans);
+            contactPt = mtv.normalize().multiply(-1 * circle1.getRadius()).add(circle1.getCenterPt());
+            contactPt.add(circle1Trans);
 
             return new PCollisionResult(true, circle1Trans, circle2Trans, mtv, contactPt);
         }
