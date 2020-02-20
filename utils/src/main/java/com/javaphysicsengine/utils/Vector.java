@@ -23,6 +23,11 @@ public class Vector {
         this.y = y;
     }
 
+    public Vector(Vector oldVector) {
+        this.x = oldVector.x;
+        this.y = oldVector.y;
+    }
+
     /**
      * Creates a vector object from a x and y value
      * @param x The x coordiante of a vector
@@ -113,12 +118,28 @@ public class Vector {
         return Vector.add(this, v2);
     }
 
+    public Vector addsi(Vector v, double amount) {
+        return Vector.of(x + v.x * amount, y + v.y * amount);
+    }
+
     public static double cross(Vector v1, Vector v2) {
         return v1.x * v2.y - v1.y * v2.x;
     }
 
+    public static Vector cross(Vector v1, double amount) {
+        return Vector.of(v1.y * -amount, v1.x * amount);
+    }
+
     public double cross(Vector v2) {
         return Vector.cross(this, v2);
+    }
+
+    public Vector cross(double amount) {
+        return Vector.cross(this, amount);
+    }
+
+    public static Vector cross(double a, Vector v) {
+        return Vector.of(v.y * -a, v.x * a);
     }
 
     public double norm1() {
