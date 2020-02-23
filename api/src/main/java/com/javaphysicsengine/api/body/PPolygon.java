@@ -120,7 +120,6 @@ public class PPolygon extends PBody implements PCollidable {
      * @param newAngle The angle of the body
      */
     public void rotate(double newAngle) {
-        System.out.println(newAngle);
         // Rotate all the vertices around its center of mass
 
         for (Vector vertex : vertices) {
@@ -252,8 +251,10 @@ public class PPolygon extends PBody implements PCollidable {
             result = PCirclePolyCollision.doBodiesCollide((PCircle) body, this);
 
             // Note: since we are not comparing this obj with the incoming obj, the directions are flipped
-            result = new PCollisionResult(result.isHasCollided(), result.getBody2Mtv(),
-                    result.getBody1Mtv(), result.getMtv().multiply(-1));
+            if (result.isHasCollided()) {
+                result = new PCollisionResult(result.isHasCollided(), result.getBody2Mtv(),
+                        result.getBody1Mtv(), result.getMtv().multiply(-1), result.getContactPt());
+            }
 
         } else if (body instanceof PPolygon) {
             result = PPolyPolyCollision.doBodiesCollide(this, (PPolygon) body);

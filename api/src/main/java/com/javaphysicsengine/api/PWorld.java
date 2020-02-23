@@ -162,7 +162,7 @@ public class PWorld {
             body.translate(translation);
 
             // Rotate the body (angle += AngularVelocity' * time)
-            double newAngle = body.getAngle() + (body.getAngularVelocity() * timeEllapsed);
+            double newAngle = body.getAngle() + (body.getAngularVelocity() * timeEllapsed * SCALE);
             body.rotate(newAngle);
         }
     }
@@ -178,8 +178,10 @@ public class PWorld {
         double body1InversedMass = body1.isMoving() ? 1 / body1.getMass() : 0;
         double body2InversedMass = body2.isMoving() ? 1 / body2.getMass() : 0;
 
-        double body1InverseInertia = body1.isMoving() ? 1.0f / body1.getInertia() : 0;
-        double body2InverseInertia = body1.isMoving() ? 1.0f / body2.getInertia() : 0;
+        double body1InverseInertia = body1.isMoving() ? 1 / body1.getInertia() : 0;
+        double body2InverseInertia = body1.isMoving() ? 1 / body2.getInertia() : 0;
+
+        System.out.println(body1InversedMass);
 
         Vector r1 = contactPt.minus(body1.getCenterPt());
         Vector r2 = contactPt.minus(body2.getCenterPt());
@@ -220,8 +222,8 @@ public class PWorld {
         // Compute the impulse tangent to the normal
         double totalTangentImpulse = (-1 * rv.dot(tangent)) / inverseMassSum;
 
-        double sf = 0.5;
-        double df = 0.5;
+        double sf = 0.8;
+        double df = 0.8;
 
         // Coulumb's law
         Vector tangentImpulse;
@@ -234,12 +236,12 @@ public class PWorld {
 
         // Apply friction impulse
         applyImpulse(body1, tangentImpulse.multiply(-1), r1);
-        applyImpulse(body1, tangentImpulse, r2);
+        applyImpulse(body2, tangentImpulse, r2);
     }
 
     private void applyImpulse(PBody body, Vector impulse, Vector contactPt) {
         double bodyInversedMass = body.isMoving() ? 1 / body.getMass() : 0;
-        double bodyInverseInertia = body.isMoving() ? 1.0f / body.getInertia() : 0;
+        double bodyInverseInertia = body.isMoving() ? 1 / body.getInertia() : 0;
 
         body.setVelocity(body.getVelocity().add(impulse.multiply(bodyInversedMass)));
         body.setAngularVelocity(body.getAngularVelocity() + (bodyInverseInertia) * contactPt.cross(impulse));

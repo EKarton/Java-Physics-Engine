@@ -71,8 +71,6 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
 
         double bestOverlapDistance = Double.MAX_VALUE;
         Vector bestMtv = Vector.of(0, 0);
-        Vector bestCircleMtv = Vector.of(0, 0);
-        Vector bestPolyMtv = Vector.of(0, 0);
 
         // Going through all the sides in the polygon
         for (int i = 0; i < polyVertices.size(); i++) {
@@ -104,19 +102,30 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
 
                 // Compute the mtd
                 double mtd = circleRadius - vectorProj.minus(circleCenterPt).norm2();
-                double f1 = circle.getVelocity().norm1() / (circle.getVelocity().norm1() + poly.getVelocity().norm1());
-                double f2 = poly.getVelocity().norm1() / (circle.getVelocity().norm1() + poly.getVelocity().norm1());
 
                 if (0 < mtd && mtd < bestOverlapDistance) {
                     bestOverlapDistance = mtd;
                     bestMtv = normal.multiply(mtd);
-
-                    bestCircleMtv = circle.isMoving() ? normal.multiply(mtd * f1) : Vector.of(0, 0);
-                    bestPolyMtv = poly.isMoving() ? normal.multiply(mtd * f2 * -1) : Vector.of(0, 0);
                 }
             }
         }
 
-        return new PCollisionResult(bestMtv.norm1() > 0, bestCircleMtv, bestPolyMtv, bestMtv);
+        if (bestMtv.norm1() > 0) {
+            double f1 = circle.isMoving() ? circle.getVelocity().norm1() / (circle.getVelocity().norm1() + poly.getVelocity().norm1()) : 0;
+            double f2 = poly.isMoving() ? poly.getVelocity().norm1() / (circle.getVelocity().norm1() + poly.getVelocity().norm1()) : 0;
+
+            Vector bestCircleMtv = circle.isMoving() ? bestMtv.multiply(f1) : Vector.of(0, 0);
+            Vector bestPolyMtv = poly.isMoving() ? bestMtv.multiply(-1 * f2) : Vector.of(0, 0);
+
+            Vector contactPt = bestMtv.normalize().multiply(-1 * circle.getRadius()).add(circle.getCenterPt());
+            contactPt = contactPt.add(bestCircleMtv);
+
+            System.out.println("bestPolyMtv: " + bestPolyMtv);
+            System.out.println("bestCircleMtv: " + bestCircleMtv);
+
+            return new PCollisionResult(true, bestCircleMtv, bestPolyMtv, bestMtv, contactPt);
+        }
+
+        return new PCollisionResult(false, null, null, null, null);
     }
 }

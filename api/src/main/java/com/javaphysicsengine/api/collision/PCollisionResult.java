@@ -13,6 +13,7 @@ public class PCollisionResult {
     private final Vector mtv;
     private final Vector contactPt;
 
+    @Deprecated
     public PCollisionResult(boolean hasCollided, Vector body1Mtv, Vector body2Mtv, Vector mtv) {
         this.hasCollided = hasCollided;
         this.body1Mtv = body1Mtv;
