@@ -116,11 +116,13 @@ public class PPolygon extends PBody implements PCollidable {
 
     /**
      * Rotates the body.
-     * Pre-condition: the angle must be in degrees.
+     * Pre-condition: the angle must be in radians.
      * @param newAngle The angle of the body
      */
     public void rotate(double newAngle) {
         // Rotate all the vertices around its center of mass
+
+        System.out.println(newAngle);
 
         for (Vector vertex : vertices) {
             Vector shiftedVertex = vertex.minus(this.getCenterPt());

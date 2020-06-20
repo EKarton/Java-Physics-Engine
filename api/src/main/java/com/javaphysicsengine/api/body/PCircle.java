@@ -77,7 +77,7 @@ public class PCircle extends PBody implements PCollidable {
 
     @Override
     public double getInertia() {
-        return getMass() * radius * radius; //(Math.PI * Math.pow(radius, 4)) / 4;
+        return getMass() * radius * radius; // (Math.PI * Math.pow(radius, 4)) / 4;  //
     }
 
     /**

@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PWorld {
     // Physic properties about this world
-    private static final Vector GRAVITY = Vector.of(0, -9.81);
+    private static final Vector GRAVITY = Vector.of(0, -1); //Vector.of(0, -9.81);
     private static final double SCALE = 100;
 
     // List containing the physical bodies and joints
@@ -153,13 +153,13 @@ public class PWorld {
             Vector velocity = body.getVelocity().add(acceleration.multiply(timeEllapsed));
             body.setVelocity(velocity);
 
-            // Calculating the new angular velocity (AngularVelocity' = AngularVelocity + torque * (1 / inertia) * time)
-            double angularVelocity = body.getAngularVelocity() + (body.getTorque() * (1 / body.getInertia()) * timeEllapsed);
-            body.setAngularVelocity(angularVelocity);
-
             // Getting the amount to translate by (Velocity = displacement / time)
             Vector translation = velocity.multiply(timeEllapsed).multiply(SCALE);
             body.translate(translation);
+
+            // Calculating the new angular velocity (AngularVelocity' = AngularVelocity + torque * (1 / inertia) * time)
+            double angularVelocity = body.getAngularVelocity() + body.getTorque() * (1 / body.getInertia()) * timeEllapsed;
+            body.setAngularVelocity(angularVelocity);
 
             // Rotate the body (angle += AngularVelocity' * time)
             double newAngle = body.getAngle() + (body.getAngularVelocity() * timeEllapsed * SCALE);

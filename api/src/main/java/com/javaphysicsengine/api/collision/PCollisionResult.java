@@ -22,6 +22,14 @@ public class PCollisionResult {
         this.contactPt = Vector.of(0, 0);
     }
 
+    /**
+     * Constructs a PCollisionResult from the collision of body1 and body2
+     * @param hasCollided {@code True} if collided; else {@code False}
+     * @param body1Mtv the amount to translate body1 by so that it is not touching body2
+     * @param body2Mtv the amount to translate body2 by so that it is not touching body1
+     * @param mtv the amount to translate body1 by without moving body2
+     * @param contactPt the point of contact body1 and body2 touched each other
+     */
     public PCollisionResult(boolean hasCollided, Vector body1Mtv, Vector body2Mtv, Vector mtv, Vector contactPt) {
         this.hasCollided = hasCollided;
         this.body1Mtv = body1Mtv;

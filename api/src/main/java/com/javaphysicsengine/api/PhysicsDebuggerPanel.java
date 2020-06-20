@@ -21,7 +21,7 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
     // Fields controlling the animation and graphics of the JPanel
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 600;
-    private final double FPS = 60;
+    private final double FPS = 25;
     private final double TIME_MULTIPLIER = 1;
 
     // Field storing the efficiency of the physics engine (based on the amount of time it takes to simulate the objects)
@@ -174,7 +174,7 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
             PCircle circle2 = new PCircle("Circle2");
             circle2.setMoveable(false);
             circle2.setCenterPt(Vector.of(100 + 40 * i, 140));
-            circle2.setRadius(20);
+            circle2.setRadius(40);
             circle2.setMass(1);
             pEngine.getBodies().add(circle2);
         }
@@ -183,7 +183,7 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
             PCircle circle2 = new PCircle("Circle2");
             circle2.setMoveable(false);
             circle2.setCenterPt(Vector.of(100, 140 + 40 * i));
-            circle2.setRadius(20);
+            circle2.setRadius(40);
             circle2.setMass(1);
             pEngine.getBodies().add(circle2);
         }
@@ -228,7 +228,7 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
             graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
 
-        // Draw the effiency of physics engine simulation
+        // Draw the efficiency of physics engine simulation
         g.setColor(Color.black);
         g.drawString("Max Simulation Time: " + maxSimulationDuration, 50, 20);
         g.drawString("Time Ellapsed for Simulation: " + simulationDuration, 50, 40);

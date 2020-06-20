@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @RunWith(Parameterized.class)
 public class PCircleCircleCollisionTest {
@@ -26,44 +27,52 @@ public class PCircleCircleCollisionTest {
                     null
                 },
                 {
-                    createPCircle(10, Vector.of(0, 0), Vector.of(0, 0), true),
-                    createPCircle(20, Vector.of(15, 15), Vector.of(1, 0), true),
+                    createPCircle(10, Vector.of(0, 0), Vector.of(0, 1), true),
+                    createPCircle(20, Vector.of(0, 15), Vector.of(0, -1), true),
                     true,
-                    Vector.of(0, 0),
-                    Vector.of(0.7071067811865475, 0.7071067811865475),
-                    Vector.of(-0.7071067811865475, -0.7071067811865475)
+                    Vector.of(0, -7.5),
+                    Vector.of(0, 7.5),
+                    Vector.of(0, -15)
                 },
                 {
-                    createPCircle(10, Vector.of(0, 0), Vector.of(0, 0), true),
-                    createPCircle(20, Vector.of(-15, 0), Vector.of(1, 0), true),
+                    createPCircle(10, Vector.of(0, 2), Vector.of(12, 0), true),
+                    createPCircle(10, Vector.of(0, 9), Vector.of(-12, 0), true),
                     true,
-                    Vector.of(0, 0),
-                    Vector.of(-1.0, 0.0),
-                    Vector.of(1.0, 0.0)
+                    Vector.of(0, -6.5),
+                    Vector.of(0, 6.5),
+                    Vector.of(0, -13)
                 },
                 {
-                    createPCircle(10, Vector.of(0, 0), Vector.of(12, 0), true),
-                    createPCircle(10, Vector.of(9, 0), Vector.of(-12, 0), true),
+                    createPCircle(10, Vector.of(0, 8), Vector.of(-2, 0), true),
+                    createPCircle(10, Vector.of(0, -8), Vector.of(2, 0), true),
                     true,
-                    Vector.of(-0.5, 0.0),
-                    Vector.of(0.5, 0.0),
-                    Vector.of(-1.0, 0.0)
+                    Vector.of(0, 2),
+                    Vector.of(0, -2),
+                    Vector.of(0, 4)
                 },
                 {
-                    createPCircle(10, Vector.of(0, 0), Vector.of(12, 0), true),
-                    createPCircle(10, Vector.of(9, 0), Vector.of(-10, 0), true),
-                    true,
-                    Vector.of(-0.5901639344262295, 0.0),
-                    Vector.of(0.4098360655737705, 0),
-                    Vector.of(-1.0, 0.0)
+                        createPCircle(10, Vector.of(0, 8), Vector.of(-3, 0), true),
+                        createPCircle(10, Vector.of(0, -8), Vector.of(2, 0), true),
+                        true,
+                        Vector.of(0, 2.4),
+                        Vector.of(0, -1.6),
+                        Vector.of(0, 4)
                 },
                 {
-                    createPCircle(10, Vector.of(0, 0), Vector.of(2, 2), true),
-                    createPCircle(10, Vector.of(5, 5), Vector.of(-2, -3), true),
+                    createPCircle(10, Vector.of(0, 0), Vector.of(2, 0), true),
+                    createPCircle(10, Vector.of(5, 0), Vector.of(-2, 0), true),
                     true,
-                    Vector.of(-0.2693740118805895, -0.2693740118805895),
-                    Vector.of(0.43773276930595795, 0.43773276930595795),
-                    Vector.of(-0.7071067811865475, -0.7071067811865475)
+                    Vector.of(-7.5, 0),
+                    Vector.of(7.5, 0),
+                    Vector.of(-15, 0)
+                },
+                {
+                        createPCircle(10, Vector.of(1, 1), Vector.of(2, 0), true),
+                        createPCircle(10, Vector.of(5, 5), Vector.of(-2, 0), true),
+                        true,
+                        Vector.of(-5.071, -5.071),
+                        Vector.of(5.071, 5.071),
+                        Vector.of(-10.1421, -10.1421)
                 }
         });
     }
@@ -92,9 +101,23 @@ public class PCircleCircleCollisionTest {
         PCollisionResult result = PCircleCircleCollision.doBodiesCollide(circle1, circle2);
 
         assertEquals(expectedResult, result.isHasCollided());
-        assertEquals(expectedCircle1Mtv, result.getBody1Mtv());
-        assertEquals(expectedCircle2Mtv, result.getBody2Mtv());
-        assertEquals(expectedMtv, result.getMtv());
+
+        if (!expectedResult) {
+            assertNull(expectedCircle1Mtv);
+            assertNull(expectedCircle2Mtv);
+            assertNull(expectedMtv);
+
+        } else {
+
+            assertEquals(expectedCircle1Mtv.getX(), result.getBody1Mtv().getX(), 0.0001);
+            assertEquals(expectedCircle1Mtv.getY(), result.getBody1Mtv().getY(), 0.0001);
+
+            assertEquals(expectedCircle2Mtv.getX(), result.getBody2Mtv().getX(), 0.0001);
+            assertEquals(expectedCircle2Mtv.getY(), result.getBody2Mtv().getY(), 0.0001);
+
+            assertEquals(expectedMtv.getX(), result.getMtv().getX(), 0.0001);
+            assertEquals(expectedMtv.getY(), result.getMtv().getY(), 0.0001);
+        }
     }
 
     private static PCircle createPCircle(int radius, Vector centerPt, Vector velocity, boolean isMoving) {

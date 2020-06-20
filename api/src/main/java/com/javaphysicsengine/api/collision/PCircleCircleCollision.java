@@ -11,29 +11,33 @@ import com.javaphysicsengine.utils.Vector;
 
 public class PCircleCircleCollision {
 
+    /**
+     * Determines if two circles collide
+     * @param circle1 the first circle
+     * @param circle2 the second circle
+     * @return A PCollisionResult
+     */
     public static PCollisionResult doBodiesCollide(PCircle circle1, PCircle circle2) {
 
-        double centerPtDistance = Vector.minus(circle1.getCenterPt(), circle2.getCenterPt()).norm1();
+        // The distance between the two circles' center pts squared
+        double centerPtDistSqed = Vector.minus(circle1.getCenterPt(), circle2.getCenterPt()).norm1();
+
         double radiusSum = circle1.getRadius() + circle2.getRadius();
 
-        boolean isIntersecting = centerPtDistance < radiusSum * radiusSum;
-
         // If there is a collision
-        if (isIntersecting) {
+        if (centerPtDistSqed < radiusSum * radiusSum) {
 
-            // Properly calculate the distance between the center pts
-            centerPtDistance = Math.sqrt(centerPtDistance);
+            System.out.println(circle1.getCenterPt() + "," + circle2.getCenterPt());
 
-            // Compute the mtd
-            double mtd = radiusSum - centerPtDistance;
+            // Calculate the MTD:
+            double mtd = (circle1.getRadius() + circle2.getRadius()) - circle1.getCenterPt().minus(circle2.getCenterPt()).norm2();
 
-            // Calculate the MTD
-            Vector mtv = circle1.getCenterPt().minus(circle2.getCenterPt()).normalize();
-            mtv.multiply(mtd);
+            // Calculate the MTV:
+            Vector mtv = circle1.getCenterPt().minus(circle2.getCenterPt()).normalize().multiply(mtd);
 
-            // Compute how much MTD each object gets
-            double f1 = circle1.isMoving() ? circle1.getVelocity().norm1() / (circle1.getVelocity().norm1() + circle2.getVelocity().norm1()) : 0;
-            double f2 = circle2.isMoving() ? circle2.getVelocity().norm1() / (circle1.getVelocity().norm1() + circle2.getVelocity().norm1()) : 0;
+            // Compute how much MTV each object gets
+            double f1 = circle1.isMoving() ? circle1.getVelocity().norm2() / (circle1.getVelocity().norm2() + circle2.getVelocity().norm2()) : 0;
+            double f2 = circle2.isMoving() ? circle2.getVelocity().norm2() / (circle1.getVelocity().norm2() + circle2.getVelocity().norm2()) : 0;
 
             // Get the translation vector
             Vector circle1Trans = mtv.multiply(f1);
