@@ -82,14 +82,13 @@ public class PPolygon extends PBody implements PCollidable {
 
     @Override
     public double getInertia() {
-        return 1;
+        double inertia = 0;
+        for (Vector vertex : vertices) {
+            inertia = vertex.minus(this.getCenterPt()).norm1();
+        }
 
-//        double inertia = 0;
-//        for (Vector vertex : vertices) {
-//            inertia = vertex.minus(this.getCenterPt()).norm1();
-//        }
-//
-//        return (inertia / vertices.size()) * getMass();
+        inertia = (inertia / vertices.size()) * getMass();
+        return inertia;
     }
 
     /**
@@ -120,8 +119,6 @@ public class PPolygon extends PBody implements PCollidable {
      * @param newAngle The angle of the body
      */
     public void rotate(double newAngle) {
-        // Rotate all the vertices around its center of mass
-
         System.out.println(newAngle);
 
         for (Vector vertex : vertices) {

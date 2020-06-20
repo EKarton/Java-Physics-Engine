@@ -52,7 +52,7 @@ public class PCircle extends PBody implements PCollidable {
 
     /**
      * Rotates the circle
-     * @param newAngle The angle of the body
+     * @param newAngle The new angle of the body in radians
      */
     public void rotate(double newAngle) {
         super.setAngle(newAngle);
