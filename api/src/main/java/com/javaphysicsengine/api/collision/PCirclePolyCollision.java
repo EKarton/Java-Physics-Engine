@@ -120,9 +120,6 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
             Vector contactPt = bestMtv.normalize().multiply(-1 * circle.getRadius()).add(circle.getCenterPt());
             contactPt = contactPt.add(bestCircleMtv);
 
-            System.out.println("bestPolyMtv: " + bestPolyMtv);
-            System.out.println("bestCircleMtv: " + bestCircleMtv);
-
             return new PCollisionResult(true, bestCircleMtv, bestPolyMtv, bestMtv, contactPt);
         }
 

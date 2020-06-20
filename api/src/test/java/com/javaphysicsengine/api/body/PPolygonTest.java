@@ -34,7 +34,7 @@ public class PPolygonTest {
     public void constructor_should_make_copy_of_object_given_polygon_instance_is_passed_as_a_parameter() {
         PPolygon copyOfPolygon = new PPolygon(polygon);
 
-        polygon.rotate(45);
+        polygon.rotate(0.785398);
         polygon.translate(Vector.of(100, 100));
 
         // Check that the copy is not affected
@@ -87,7 +87,7 @@ public class PPolygonTest {
 
     @Test
     public void rotate_should_rotate_polygon_by_45_degrees_clockwise_given_rotation_value_is_45_degrees() {
-        polygon.rotate(45);
+        polygon.rotate(0.785398);
 
         // Verify that the vertices has been updated
         List<Vector> vertices = polygon.getVertices();
@@ -107,6 +107,19 @@ public class PPolygonTest {
         // Verify that the center point has been updated
         assertEquals(5, polygon.getCenterPt().getX(), 0.00001);
         assertEquals(5, polygon.getCenterPt().getY(), 0.00001);
+    }
+
+    @Test
+    public void rotate_should_not_incrementally_rotate_polygon() {
+        polygon.rotate(0.174533);
+        List<Vector> oldVertices = polygon.getVertices();
+
+        polygon.rotate(0.174533);
+        List<Vector> newVertices = polygon.getVertices();
+
+        for (int i = 0; i < oldVertices.size(); i++) {
+            assertEquals(oldVertices.get(i), newVertices.get(i));
+        }
     }
 
     @Test

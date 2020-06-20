@@ -51,7 +51,7 @@ public class PCircle extends PBody implements PCollidable {
     }
 
     /**
-     * Rotates the circle
+     * Rotates the circle in counter-clockwise direction
      * @param newAngle The new angle of the body in radians
      */
     public void rotate(double newAngle) {
@@ -116,8 +116,8 @@ public class PCircle extends PBody implements PCollidable {
         super.drawOutline(g, windowHeight);
 
         // Draw its orientation
-        double x = radius * Math.sin(getAngle()) + getCenterPt().getX();
-        double y = radius * Math.cos(getAngle()) + getCenterPt().getY();
+        double x = radius * Math.cos(getAngle()) + getCenterPt().getX();
+        double y = radius * Math.sin(getAngle()) + getCenterPt().getY();
         g.drawLine((int) getCenterPt().getX(), windowHeight - (int) getCenterPt().getY(), (int) x, windowHeight - (int) y);
     }
 

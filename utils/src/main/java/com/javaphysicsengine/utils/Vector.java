@@ -145,7 +145,7 @@ public class Vector {
         this.y = newY;
     }
 
-    public void set(Vector v) {
+    public void setXY(Vector v) {
         this.x = v.x;
         this.y = v.y;
     }

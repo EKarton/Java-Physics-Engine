@@ -1,13 +1,5 @@
-/*
- * Purpose: To represent the basic properties of all polygons
- * Original Creation Date: January 1 2016
- * @author Emilio Kartono
- * @version January 15 2016
- */
-
 package com.javaphysicsengine.api.body;
 
-import com.javaphysicsengine.api.PWorld;
 import com.javaphysicsengine.api.collision.PCirclePolyCollision;
 import com.javaphysicsengine.api.collision.PCollisionResult;
 import com.javaphysicsengine.api.collision.PPolyPolyCollision;
@@ -18,7 +10,7 @@ import java.util.ArrayList;
 
 public class PPolygon extends PBody implements PCollidable {
 
-    private ArrayList<Vector> vertices = new ArrayList<Vector>();
+    private ArrayList<Vector> vertices = new ArrayList<>();
     private PBoundingBox boundingBox;
 
     /**
@@ -39,6 +31,7 @@ public class PPolygon extends PBody implements PCollidable {
         // Make a copy of its vertices
         for (Vector vertexCopy : existingPolygon.vertices)
             vertices.add(new Vector(vertexCopy.getX(), vertexCopy.getY()));
+
         this.computeCenterOfMass();
     }
 
@@ -114,20 +107,21 @@ public class PPolygon extends PBody implements PCollidable {
     }
 
     /**
-     * Rotates the body.
-     * Pre-condition: the angle must be in radians.
-     * @param newAngle The angle of the body
+     * Rotates the body in counter-clockwise direction
+     * @param newAngle The angle of the body in radians
      */
     public void rotate(double newAngle) {
-        System.out.println(newAngle);
+        double amountToRotate = newAngle - this.getAngle();
+        System.out.println(amountToRotate);
 
         for (Vector vertex : vertices) {
             Vector shiftedVertex = vertex.minus(this.getCenterPt());
-            double newX = Math.cos(newAngle) * shiftedVertex.getX() - Math.sin(newAngle) * shiftedVertex.getY();
-            double newY = Math.sin(newAngle) * shiftedVertex.getX() + Math.cos(newAngle) * shiftedVertex.getY();
+
+            double newX = Math.cos(amountToRotate) * shiftedVertex.getX() - Math.sin(amountToRotate) * shiftedVertex.getY();
+            double newY = Math.sin(amountToRotate) * shiftedVertex.getX() + Math.cos(amountToRotate) * shiftedVertex.getY();
 
             Vector rotatedVertex = Vector.of(newX, newY).add(this.getCenterPt());
-            vertex.set(rotatedVertex);
+            vertex.setXY(rotatedVertex);
         }
 
         if (boundingBox != null) {
