@@ -19,7 +19,8 @@ public class PCollisionResult {
      * @param hasCollided {@code True} if collided; else {@code False}
      * @param body1Mtv the amount to translate body1 by so that it is not touching body2
      * @param body2Mtv the amount to translate body2 by so that it is not touching body1
-     * @param mtv the amount and direction to move body1 and body2 so that they don't touch
+     * @param mtv the amount and direction to move body2 away from body1
+     *            (regardless of whether they can move or not) so that they don't touch
      * @param contactPt the point of contact body1 and body2 touched each other
      */
     public PCollisionResult(boolean hasCollided, Vector body1Mtv, Vector body2Mtv, Vector mtv, Vector contactPt) {

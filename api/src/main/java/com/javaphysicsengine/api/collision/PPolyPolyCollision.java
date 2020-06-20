@@ -175,7 +175,7 @@ public class PPolyPolyCollision {
             body2Mtv = mtv2.multiply(-1).multiply(f2);
 
         } else {
-            bestMtv = mtv1;
+            bestMtv = mtv1.multiply(-1);
             body1Mtv = mtv1.multiply(-1).multiply(f1);
             body2Mtv = mtv1.multiply(f2);
         }

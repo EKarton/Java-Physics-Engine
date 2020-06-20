@@ -37,23 +37,23 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
      */
     public PhysicsDebuggerPanel() {
         // Initialise the physic engine
-
-    polygon = new PPolygon("Hehe");
-    polygon.getVertices().add(new Vector(110, 510));
-    polygon.getVertices().add(new Vector(110, 600));
-    polygon.getVertices().add(new Vector(200, 600));
-    polygon.getVertices().add(new Vector(200, 510));
-    polygon.computeCenterOfMass();
-    polygon.rotate(0.174533);
-    polygon.rotate(0.174533);
-    pEngine.getBodies().add(polygon);
+//
+//    polygon = new PPolygon("Hehe");
+//    polygon.getVertices().add(new Vector(110, 510));
+//    polygon.getVertices().add(new Vector(110, 600));
+//    polygon.getVertices().add(new Vector(200, 600));
+//    polygon.getVertices().add(new Vector(200, 510));
+//    polygon.computeCenterOfMass();
+//    polygon.rotate(0.174533);
+//    polygon.rotate(0.174533);
+//    pEngine.getBodies().add(polygon);
 
 
     PPolygon polygon1 = new PPolygon("Hehe1");
-    polygon1.getVertices().add(new Vector(210, 510));
-    polygon1.getVertices().add(new Vector(210, 600));
-    polygon1.getVertices().add(new Vector(300, 600));
-    polygon1.getVertices().add(new Vector(300, 510));
+    polygon1.getVertices().add(new Vector(310, 510));
+    polygon1.getVertices().add(new Vector(310, 600));
+    polygon1.getVertices().add(new Vector(400, 600));
+    polygon1.getVertices().add(new Vector(400, 510));
     polygon1.computeCenterOfMass();
     polygon1.rotate(0.174533);
     pEngine.getBodies().add(polygon1);

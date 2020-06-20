@@ -19,8 +19,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PWorld {
     // Physic properties about this world
-    private static final Vector GRAVITY = Vector.of(0, -0.1); //Vector.of(0, -9.81);
-    private static final double SCALE = 100;
+    private static final Vector GRAVITY = Vector.of(0, -9.81);
+    private static final double SCALE = 1; //100;
 
     // List containing the physical bodies and joints
     private ArrayList<PBody> bodies = new ArrayList<>();
@@ -163,7 +163,6 @@ public class PWorld {
 
             // Rotate the body (angle += AngularVelocity' * time)
             double newAngle = body.getAngle() + (body.getAngularVelocity() * timeEllapsed * SCALE);
-//            double newAngle = (body.getAngularVelocity() * timeEllapsed * SCALE);
             body.rotate(newAngle);
         }
     }
@@ -175,27 +174,32 @@ public class PWorld {
      * @param mtv The MTV of the two bodies
      */
     private void calculateImpulse(PBody body1, PBody body2, Vector mtv, Vector contactPt) {
+
         double body1InversedMass = body1.isMoving() ? 1 / body1.getMass() : 0;
         double body2InversedMass = body2.isMoving() ? 1 / body2.getMass() : 0;
 
         double body1InverseInertia = body1.isMoving() ? 1 / body1.getInertia() : 0;
-        double body2InverseInertia = body1.isMoving() ? 1 / body2.getInertia() : 0;
+        double body2InverseInertia = body2.isMoving() ? 1 / body2.getInertia() : 0;
 
         Vector r1 = contactPt.minus(body1.getCenterPt());
         Vector r2 = contactPt.minus(body2.getCenterPt());
 
-        Vector rv = body2.getVelocity().add(r2.cross(-1 * body2.getAngularVelocity()));
-        rv = rv.minus(body1.getVelocity()).minus(r1.cross(-1 * body1.getAngularVelocity()));
+        Vector rv = body2.getVelocity().add(r2.cross(body2.getAngularVelocity()))
+                .minus(body1.getVelocity()).minus(r1.cross(body1.getAngularVelocity()));
 
-        Vector normal = mtv.normalize();
+        Vector normal = mtv.normalize().multiply(-1);
         double velAlongNormal = rv.dot(normal);
+
+        if(velAlongNormal > 0) {
+            return;
+        }
 
         double r1crossN = r1.cross(normal);
         double r2crossN = r2.cross(normal);
 
-        double inverseMassSum = body1InversedMass + body2InversedMass;
-        inverseMassSum += (r1crossN * r1crossN * body1InverseInertia);
-        inverseMassSum += (r2crossN * r2crossN * body2InverseInertia);
+        double inverseMassSum = body1InversedMass + body2InversedMass +
+                (r1crossN * r1crossN * body1InverseInertia) +
+                (r2crossN * r2crossN * body2InverseInertia);
 
         // Getting the total impulse of the two bodies as a system
         double coefficientOfResitution = 0.1;
@@ -209,34 +213,26 @@ public class PWorld {
         applyImpulse(body2, impulse, r2);
 
         // Re-compute the velocity vectors
-        rv = body2.getVelocity().add(r2.cross(-1 * body2.getAngularVelocity()));
-        rv = rv.minus(body1.getVelocity()).minus(r1.cross(-1 * body1.getAngularVelocity()));
-
-        System.out.println("rv:" + rv);
+        rv = body2.getVelocity().add(r2.cross(body2.getAngularVelocity()))
+                .minus(body1.getVelocity()).minus(r1.cross(body1.getAngularVelocity()));
 
         // Compute the vector tangent to the normal
-        Vector tangent = rv.add(normal.multiply(-1 * rv.dot(normal))).normalize();
-
-        System.out.println(tangent);
+        Vector tangent = rv.minus(normal.multiply(rv.dot(normal)));
+        tangent.normalized();
 
         // Compute the impulse tangent to the normal
-        double totalTangentImpulse = (-1 * rv.dot(tangent)) / inverseMassSum;
+        double totalTangentImpulse = -rv.dot(tangent) / inverseMassSum;
 
         double sf = 0.8;
         double df = 0.8;
-
-//        Vector tangentImpulse = tangent.multiply(totalTangentImpulse);
 
         // Coulumb's law
         Vector tangentImpulse;
         if (StrictMath.abs(totalTangentImpulse) < totalImpulse * sf) {
             tangentImpulse = tangent.multiply(totalTangentImpulse);
-            System.out.println("I AM HERE");
 
         } else {
-//            tangentImpulse = tangent.multiply(totalImpulse).multiply(-df);
-            tangentImpulse = tangent.multiply(totalImpulse);
-            System.out.println("HA");
+            tangentImpulse = tangent.multiply(-df).multiply(totalImpulse);
         }
 
         // Apply friction impulse

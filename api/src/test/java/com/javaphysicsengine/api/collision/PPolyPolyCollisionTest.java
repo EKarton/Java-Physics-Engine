@@ -84,7 +84,7 @@ public class PPolyPolyCollisionTest {
                     true,
                     Vector.of(0, 0),
                     Vector.of(-50, 50),
-                    Vector.of(-50, 50),
+                    Vector.of(50, -50),
                     Vector.of(450, 450),
                 },
                 {

@@ -112,7 +112,6 @@ public class PPolygon extends PBody implements PCollidable {
      */
     public void rotate(double newAngle) {
         double amountToRotate = newAngle - this.getAngle();
-        System.out.println(amountToRotate);
 
         for (Vector vertex : vertices) {
             Vector shiftedVertex = vertex.minus(this.getCenterPt());
