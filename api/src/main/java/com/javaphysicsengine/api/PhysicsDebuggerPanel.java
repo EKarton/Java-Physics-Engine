@@ -49,14 +49,14 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
 //    pEngine.getBodies().add(polygon);
 
 
-    PPolygon polygon1 = new PPolygon("Hehe1");
-    polygon1.getVertices().add(new Vector(310, 510));
-    polygon1.getVertices().add(new Vector(310, 600));
-    polygon1.getVertices().add(new Vector(400, 600));
-    polygon1.getVertices().add(new Vector(400, 510));
-    polygon1.computeCenterOfMass();
-    polygon1.rotate(0.174533);
-    pEngine.getBodies().add(polygon1);
+//    PPolygon polygon1 = new PPolygon("Hehe1");
+//    polygon1.getVertices().add(new Vector(310, 510));
+//    polygon1.getVertices().add(new Vector(310, 600));
+//    polygon1.getVertices().add(new Vector(400, 600));
+//    polygon1.getVertices().add(new Vector(400, 510));
+//    polygon1.computeCenterOfMass();
+//    polygon1.rotate(0.174533);
+//    pEngine.getBodies().add(polygon1);
 //    polygon1.rotate(0.174533);
 
     
@@ -126,19 +126,19 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
 //        PString string2 = new PString(circle3, circle4);
 //        pEngine.getConstraints().add(string2);
 
-        PPolygon triangle = new PPolygon("Triangle");
-        triangle.setMoveable(false);
-        triangle.getVertices().add(new Vector(600, 500));
-        triangle.getVertices().add(new Vector(240, 240));
-        triangle.getVertices().add(new Vector(600, 240));
-        triangle.computeCenterOfMass();
-        pEngine.getBodies().add(triangle);
-
-        PCircle circle = new PCircle("Circle");
-        circle.setCenterPt(Vector.of(420, 640));
-        circle.setRadius(20);
-        circle.setMass(1);
-        pEngine.getBodies().add(circle);
+//        PPolygon triangle = new PPolygon("Triangle");
+//        triangle.setMoveable(false);
+//        triangle.getVertices().add(new Vector(600, 500));
+//        triangle.getVertices().add(new Vector(240, 240));
+//        triangle.getVertices().add(new Vector(600, 240));
+//        triangle.computeCenterOfMass();
+//        pEngine.getBodies().add(triangle);
+//
+//        PCircle circle = new PCircle("Circle");
+//        circle.setCenterPt(Vector.of(420, 640));
+//        circle.setRadius(20);
+//        circle.setMass(1);
+//        pEngine.getBodies().add(circle);
 
         /**
          * Test 1: Two boxes on top of each other
@@ -163,44 +163,48 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
 //        polygon2.translate(Vector.of(0, 10));
 //        pEngine.getBodies().add(polygon2);
 
-//        PCircle circle = new PCircle("Circle");
-//        circle.setCenterPt(Vector.of(522, 440));
-//        circle.setRadius(20);
-//        circle.setMass(1);
-//        pEngine.getBodies().add(circle);
-//
-//        PCircle circle5 = new PCircle("Circle");
-//        circle5.setCenterPt(Vector.of(510, 240));
-//        circle5.setRadius(20);
-//        circle5.setMass(1);
-//        circle5.setVelocity(Vector.of(0, 10));
-//        pEngine.getBodies().add(circle5);
-//
-//        PPolygon polygon = new PPolygon("Box");
-//        polygon.getVertices().add(Vector.of(300, 400));
-//        polygon.getVertices().add(Vector.of(340, 400));
-//        polygon.getVertices().add(Vector.of(340, 440));
-//        polygon.getVertices().add(Vector.of(300, 440));
-//        polygon.computeCenterOfMass();
-//        pEngine.getBodies().add(polygon);
-//
-//        for (int i = 0; i < 20; i++) {
-//            PCircle circle2 = new PCircle("Circle2");
-//            circle2.setMoveable(false);
-//            circle2.setCenterPt(Vector.of(100 + 40 * i, 140));
-//            circle2.setRadius(40);
-//            circle2.setMass(1);
-//            pEngine.getBodies().add(circle2);
-//        }
-//
-//        for (int i = 0; i < 20; i++) {
-//            PCircle circle2 = new PCircle("Circle2");
-//            circle2.setMoveable(false);
-//            circle2.setCenterPt(Vector.of(100, 140 + 40 * i));
-//            circle2.setRadius(40);
-//            circle2.setMass(1);
-//            pEngine.getBodies().add(circle2);
-//        }
+        /**
+         * Test 2
+         */
+
+        PCircle circle = new PCircle("Circle");
+        circle.setCenterPt(Vector.of(522, 440));
+        circle.setRadius(20);
+        circle.setMass(1);
+        pEngine.getBodies().add(circle);
+
+        PCircle circle5 = new PCircle("Circle");
+        circle5.setCenterPt(Vector.of(510, 240));
+        circle5.setRadius(20);
+        circle5.setMass(1);
+        circle5.setVelocity(Vector.of(0, 10));
+        pEngine.getBodies().add(circle5);
+
+        PPolygon polygon = new PPolygon("Box");
+        polygon.getVertices().add(Vector.of(300, 400));
+        polygon.getVertices().add(Vector.of(340, 400));
+        polygon.getVertices().add(Vector.of(340, 440));
+        polygon.getVertices().add(Vector.of(300, 440));
+        polygon.computeCenterOfMass();
+        pEngine.getBodies().add(polygon);
+
+        for (int i = 0; i < 20; i++) {
+            PCircle circle2 = new PCircle("Circle2");
+            circle2.setMoveable(false);
+            circle2.setCenterPt(Vector.of(100 + 40 * i, 140));
+            circle2.setRadius(40);
+            circle2.setMass(1);
+            pEngine.getBodies().add(circle2);
+        }
+
+        for (int i = 0; i < 20; i++) {
+            PCircle circle2 = new PCircle("Circle2");
+            circle2.setMoveable(false);
+            circle2.setCenterPt(Vector.of(100, 140 + 40 * i));
+            circle2.setRadius(40);
+            circle2.setMass(1);
+            pEngine.getBodies().add(circle2);
+        }
 
 
         // Create the game timer

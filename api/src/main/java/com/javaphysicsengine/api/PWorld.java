@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class PWorld {
     // Physic properties about this world
     private static final Vector GRAVITY = Vector.of(0, -9.81);
-    private static final double SCALE = 1; //100;
+    private static final double SCALE = 100;
 
     // List containing the physical bodies and joints
     private ArrayList<PBody> bodies = new ArrayList<>();
@@ -29,7 +29,7 @@ public class PWorld {
     public ConcurrentLinkedQueue<Vector> pointsToDraw = new ConcurrentLinkedQueue<>();
 
     /**
-     * Post-condition: Returns the list of bodies added to the world
+     * Returns the list of bodies added to the world
      * @return Returns the list of bodies added to the world
      */
     public ArrayList<PBody> getBodies() {
@@ -37,7 +37,7 @@ public class PWorld {
     }
 
     /**
-     * Post-condition: Returns the list of constraints added to the world
+     * Returns the list of constraints added to the world
      * @return Returns the list of constraints added to the world
      */
     public ArrayList<PConstraints> getConstraints() {
@@ -45,8 +45,7 @@ public class PWorld {
     }
 
     /**
-     * Pre-condition: The "g" must not be null
-     * Post-condition: Draws the bodies and constraints to the screen
+     * Draws the bodies and constraints to the screen
      * @param g The Graphics Object
      */
     public void draw(Graphics g) {
@@ -69,8 +68,7 @@ public class PWorld {
     }
 
     /**
-     * Post-condition: Simulates the bodies for a certain time
-     * Pre-condition: "timeEllapsed" should be greater than 0
+     * Simulates the bodies for a certain time
      * @param timeEllapsed The time that has ellapsed in seconds
      */
     public void simulate(double timeEllapsed) {
@@ -115,7 +113,7 @@ public class PWorld {
     }
 
     /**
-     * Post-condition: Adds the forces to all the bodies
+     * Adds the forces to all the bodies
      */
     private void addForces() {
         for (PBody body : bodies) {
@@ -136,8 +134,7 @@ public class PWorld {
     }
 
     /**
-     * Post-condition: Translates all the bodies based on a certain time frame
-     * Pre-condition: "timeEllapsed" should be greater than 0
+     * Translates all the bodies based on a certain time frame
      * @param timeEllapsed The time that has ellapsed
      */
     private void translateBodies(double timeEllapsed) {
@@ -249,8 +246,8 @@ public class PWorld {
     }
 
     /**
-     * Post-condition: Moves the two bodies by a slight bit after a collision occured (to prevent gittering)
-     * Pre-condition: "body1", "body2", "mtv" should not be null
+     * Moves the two bodies by a slight bit after a collision occured (to prevent gittering)
+     *
      * @param body1 The first body involved in the collision
      * @param body2 The second body involved in the collision
      * @param mtv The MTD of the two bodies
