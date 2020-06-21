@@ -223,7 +223,7 @@ public class PWorld {
         double r1CrossT = r1.cross(tangent);
         double r2CrossT = r2.cross(tangent);
 
-        double newFriction = 0.8;
+        double newFriction = 0.1;
         double tangentImpulse = -(1 + coefficientOfResitution) * relativeVelocity.dot(tangent) * newFriction;
         tangentImpulse /= (body1InversedMass + body2InversedMass +
                 r1CrossT * r1CrossT * body1InverseInertia +
