@@ -1,9 +1,3 @@
-/*
- * Purpose: To represent the basic properties of all physical objects with no specific geometric shape
- * Original Creation Date: January 1 2016
- * @author Emilio Kartono
- * @version January 15 2016
- */
 package com.javaphysicsengine.api.body;
 
 import com.javaphysicsengine.utils.Vector;

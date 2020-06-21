@@ -1,10 +1,3 @@
-/*
- * A class that uses the physics engine to simulate and draw simple shapes in a window
- * This class is only used for debugging purposes. No instance of this can be created outside the Physics Engine package
- * @author Emilio Kartono
- * @version December 21, 2015
- */
-
 package com.javaphysicsengine.api;
 
 import com.javaphysicsengine.api.body.PCircle;
@@ -166,46 +159,101 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
         /**
          * Test 2
          */
+//////
+//        PCircle circle = new PCircle("Circle");
+//        circle.setCenterPt(Vector.of(522, 440));
+//        circle.setRadius(20);
+//        circle.setMass(100);
+//        pEngine.getBodies().add(circle);
+////
+//        PCircle circle5 = new PCircle("Circle");
+//        circle5.setCenterPt(Vector.of(510, 240));
+//        circle5.setRadius(20);
+//        circle5.setMass(100);
+//        circle5.setVelocity(Vector.of(0, 10));
+//        pEngine.getBodies().add(circle5);
+//////
+//////        PPolygon polygon = new PPolygon("Box");
+//////        polygon.getVertices().add(Vector.of(300, 400));
+//////        polygon.getVertices().add(Vector.of(340, 400));
+//////        polygon.getVertices().add(Vector.of(340, 440));
+//////        polygon.getVertices().add(Vector.of(300, 440));
+//////        polygon.computeCenterOfMass();
+//////        pEngine.getBodies().add(polygon);
+//////
+//        for (int i = 0; i < 20; i++) {
+//            PCircle circle2 = new PCircle("Circle2");
+//            circle2.setMoveable(false);
+//            circle2.setCenterPt(Vector.of(100 + 40 * i, 140));
+//            circle2.setRadius(40);
+//            circle2.setMass(1000);
+//            pEngine.getBodies().add(circle2);
+//        }
+//
+//        for (int i = 0; i < 20; i++) {
+//            PCircle circle2 = new PCircle("Circle2");
+//            circle2.setMoveable(false);
+//            circle2.setCenterPt(Vector.of(100, 140 + 40 * i));
+//            circle2.setRadius(40);
+//            circle2.setMass(400);
+//            pEngine.getBodies().add(circle2);
+//        }
+//
+//        for (int i = 0; i < 20; i++) {
+//            PCircle circle2 = new PCircle("Circle3");
+//            circle2.setMoveable(false);
+//            circle2.setCenterPt(Vector.of(900, 140 + 40 * i));
+//            circle2.setRadius(40);
+//            circle2.setMass(400);
+//            pEngine.getBodies().add(circle2);
+//        }
 
-        PCircle circle = new PCircle("Circle");
-        circle.setCenterPt(Vector.of(522, 440));
-        circle.setRadius(20);
-        circle.setMass(1);
-        pEngine.getBodies().add(circle);
+        /**
+         * Test 4
+         */
 
-        PCircle circle5 = new PCircle("Circle");
-        circle5.setCenterPt(Vector.of(510, 240));
-        circle5.setRadius(20);
-        circle5.setMass(1);
-        circle5.setVelocity(Vector.of(0, 10));
-        pEngine.getBodies().add(circle5);
+        // The walls
+        PPolygon ground = new PPolygon("Ground");
+        ground.setMoveable(false);
+        ground.getVertices().add(Vector.of(100, 100));
+        ground.getVertices().add(Vector.of(100, 50));
+        ground.getVertices().add(Vector.of(800, 50));
+        ground.getVertices().add(Vector.of(800, 100));
+        ground.computeCenterOfMass();
+        pEngine.getBodies().add(ground);
 
-        PPolygon polygon = new PPolygon("Box");
-        polygon.getVertices().add(Vector.of(300, 400));
-        polygon.getVertices().add(Vector.of(340, 400));
-        polygon.getVertices().add(Vector.of(340, 440));
-        polygon.getVertices().add(Vector.of(300, 440));
-        polygon.computeCenterOfMass();
-        pEngine.getBodies().add(polygon);
+        PPolygon leftWall = new PPolygon("Left Wall");
+        leftWall.setMoveable(false);
+        leftWall.getVertices().add(Vector.of(50, 50));
+        leftWall.getVertices().add(Vector.of(100, 50));
+        leftWall.getVertices().add(Vector.of(100, 500));
+        leftWall.getVertices().add(Vector.of(50, 500));
+        leftWall.computeCenterOfMass();
+        pEngine.getBodies().add(leftWall);
 
-        for (int i = 0; i < 20; i++) {
-            PCircle circle2 = new PCircle("Circle2");
-            circle2.setMoveable(false);
-            circle2.setCenterPt(Vector.of(100 + 40 * i, 140));
-            circle2.setRadius(40);
-            circle2.setMass(1);
-            pEngine.getBodies().add(circle2);
+        PPolygon rightWall = new PPolygon("Right Wall");
+        rightWall.setMoveable(false);
+        rightWall.getVertices().add(Vector.of(800, 50));
+        rightWall.getVertices().add(Vector.of(850, 50));
+        rightWall.getVertices().add(Vector.of(850, 500));
+        rightWall.getVertices().add(Vector.of(800, 500));
+        rightWall.computeCenterOfMass();
+        pEngine.getBodies().add(rightWall);
+
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                PPolygon box = new PPolygon("Box");
+                box.setMass(10);
+
+                box.getVertices().add(Vector.of(110 + 40 * i, 110 + 40 * j + 30));
+                box.getVertices().add(Vector.of(110 + 40 * i + 30, 110 + 40 * j + 30));
+                box.getVertices().add(Vector.of(110 + 40 * i + 30, 110 + 40 * j + 60));
+                box.getVertices().add(Vector.of(110 + 40 * i, 110 + 40 * j + 60));
+
+                box.computeCenterOfMass();
+                pEngine.getBodies().add(box);
+            }
         }
-
-        for (int i = 0; i < 20; i++) {
-            PCircle circle2 = new PCircle("Circle2");
-            circle2.setMoveable(false);
-            circle2.setCenterPt(Vector.of(100, 140 + 40 * i));
-            circle2.setRadius(40);
-            circle2.setMass(1);
-            pEngine.getBodies().add(circle2);
-        }
-
 
         // Create the game timer
         Timer gameTimer = new Timer((int) (1000.0 / FPS / TIME_MULTIPLIER), this);

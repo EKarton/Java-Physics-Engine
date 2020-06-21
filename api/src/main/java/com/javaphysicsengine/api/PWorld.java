@@ -1,10 +1,3 @@
-/*
- * Purpose: A class that simulates a list of bodies and constraints based on physics
- * Original Creation Date: January 1 2016
- * @author Emilio Kartono
- * @version January 15 2016
- */
-
 package com.javaphysicsengine.api;
 
 import com.javaphysicsengine.api.body.PBody;
@@ -20,7 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class PWorld {
     // Physic properties about this world
     private static final Vector GRAVITY = Vector.of(0, -9.81);
-    private static final double SCALE = 100;
+    private static final double SCALE = 10;
 
     // List containing the physical bodies and joints
     private ArrayList<PBody> bodies = new ArrayList<>();
@@ -102,10 +95,19 @@ public class PWorld {
                     if (result.isHasCollided()) {
                         pointsToDraw.add(result.getContactPt());
 
-                        firstBody.translate(result.getBody1Mtv());
-                        secondBody.translate(result.getBody2Mtv());
-                        calculateImpulse(firstBody, secondBody, result.getMtv(), result.getContactPt());
+                        if (firstBody.isMoving()) {
+                            firstBody.translate(result.getBody1Mtv());
+                        }
+                        if (secondBody.isMoving()) {
+                            secondBody.translate(result.getBody2Mtv());
+                        }
+
+                        if (result.getMtv().dot(secondBody.getCenterPt().minus(firstBody.getCenterPt())) < 0) {
+                            result.setMtv(result.getMtv().scale(-1));
+                        }
+
                         positionalCorrection(firstBody, secondBody, result.getMtv());
+                        applyImpulse(firstBody, secondBody, result.getMtv(), result.getContactPt());
                     }
                 }
             }
@@ -122,7 +124,7 @@ public class PWorld {
             }
 
             // Adding gravitational force
-            Vector gravitationalForce = GRAVITY.multiply(body.getMass());
+            Vector gravitationalForce = GRAVITY.scale(body.getMass());
             Vector newNetForce = body.getNetForce().add(gravitationalForce);
             body.setNetForce(newNetForce);
         }
@@ -144,14 +146,14 @@ public class PWorld {
             }
 
             // Getting the acceleration from force ( Force = mass * acceleration )
-            Vector acceleration = body.getNetForce().multiply(1 / body.getMass());
+            Vector acceleration = body.getNetForce().scale(1 / body.getMass());
 
             // Calculating the new velocity ( V' = V + at)
-            Vector velocity = body.getVelocity().add(acceleration.multiply(timeEllapsed));
+            Vector velocity = body.getVelocity().add(acceleration.scale(timeEllapsed));
             body.setVelocity(velocity);
 
             // Getting the amount to translate by (Velocity = displacement / time)
-            Vector translation = velocity.multiply(timeEllapsed).multiply(SCALE);
+            Vector translation = velocity.scale(timeEllapsed).scale(SCALE);
             body.translate(translation);
 
             // Calculating the new angular velocity (AngularVelocity' = AngularVelocity + torque * (1 / inertia) * time)
@@ -170,79 +172,78 @@ public class PWorld {
      * @param body2 The second body involved in the collision
      * @param mtv The MTV of the two bodies
      */
-    private void calculateImpulse(PBody body1, PBody body2, Vector mtv, Vector contactPt) {
+    private void applyImpulse(PBody body1, PBody body2, Vector mtv, Vector contactPt) {
 
         double body1InversedMass = body1.isMoving() ? 1 / body1.getMass() : 0;
         double body2InversedMass = body2.isMoving() ? 1 / body2.getMass() : 0;
 
-        double body1InverseInertia = body1.isMoving() ? 1 / body1.getInertia() : 0;
-        double body2InverseInertia = body2.isMoving() ? 1 / body2.getInertia() : 0;
+        double body1InverseInertia = body1.isMoving() ? body1.getInertia() : 0;
+        double body2InverseInertia = body2.isMoving() ? body2.getInertia() : 0;
 
         Vector r1 = contactPt.minus(body1.getCenterPt());
         Vector r2 = contactPt.minus(body2.getCenterPt());
 
-        Vector rv = body2.getVelocity().add(r2.cross(body2.getAngularVelocity()))
-                .minus(body1.getVelocity()).minus(r1.cross(body1.getAngularVelocity()));
+        Vector newV1 = body1.getVelocity().add(Vector.of(-1 * body1.getAngularVelocity() * r1.getY(), body1.getAngularVelocity() * r1.getX()));
+        Vector newV2 = body2.getVelocity().add(Vector.of(-1 * body2.getAngularVelocity() * r2.getY(), body2.getAngularVelocity() * r2.getX()));
+        Vector relativeVelocity = newV2.minus(newV1);
 
-        Vector normal = mtv.normalize().multiply(-1);
-        double velAlongNormal = rv.dot(normal);
+        Vector normal = mtv.normalize();
+        double velAlongNormal = relativeVelocity.dot(normal);
 
         if(velAlongNormal > 0) {
             return;
         }
 
-        double r1crossN = r1.cross(normal);
-        double r2crossN = r2.cross(normal);
-
-        double inverseMassSum = body1InversedMass + body2InversedMass +
-                (r1crossN * r1crossN * body1InverseInertia) +
-                (r2crossN * r2crossN * body2InverseInertia);
+        double r1CrossN = r1.cross(normal);
+        double r2CrossN = r2.cross(normal);
 
         // Getting the total impulse of the two bodies as a system
-        double coefficientOfResitution = 0.1;
-        double totalImpulse = -(1.0f + coefficientOfResitution) * velAlongNormal / inverseMassSum;
+        double coefficientOfResitution = 0.2;
+        double totalImpulse = -(1 + coefficientOfResitution) * velAlongNormal;
+        totalImpulse /= (body1InversedMass + body2InversedMass +
+                r1CrossN * r1CrossN * body1InverseInertia +
+                r2CrossN * r2CrossN * body2InverseInertia);
 
-        // Compute impulse of each object
-        Vector impulse = normal.multiply(totalImpulse);
+        Vector impulse = normal.scale(totalImpulse);
 
-        // Apply impulse
-        applyImpulse(body1, impulse.multiply(-1), r1);
-        applyImpulse(body2, impulse, r2);
-
-        // Re-compute the velocity vectors
-        rv = body2.getVelocity().add(r2.cross(body2.getAngularVelocity()))
-                .minus(body1.getVelocity()).minus(r1.cross(body1.getAngularVelocity()));
-
-        // Compute the vector tangent to the normal
-        Vector tangent = rv.minus(normal.multiply(rv.dot(normal)));
-        tangent.normalized();
-
-        // Compute the impulse tangent to the normal
-        double totalTangentImpulse = -rv.dot(tangent) / inverseMassSum;
-
-        double sf = 0.8;
-        double df = 0.8;
-
-        // Coulumb's law
-        Vector tangentImpulse;
-        if (StrictMath.abs(totalTangentImpulse) < totalImpulse * sf) {
-            tangentImpulse = tangent.multiply(totalTangentImpulse);
-
-        } else {
-            tangentImpulse = tangent.multiply(-df).multiply(totalImpulse);
+        // Add impulse of each object
+        if (body1.isMoving()) {
+            body1.setVelocity(body1.getVelocity().minus(impulse.scale(body1InversedMass)));
+            body1.setAngularVelocity(body1.getAngularVelocity() - r1CrossN * totalImpulse * body1InverseInertia);
         }
 
-        // Apply friction impulse
-        applyImpulse(body1, tangentImpulse.multiply(-1), r1);
-        applyImpulse(body2, tangentImpulse, r2);
-    }
+        if (body2.isMoving()) {
+            body2.setVelocity(body2.getVelocity().add(impulse.scale(body2InversedMass)));
+            body2.setAngularVelocity(body2.getAngularVelocity() + r2CrossN * totalImpulse * body2InverseInertia);
+        }
 
-    private void applyImpulse(PBody body, Vector impulse, Vector contactPt) {
-        double bodyInversedMass = body.isMoving() ? 1 / body.getMass() : 0;
-        double bodyInverseInertia = body.isMoving() ? 1 / body.getInertia() : 0;
+        Vector tangent = relativeVelocity.minus(normal.scale(relativeVelocity.dot(normal)));
+        tangent = tangent.normalize().scale(-1);
 
-        body.setVelocity(body.getVelocity().add(impulse.multiply(bodyInversedMass)));
-        body.setAngularVelocity(body.getAngularVelocity() + (bodyInverseInertia) * contactPt.cross(impulse));
+        double r1CrossT = r1.cross(tangent);
+        double r2CrossT = r2.cross(tangent);
+
+        double newFriction = 0.8;
+        double tangentImpulse = -(1 + coefficientOfResitution) * relativeVelocity.dot(tangent) * newFriction;
+        tangentImpulse /= (body1InversedMass + body2InversedMass +
+                r1CrossT * r1CrossT * body1InverseInertia +
+                r2CrossT * r2CrossT * body2InverseInertia);
+
+        if (tangentImpulse > totalImpulse) {
+            tangentImpulse = totalImpulse;
+        }
+
+        impulse = tangent.scale(tangentImpulse);
+
+        if (body1.isMoving()) {
+            body1.setVelocity(body1.getVelocity().minus(impulse.scale(body1InversedMass)));
+            body1.setAngularVelocity(body1.getAngularVelocity() - r1CrossT * tangentImpulse * body1InverseInertia);
+        }
+
+        if (body2.isMoving()) {
+            body2.setVelocity(body2.getVelocity().add(impulse.scale(body2InversedMass)));
+            body2.setAngularVelocity(body2.getAngularVelocity() + r2CrossT * tangentImpulse * body2InverseInertia);
+        }
     }
 
     /**
@@ -253,8 +254,8 @@ public class PWorld {
      * @param mtv The MTD of the two bodies
      */
     private void positionalCorrection(PBody body1, PBody body2, Vector mtv) {
-        final double PERCENT = 0.01f; // usually 20% to 80%
-        final double SLOP = 0.1f; // usually 0.01 to 0.1
+        final double PERCENT = 0.2; // usually 20% to 80%
+        final double SLOP = 0.01; // usually 0.01 to 0.1
 
         double body1InversedMass = body1.isMoving() ? 1 / body1.getMass() : 0;
         double body2InversedMass = body2.isMoving() ? 1 / body2.getMass() : 0;
@@ -262,14 +263,15 @@ public class PWorld {
         double penetrationDepth = mtv.norm2();
         Vector normal = mtv.normalize();
 
-        Vector correction = normal.multiply(PERCENT)
-                .multiply(Math.max(penetrationDepth - SLOP, 0.0f))
-                .multiply(body1InversedMass + body2InversedMass);
+        double correctionDepth = Math.max(penetrationDepth - SLOP, 0) / (body1InversedMass + body2InversedMass) * PERCENT;
+        Vector correction = normal.scale(correctionDepth);
 
-        // Move the first body by a certain amount
-        body1.translate(correction.multiply(-1 * body1InversedMass));
+        if (body1.isMoving()) {
+            body1.translate(correction.scale(-1 * body1InversedMass));
+        }
 
-        // Move the second body by a certain amount
-        body2.translate(correction.multiply(body2InversedMass));
+        if (body2.isMoving()) {
+            body2.translate(correction.scale(body2InversedMass));
+        }
     }
 }

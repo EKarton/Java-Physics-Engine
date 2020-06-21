@@ -1,9 +1,3 @@
-/*
- * Purpose: To represent a PBody object with a circle shape
- * Original Creation Date: January 1 2016
- * @author Emilio Kartono
- * @version January 15 2016
- */
 package com.javaphysicsengine.api.body;
 
 import com.javaphysicsengine.api.collision.PCircleCircleCollision;
@@ -77,7 +71,8 @@ public class PCircle extends PBody implements PCollidable {
 
     @Override
     public double getInertia() {
-        return getMass() * radius * radius; // (Math.PI * Math.pow(radius, 4)) / 4;  //
+        //return getMass() * radius * radius; // (Math.PI * Math.pow(radius, 4)) / 4;  //
+        return (this.getMass()) * (this.radius * this.radius) / 12;
     }
 
     /**

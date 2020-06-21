@@ -28,21 +28,15 @@
             <version>1.2</version>
             <scope>compile</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.nd4j</groupId>-->
-<!--            <artifactId>nd4j-native-platform</artifactId>-->
-<!--            <version>${nd4j.version}</version>-->
-<!--        </dependency>-->
-        <!-- https://mvnrepository.com/artifact/colt/colt -->
-<!--        <dependency>-->
-<!--            <groupId>colt</groupId>-->
-<!--            <artifactId>colt</artifactId>-->
-<!--            <version>1.2.0</version>-->
-<!--        </dependency>-->
         <dependency>
-            <groupId>org.ejml</groupId>
-            <artifactId>ejml-all</artifactId>
-            <version>0.37.1</version>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.19</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>1.19</version>
         </dependency>
     </dependencies>
 </project>

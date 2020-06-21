@@ -1,9 +1,3 @@
-/*
- * A class that stores a point (x and y coordinate), or a direction and magnitude
- * @author Emilio Kartono
- * @version September 13, 2015
- */
-
 package com.javaphysicsengine.utils;
 
 public class Vector {
@@ -59,20 +53,12 @@ public class Vector {
         return Vector.dot(this, v2);
     }
 
-    public static Vector multiply(Vector v, double amount) {
+    public static Vector scale(Vector v, double amount) {
         return new Vector(v.x * amount, v.y * amount);
     }
 
-    public Vector multiply(double amount) {
-        return Vector.multiply(this, amount);
-    }
-
-    public static Vector multiply(Vector v1, Vector v2) {
-        return new Vector(v1.x * v2.x, v1.y * v2.y);
-    }
-
-    public Vector multiply(Vector v) {
-        return Vector.multiply(this, v);
+    public Vector scale(double amount) {
+        return Vector.scale(this, amount);
     }
 
     public static Vector add(Vector v1, Vector v2) {
@@ -87,16 +73,8 @@ public class Vector {
         return v1.x * v2.y - v1.y * v2.x;
     }
 
-    public static Vector cross(Vector v1, double amount) {
-        return Vector.of(v1.y * -amount, v1.x * amount);
-    }
-
     public double cross(Vector v2) {
         return Vector.cross(this, v2);
-    }
-
-    public Vector cross(double amount) {
-        return Vector.cross(this, amount);
     }
 
     public double norm1() {
@@ -121,6 +99,9 @@ public class Vector {
 
     public Vector normalize() {
         double curLengthOfVector = norm2();
+        if (curLengthOfVector == 0) {
+            return Vector.of(0, 0);
+        }
         return Vector.of(x / curLengthOfVector, y / curLengthOfVector);
     }
 

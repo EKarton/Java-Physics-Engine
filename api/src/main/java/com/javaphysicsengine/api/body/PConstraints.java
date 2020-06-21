@@ -1,10 +1,3 @@
-/*
- * Purpose: To represent the basic properties of all constraints attached to two bodies
- * Original Creation Date: January 1 2016
- * @author Emilio Kartono
- * @version January 15 2016
- */
-
 package com.javaphysicsengine.api.body;
 
 import java.awt.Graphics;

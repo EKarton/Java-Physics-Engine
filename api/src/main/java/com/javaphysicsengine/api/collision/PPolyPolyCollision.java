@@ -98,7 +98,7 @@ public class PPolyPolyCollision {
 
                 if (mtd < bestMtd) {
                     bestMtd = mtd;
-                    bestMtv = normal.multiply(mtd);
+                    bestMtv = normal.scale(mtd);
                 }
 
             } else {
@@ -124,7 +124,7 @@ public class PPolyPolyCollision {
      */
     private static Vector getContactPt(PPolygon poly1, Vector body1Mtv) {
         Vector origin = poly1.getCenterPt();
-        Vector rayDir = body1Mtv.normalize().multiply(-1);
+        Vector rayDir = body1Mtv.normalize().scale(-1);
 
         double maxProj = -1000000000;
         Vector maxProjPt = null;
@@ -132,7 +132,7 @@ public class PPolyPolyCollision {
         for (Vector vertex : poly1.getVertices()) {
 
             double scalarProj = rayDir.dot(vertex.minus(origin));
-            Vector projectedPt = origin.add(rayDir.normalize().multiply(scalarProj));
+            Vector projectedPt = origin.add(rayDir.normalize().scale(scalarProj));
 
             if (scalarProj > maxProj) {
                 maxProj = scalarProj;
@@ -171,21 +171,24 @@ public class PPolyPolyCollision {
 
         if (mtv2.norm1() <= mtv1.norm1()) {
             bestMtv = mtv2;
-            body1Mtv = mtv2.multiply(f1);
-            body2Mtv = mtv2.multiply(-1).multiply(f2);
+            body1Mtv = mtv2.scale(f1);
+            body2Mtv = mtv2.scale(-1).scale(f2);
 
         } else {
-            bestMtv = mtv1.multiply(-1);
-            body1Mtv = mtv1.multiply(-1).multiply(f1);
-            body2Mtv = mtv1.multiply(f2);
+            bestMtv = mtv1.scale(-1);
+            body1Mtv = mtv1.scale(-1).scale(f1);
+            body2Mtv = mtv1.scale(f2);
         }
 
         Vector contactPt;
-        if (body1Mtv.norm1() == 0) {
+        if (body2Mtv.norm1() > 0) {
             contactPt = getContactPt(body2, body2Mtv);
 
-        } else {
+        } else if (body1Mtv.norm1() > 0) {
             contactPt = getContactPt(body1, body1Mtv);
+
+        } else {
+            throw new IllegalArgumentException("HELP");
         }
 
 

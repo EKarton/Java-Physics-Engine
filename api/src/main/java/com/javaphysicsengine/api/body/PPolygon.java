@@ -5,7 +5,7 @@ import com.javaphysicsengine.api.collision.PCollisionResult;
 import com.javaphysicsengine.api.collision.PPolyPolyCollision;
 import com.javaphysicsengine.utils.Vector;
 
-import java.awt.*;
+import java.awt.Graphics;
 import java.util.ArrayList;
 
 public class PPolygon extends PBody implements PCollidable {
@@ -201,10 +201,10 @@ public class PPolygon extends PBody implements PCollidable {
             Vector sidePt1 = vertices.get(i);
             Vector sidePt2 = i + 1 < vertices.size() ? vertices.get(i + 1) : vertices.get(0);
 
-            Vector midPt = sidePt1.add(sidePt2).multiply(0.5);
+            Vector midPt = sidePt1.add(sidePt2).scale(0.5);
 
             Vector normal = Vector.of(sidePt2.getY() - sidePt1.getY(), -1 * (sidePt2.getX() - sidePt1.getX())).normalize();
-            Vector endPt = normal.multiply(10).add(midPt);
+            Vector endPt = normal.scale(10).add(midPt);
 
             int x1 = (int) midPt.getX();
             int y1 = windowHeight - (int) midPt.getY();
@@ -245,7 +245,7 @@ public class PPolygon extends PBody implements PCollidable {
             // Note: since we are not comparing this obj with the incoming obj, the directions are flipped
             if (result.isHasCollided()) {
                 result = new PCollisionResult(result.isHasCollided(), result.getBody2Mtv(),
-                        result.getBody1Mtv(), result.getMtv().multiply(-1), result.getContactPt());
+                        result.getBody1Mtv(), result.getMtv().scale(-1), result.getContactPt());
             }
 
         } else if (body instanceof PPolygon) {

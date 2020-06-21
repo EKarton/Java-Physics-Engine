@@ -98,14 +98,14 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
 
                 // Project the center of the circle to the edgeDir
                 double scalarProj = edgeDir1.dot(circleCenterPt.minus(sidePt1)) / edgeDir1.norm1();
-                Vector vectorProj = edgeDir1.multiply(scalarProj).add(sidePt1);
+                Vector vectorProj = edgeDir1.scale(scalarProj).add(sidePt1);
 
                 // Compute the mtd
                 double mtd = circleRadius - vectorProj.minus(circleCenterPt).norm2();
 
                 if (0 < mtd && mtd < bestOverlapDistance) {
                     bestOverlapDistance = mtd;
-                    bestMtv = normal.multiply(mtd);
+                    bestMtv = normal.scale(mtd);
                 }
             }
         }
@@ -114,10 +114,10 @@ public class PCirclePolyCollision extends PPolyPolyCollision {
             double f1 = circle.isMoving() ? circle.getVelocity().norm1() / (circle.getVelocity().norm1() + poly.getVelocity().norm1()) : 0;
             double f2 = poly.isMoving() ? poly.getVelocity().norm1() / (circle.getVelocity().norm1() + poly.getVelocity().norm1()) : 0;
 
-            Vector bestCircleMtv = circle.isMoving() ? bestMtv.multiply(f1) : Vector.of(0, 0);
-            Vector bestPolyMtv = poly.isMoving() ? bestMtv.multiply(-1 * f2) : Vector.of(0, 0);
+            Vector bestCircleMtv = circle.isMoving() ? bestMtv.scale(f1) : Vector.of(0, 0);
+            Vector bestPolyMtv = poly.isMoving() ? bestMtv.scale(-1 * f2) : Vector.of(0, 0);
 
-            Vector contactPt = bestMtv.normalize().multiply(-1 * circle.getRadius()).add(circle.getCenterPt());
+            Vector contactPt = bestMtv.normalize().scale(-1 * circle.getRadius()).add(circle.getCenterPt());
             contactPt = contactPt.add(bestCircleMtv);
 
             return new PCollisionResult(true, bestCircleMtv, bestPolyMtv, bestMtv, contactPt);

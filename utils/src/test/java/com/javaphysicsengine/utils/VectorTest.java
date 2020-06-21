@@ -35,7 +35,7 @@ public class VectorTest {
     @Test
     public void multiply_should_multiply_vector() {
         Vector vector = Vector.of(10, 100);
-        Vector resultantVector = Vector.multiply(vector, 10);
+        Vector resultantVector = Vector.scale(vector, 10);
 
         assertEquals(100, resultantVector.getX(), 0.0001);
         assertEquals(1000, resultantVector.getY(), 0.0001);
@@ -44,7 +44,7 @@ public class VectorTest {
     @Test
     public void multiply_2_should_multiply_vector() {
         Vector vector = Vector.of(10, 100);
-        Vector resultantVector = Vector.multiply(vector, -10);
+        Vector resultantVector = Vector.scale(vector, -10);
 
         assertEquals(-100, resultantVector.getX(), 0.0001);
         assertEquals(-1000, resultantVector.getY(), 0.0001);

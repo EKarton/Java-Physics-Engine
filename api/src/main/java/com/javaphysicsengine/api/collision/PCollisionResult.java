@@ -7,11 +7,31 @@ import com.javaphysicsengine.utils.Vector;
  * Note that the mtv must go in the direction of body1Mtv
  */
 public class PCollisionResult {
-    private final boolean hasCollided;
-    private final Vector body1Mtv;
-    private final Vector body2Mtv;
-    private final Vector mtv;
-    private final Vector contactPt;
+    public void setHasCollided(boolean hasCollided) {
+        this.hasCollided = hasCollided;
+    }
+
+    public void setBody1Mtv(Vector body1Mtv) {
+        this.body1Mtv = body1Mtv;
+    }
+
+    public void setBody2Mtv(Vector body2Mtv) {
+        this.body2Mtv = body2Mtv;
+    }
+
+    public void setMtv(Vector mtv) {
+        this.mtv = mtv;
+    }
+
+    public void setContactPt(Vector contactPt) {
+        this.contactPt = contactPt;
+    }
+
+    private boolean hasCollided;
+    private Vector body1Mtv;
+    private Vector body2Mtv;
+    private Vector mtv;
+    private Vector contactPt;
 
     /**
      * Constructs a PCollisionResult from the collision of body1 and body2

@@ -1,10 +1,3 @@
-/*
- * Purpose: To represent a PConstraints object that has string-like physics
- * Original Creation Date: January 1 2016
- * @author Emilio Kartono
- * @version January 15 2016
- */
-
 package com.javaphysicsengine.api.body;
 
 import com.javaphysicsengine.utils.Vector;
@@ -32,7 +25,6 @@ public class PString extends PConstraints {
      * Post-condition: Adds the tension forces to the attached bodies
      */
     public void addTensionForce() {
-        System.out.println("===============================");
         // Check if the distance between the strings are greater than the string length
         PBody[] bodies = super.getAttachedBodies();
 
@@ -53,20 +45,16 @@ public class PString extends PConstraints {
             equilPt_Y = bodies[1].getCenterPt().getY();
         }
 
-        System.out.println("L:" + lengthPerBody + " EX:" + equilPt_X + " EY:" + equilPt_Y);
 
         for (PBody body : bodies) {
             double distX = equilPt_X - body.getCenterPt().getX();
             double distY = equilPt_Y - body.getCenterPt().getY();
             double distance = Math.sqrt((distX * distX) + (distY * distY));
 
-            System.out.println("DistX:" + distX + " DistY:" + distY + " DIST:" + distance);
-
             if (distance > lengthPerBody) {
                 double centripetalForce_Scalar = body.getMass() * Math.pow(body.getVelocity().norm2(), 2) / lengthPerBody;
                 Vector centripetalForce_Vector = new Vector(-distX, -distY);
                 centripetalForce_Vector.setLength(centripetalForce_Scalar);
-                System.out.println("CF:" + centripetalForce_Vector);
 
                 body.setNetForce(centripetalForce_Vector);
 
@@ -75,7 +63,6 @@ public class PString extends PConstraints {
                     Vector displacement = new Vector(distX, distY);
                     displacement.setLength(distance - lengthPerBody);
                     displacement.setXY(displacement.getX() * -1, displacement.getY() * -1);
-                    System.out.println("D:" + displacement);
                     body.translate(displacement);
                 }
             }

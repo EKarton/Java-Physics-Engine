@@ -1,10 +1,3 @@
-/*
- * Purpose: To represent a PConstraints object that has spring-like physics
- * Original Creation Date: January 1 2016
- * @author Emilio Kartono
- * @version January 15 2016
- */
-
 package com.javaphysicsengine.api.body;
 
 import com.javaphysicsengine.utils.Vector;
@@ -16,8 +9,7 @@ public class PSpring extends PConstraints {
     private double kValue = 100;  // <- In Newtons/meter
 
     /**
-     * Pre-condition: "body1" and "body2" must not be null
-     * Post-condition: Creates a PSpring object with "body1" and "body2" attached
+     * Creates a PSpring object with "body1" and "body2" attached
      * @param body1 The first body to be attached to.
      * @param body2 The second body to be attached to.
      */
@@ -27,7 +19,7 @@ public class PSpring extends PConstraints {
     }
 
     /**
-     * Post-condition: Returns the k value of the spring
+     * The k value of the spring
      * @return The k value of the spring
      */
     public double getKValue() {
@@ -35,16 +27,15 @@ public class PSpring extends PConstraints {
     }
 
     /**
-     * Pre-condition: The kValue must be greater than 0
-     * Post-condition: Sets the k value of the spring
-     * @param kValue The new k value
+     * Sets the k value of the spring
+     * @param kValue The new k value (k > 0)
      */
     public void setKValue(double kValue) {
         this.kValue = kValue;
     }
 
     /**
-     * Post-condition: Adds the tension forces to the attached bodies
+     * Adds the tension forces to the attached bodies
      */
     public void addTensionForce() {
         // Computing the center of the spring
@@ -58,7 +49,7 @@ public class PSpring extends PConstraints {
     }
 
     /**
-     * Post-condition: Adds the tension forces to a body
+     * Adds the tension forces to a body
      * @param body The body
      * @param equilPt The equilibruim point of the spring
      */
@@ -85,8 +76,7 @@ public class PSpring extends PConstraints {
     }
 
     /**
-     * Pre-condition: The "g" must not be null and the "windowHeight" must be greater than 0
-     * Post-condition: Draws a line between the two attached bodies
+     * Draws a line between the two attached bodies
      * @param g The Graphics Object
      * @param windowHeight The height of the window that is containing the body being displayed
      */
@@ -103,8 +93,8 @@ public class PSpring extends PConstraints {
     }
 
     /**
-     * Post-condition: Returns the properties of the PSpring in a string where each property is stored in format { propertyType:propertyValue; } (excluding the curly brackets)
-     * @return Returns the properties of the PSpring in a string
+     * Returns string representation of a spring
+     * @return Returns the string rep. of this PSpring
      */
     @Override
     public String toString() {
