@@ -87,6 +87,10 @@ public class PCircleCircleCollision {
             Vector contactPt = mtv.normalize().scale(-1 * circle1.getRadius()).add(circle1.getCenterPt());
             contactPt = contactPt.add(circle1Trans);
 
+            if (mtv.dot(circle2.getCenterPt().minus(circle1.getCenterPt())) < 0) {
+                mtv = mtv.scale(-1);
+            }
+
             return new PCollisionResult(true, circle1Trans, circle2Trans, mtv, contactPt);
         }
         return new PCollisionResult(false, null, null, null, null);

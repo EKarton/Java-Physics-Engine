@@ -102,10 +102,6 @@ public class PWorld {
                             secondBody.translate(result.getBody2Mtv());
                         }
 
-                        if (result.getMtv().dot(secondBody.getCenterPt().minus(firstBody.getCenterPt())) < 0) {
-                            result.setMtv(result.getMtv().scale(-1));
-                        }
-
                         positionalCorrection(firstBody, secondBody, result.getMtv());
                         applyImpulse(firstBody, secondBody, result.getMtv(), result.getContactPt());
                     }
@@ -167,10 +163,11 @@ public class PWorld {
     }
 
     /**
-     * Calculates the impulse and applies them to two bodies
+     * Calculates and applies the impulse to the two bodies
      * @param body1 The first body involved in the collision
      * @param body2 The second body involved in the collision
      * @param mtv The MTV of the two bodies
+     * @param
      */
     private void applyImpulse(PBody body1, PBody body2, Vector mtv, Vector contactPt) {
 

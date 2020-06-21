@@ -191,6 +191,10 @@ public class PPolyPolyCollision {
             throw new IllegalArgumentException("HELP");
         }
 
+        if (bestMtv.dot(body2.getCenterPt().minus(body1.getCenterPt())) < 0) {
+            bestMtv = bestMtv.scale(-1);
+        }
+
 
         return new PCollisionResult(true, body1Mtv, body2Mtv, bestMtv, contactPt);
     }
