@@ -1,5 +1,6 @@
 package com.javaphysicsengine.api.body;
 
+import com.javaphysicsengine.api.collision.PBoxBoxCollision;
 import com.javaphysicsengine.api.collision.PCircleCircleCollision;
 import com.javaphysicsengine.api.collision.PCirclePolyCollision;
 import com.javaphysicsengine.api.collision.PCollisionResult;
@@ -75,6 +76,15 @@ public class PCircle extends PBody implements PCollidable {
         return (this.getMass()) * (this.radius * this.radius) / 12;
     }
 
+    public PBoundingBox getBoundingBox() {
+        return new PBoundingBox(
+                this.getCenterPt().getX() - this.getRadius(),
+                this.getCenterPt().getX() + this.getRadius(),
+                this.getCenterPt().getY() - this.getRadius(),
+                this.getCenterPt().getY() + this.getRadius()
+        );
+    }
+
     /**
      * Draws the fill of the circle
      *
@@ -128,13 +138,16 @@ public class PCircle extends PBody implements PCollidable {
 
     @Override
     public PCollisionResult hasCollidedWith(PCollidable body) {
-        PCollisionResult result;
+        PCollisionResult result = new PCollisionResult(false, null, null, null, null);
 
         if (body instanceof PCircle) {
             result = PCircleCircleCollision.doBodiesCollide(this, (PCircle) body);
 
         } else if (body instanceof PPolygon) {
-            result = PCirclePolyCollision.doBodiesCollide(this, (PPolygon) body);
+            PPolygon polygon = (PPolygon) body;
+            if (PBoxBoxCollision.doBodiesCollide(polygon.getBoundingBox(), this.getBoundingBox())) {
+                result = PCirclePolyCollision.doBodiesCollide(this, polygon);
+            }
 
         } else {
             throw new IllegalArgumentException("Body cannot detect and handle collisions!");

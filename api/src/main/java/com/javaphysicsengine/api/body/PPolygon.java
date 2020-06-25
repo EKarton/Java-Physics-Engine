@@ -1,5 +1,6 @@
 package com.javaphysicsengine.api.body;
 
+import com.javaphysicsengine.api.collision.PBoxBoxCollision;
 import com.javaphysicsengine.api.collision.PCirclePolyCollision;
 import com.javaphysicsengine.api.collision.PCollisionResult;
 import com.javaphysicsengine.api.collision.PPolyPolyCollision;
@@ -55,22 +56,11 @@ public class PPolygon extends PBody implements PCollidable {
      * Computes the center of mass
      */
     public void computeCenterOfMass() {
-        double minX = Double.MAX_VALUE;
-        double maxX = Double.MIN_VALUE;
-        double minY = Double.MAX_VALUE;
-        double maxY = Double.MIN_VALUE;
-
-        for (Vector vertex : vertices) {
-            if (vertex.getX() < minX) minX = vertex.getX();
-            if (vertex.getX() > maxX) maxX = vertex.getX();
-            if (vertex.getY() < minY) minY = vertex.getY();
-            if (vertex.getY() > maxY) maxY = vertex.getY();
-        }
-
-        getCenterPt().setX((minX + maxX) / 2);
-        getCenterPt().setY((minY + maxY) / 2);
-
         boundingBox = new PBoundingBox(vertices);
+        getCenterPt().setXY(
+                (boundingBox.getMinX() + boundingBox.getMaxX()) / 2,
+                (boundingBox.getMinY() + boundingBox.getMaxY()) / 2
+        );
     }
 
     @Override
@@ -86,10 +76,10 @@ public class PPolygon extends PBody implements PCollidable {
 
     /**
      * Translates the polygon by an amount
-     * @param displacement The displacement to move the body by a certain amount
+     * @param displacement The amount to move the body by
      */
     public void translate(Vector displacement) {
-        // Moving all the vertices based on the displacement
+        // Moving all the vertices
         for (Vector vertex : vertices) {
             vertex.setX(vertex.getX() + displacement.getX());
             vertex.setY(vertex.getY() + displacement.getY());
@@ -237,19 +227,27 @@ public class PPolygon extends PBody implements PCollidable {
 
     @Override
     public PCollisionResult hasCollidedWith(PCollidable body) {
-        PCollisionResult result;
+        PCollisionResult result = new PCollisionResult(false, null, null, null, null);
 
         if (body instanceof PCircle) {
-            result = PCirclePolyCollision.doBodiesCollide((PCircle) body, this);
+            PCircle circle = (PCircle) body;
 
-            // Note: since we are not comparing this obj with the incoming obj, the directions are flipped
-            if (result.isHasCollided()) {
-                result = new PCollisionResult(result.isHasCollided(), result.getBody2Mtv(),
-                        result.getBody1Mtv(), result.getMtv().scale(-1), result.getContactPt());
+            if (PBoxBoxCollision.doBodiesCollide(circle.getBoundingBox(), this.getBoundingBox())) {
+                result = PCirclePolyCollision.doBodiesCollide(circle, this);
+
+                // Note: since we are not comparing this obj with the incoming obj, the directions are flipped
+                if (result.isHasCollided()) {
+                    result = new PCollisionResult(result.isHasCollided(), result.getBody2Mtv(),
+                            result.getBody1Mtv(), result.getMtv().scale(-1), result.getContactPt());
+                }
             }
 
         } else if (body instanceof PPolygon) {
-            result = PPolyPolyCollision.doBodiesCollide(this, (PPolygon) body);
+            PPolygon polygon = (PPolygon) body;
+
+            if (PBoxBoxCollision.doBodiesCollide(polygon.getBoundingBox(), this.getBoundingBox())) {
+                result = PPolyPolyCollision.doBodiesCollide(this, polygon);
+            }
 
         } else {
             throw new IllegalArgumentException("Body cannot detect and handle collisions!");

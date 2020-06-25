@@ -14,8 +14,10 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
     // Fields controlling the animation and graphics of the JPanel
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 600;
-    private final double FPS = 25;
+    private final double FPS = 64; //25;
     private final double TIME_MULTIPLIER = 1;
+
+    private int numIterations = 0;
 
     // Field storing the efficiency of the physics engine (based on the amount of time it takes to simulate the objects)
     private long simulationDuration = 0;
@@ -306,7 +308,7 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
 
         // Drawing the rendering efficiency
         g.setColor(Color.black);
-        g.drawString("Time Ellapsed for Rendering: " + renderingDuration, 50, 60);
+        g.drawString("Time Ellapsed for Rendering: " + numIterations, 50, 60);
 
         // Drawing the time
         g.drawString("Current Program Time: " + System.currentTimeMillis(), 50, 80);
@@ -322,6 +324,8 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
         simulationDuration = System.currentTimeMillis();
         pEngine.simulate((1000.0 / FPS) / 1000.0);
         simulationDuration = System.currentTimeMillis() - simulationDuration;
+
+        numIterations += 1;
 
         // Keeping track of the max simulation duration
         if (simulationDuration > maxSimulationDuration)

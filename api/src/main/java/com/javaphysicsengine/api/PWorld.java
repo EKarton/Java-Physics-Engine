@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class PWorld {
     // Physic properties about this world
     private static final Vector GRAVITY = Vector.of(0, -9.81);
-    private static final double SCALE = 10;
+    private static final double SCALE = 1;
 
     // List containing the physical bodies and joints
     private ArrayList<PBody> bodies = new ArrayList<>();
@@ -80,30 +80,34 @@ public class PWorld {
         // Check for collisions
         for (int i = 0; i < bodies.size(); i++) {
             for (int j = i + 1; j < bodies.size(); j++) {
-                PBody firstBody = bodies.get(i);
-                PBody secondBody = bodies.get(j);
+                PBody body1 = bodies.get(i);
+                PBody body2 = bodies.get(j);
 
-                boolean isCollidable = (firstBody instanceof PCollidable && secondBody instanceof PCollidable) &&
-                    (firstBody.isMoving() || secondBody.isMoving());
+                boolean isCollidable = (body1 instanceof PCollidable && body2 instanceof PCollidable) &&
+                    (body1.isMoving() || body2.isMoving());
 
                 if (isCollidable) {
-                    PCollidable collidable1 = (PCollidable) firstBody;
-                    PCollidable collidable2 = (PCollidable) secondBody;
+                    PCollidable collidable1 = (PCollidable) body1;
+                    PCollidable collidable2 = (PCollidable) body2;
 
                     PCollisionResult result = collidable1.hasCollidedWith(collidable2);
 
                     if (result.isHasCollided()) {
                         pointsToDraw.add(result.getContactPt());
 
-                        if (firstBody.isMoving()) {
-                            firstBody.translate(result.getBody1Mtv());
+                        if (body1.isMoving()) {
+                            body1.translate(result.getBody1Mtv());
                         }
-                        if (secondBody.isMoving()) {
-                            secondBody.translate(result.getBody2Mtv());
+                        if (body2.isMoving()) {
+                            body2.translate(result.getBody2Mtv());
                         }
 
-                        positionalCorrection(firstBody, secondBody, result.getMtv());
-                        applyImpulse(firstBody, secondBody, result.getMtv(), result.getContactPt());
+                        if (result.getMtv().dot(body2.getCenterPt().minus(body1.getCenterPt())) < 0) {
+                            throw new IllegalArgumentException("MTV's direction should be from body1 to body2!");
+                        }
+
+                        positionalCorrection(body1, body2, result.getMtv());
+                        applyImpulse(body1, body2, result.getMtv(), result.getContactPt());
                     }
                 }
             }

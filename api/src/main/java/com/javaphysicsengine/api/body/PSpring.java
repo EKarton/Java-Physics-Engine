@@ -40,8 +40,7 @@ public class PSpring extends PConstraints {
     public void addTensionForce() {
         // Computing the center of the spring
         PBody[] bodies = super.getAttachedBodies();
-        Vector equilCenter = new Vector((bodies[0].getCenterPt().getX() + bodies[1].getCenterPt().getX()) / 2,
-                (bodies[0].getCenterPt().getY() + bodies[1].getCenterPt().getY()) / 2);
+        Vector equilCenter = bodies[0].getCenterPt().add(bodies[1].getCenterPt()).scale(0.5);
 
         // Adding tension to each body separately
         addTensionForceToBody(getAttachedBodies()[0], equilCenter);
@@ -54,22 +53,20 @@ public class PSpring extends PConstraints {
      * @param equilPt The equilibruim point of the spring
      */
     private void addTensionForceToBody(PBody body, Vector equilPt) {
-        // Computing the distance of the body to the centerpt in vector form
-        double xMinus = body.getCenterPt().getX() - equilPt.getX();
-        double yMinus = body.getCenterPt().getY() - equilPt.getY();
+        // Compute the direction of the tension force
+        Vector tensionForce = body.getCenterPt().minus(equilPt);
 
-        // If it is at the dead center of spring's equillibruim point, there no tension force
-        if (xMinus == 0 && yMinus == 0)
+        // If it is at the dead center of spring's equilibruim point, there no tension force
+        if (tensionForce.norm1() == 0) {
             return;
+        }
 
-        double distance = Math.sqrt((xMinus * xMinus) + (yMinus * yMinus));
-        distance /= 100;
+        double distance = tensionForce.norm2() / 100;
 
         // Computing the tension force
         double displacementFromSpring = distance - (getLength() / 2);
         double tensionForce_Scalar = -kValue * (distance);
-        Vector tensionForce = new Vector(xMinus, yMinus);
-        tensionForce.setLength(tensionForce_Scalar);
+        tensionForce = tensionForce.normalize().scale(tensionForce_Scalar);
 
         // Add the tension force to the body
         body.setNetForce((Vector.add(body.getNetForce(), tensionForce)));
