@@ -17,16 +17,26 @@ public class PBoxBoxCollision {
      * @return {@code true} when the two bounding boxes collide; else {@code false}
      */
     public static boolean doBodiesCollide(PBoundingBox box1, PBoundingBox box2) {
-        if (box1.getMaxX() < box2.getMinX()) // If box 1 is left of box 2
+        // If box 1 is left of box 2
+        if (box1.getMaxX() < box2.getMinX()) {
             return false;
+        }
 
-        if (box1.getMinX() > box2.getMaxX()) // If box 1 is right of box 2
+        // If box 1 is right of box 2
+        if (box1.getMinX() > box2.getMaxX()) {
             return false;
+        }
 
-        if (box1.getMaxY() < box2.getMinY()) // If box 1 is below box 2
+        // If box 1 is below box 2
+        if (box1.getMaxY() < box2.getMinY()) {
             return false;
+        }
 
         // If box 1 is above box 2
-        return !(box1.getMinY() > box2.getMaxY());
+        if ((box1.getMinY() > box2.getMaxY())) {
+            return false;
+        }
+
+        return true;
     }
 }

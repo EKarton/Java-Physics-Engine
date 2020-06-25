@@ -30,8 +30,9 @@ public class PPolygon extends PBody implements PCollidable {
         super(existingPolygon);
 
         // Make a copy of its vertices
-        for (Vector vertexCopy : existingPolygon.vertices)
+        for (Vector vertexCopy : existingPolygon.vertices) {
             vertices.add(new Vector(vertexCopy.getX(), vertexCopy.getY()));
+        }
 
         this.computeCenterOfMass();
     }
