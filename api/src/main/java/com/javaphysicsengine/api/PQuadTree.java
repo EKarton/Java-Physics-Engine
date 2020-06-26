@@ -115,15 +115,23 @@ public class PQuadTree {
                 }
             }
 
-            // Make left and right subtrees
-            PQuadTreeNode topleftTree = buildTree(topleftBodies, curDepth + 1);
-            PQuadTreeNode toprightTree = buildTree(toprightBodies, curDepth + 1);
-            PQuadTreeNode bottomleftTree = buildTree(bottomleftBodies, curDepth + 1);
-            PQuadTreeNode bottomrightTree = buildTree(bottomrightBodies, curDepth + 1);
+            boolean shouldDivideBox = topleftBodies.size() < bodies.size() ||
+                    toprightBodies.size() < bodies.size() ||
+                    bottomleftBodies.size() < bodies.size() ||
+                    bottomrightBodies.size() < bodies.size();
 
-            return new PQuadTreeNode(
-                    topleftTree, toprightTree, bottomleftTree, bottomrightTree, box, bodies.size(), curDepth
-            );
+            if (shouldDivideBox) {
+                PQuadTreeNode topleftTree = buildTree(topleftBodies, curDepth + 1);
+                PQuadTreeNode toprightTree = buildTree(toprightBodies, curDepth + 1);
+                PQuadTreeNode bottomleftTree = buildTree(bottomleftBodies, curDepth + 1);
+                PQuadTreeNode bottomrightTree = buildTree(bottomrightBodies, curDepth + 1);
+
+                return new PQuadTreeNode(
+                        topleftTree, toprightTree, bottomleftTree, bottomrightTree, box, bodies.size(), curDepth
+                );
+            } else {
+                return new PQuadTreeNode(bodies, box, bodies.size(), curDepth);
+            }
         }
     }
 

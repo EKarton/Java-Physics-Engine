@@ -82,10 +82,7 @@ public class PWorld {
         translateBodies(timeEllapsed);
 
         PQuadTree tree = new PQuadTree(bodies);
-        Set<Pair<PBody, PBody>> pairs = tree.getPotentialIntersectingBodies();
-        System.out.println(pairs.size());
-
-        for (Pair<PBody, PBody> pair : pairs) {
+        for (Pair<PBody, PBody> pair : tree.getPotentialIntersectingBodies()) {
             PBody body1 = pair.getValue0();
             PBody body2 = pair.getValue1();
 
