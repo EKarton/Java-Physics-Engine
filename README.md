@@ -18,14 +18,14 @@ The Java Physics Engine is a project made during my final year in high school. T
 This project consists of several components, each responsible for performing a certain task. The image below illustrates the system architecture of the project.
 <div width="100%">
     <p align="center">
-<img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/develop-v2.0.0/docs/Images/SystemArchitecture.PNG" width="600px"/>
+<img src="https://raw.githubusercontent.com/EKarton/Java-Physics-Engine/develop-v2.0.0/docs/Images/SystemArchitecture.PNG"/>
     </p>
 </div>
 
 When a user launches the GUI editor, they will be able to create objects using the GUI editor:
 <div width="100%">
     <p align="center">
-    <img src="docs/Images/Main-Screen.png" width="600px"/>
+    <img src="docs/Images/Main-Screen.png"/>
     </p>
 </div>
 
