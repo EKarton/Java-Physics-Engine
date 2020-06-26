@@ -76,6 +76,7 @@ public class PCircle extends PBody implements PCollidable {
         return (this.getMass()) * (this.radius * this.radius) / 12;
     }
 
+    @Override
     public PBoundingBox getBoundingBox() {
         return new PBoundingBox(
                 this.getCenterPt().getX() - this.getRadius(),

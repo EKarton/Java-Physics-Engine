@@ -5,9 +5,13 @@ import com.javaphysicsengine.api.body.PCollidable;
 import com.javaphysicsengine.api.body.PConstraints;
 import com.javaphysicsengine.api.collision.PCollisionResult;
 import com.javaphysicsengine.utils.Vector;
+import org.javatuples.Pair;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PWorld {
@@ -77,38 +81,39 @@ public class PWorld {
         // Translate the bodies based on the forces
         translateBodies(timeEllapsed);
 
-        // Check for collisions
-        for (int i = 0; i < bodies.size(); i++) {
-            for (int j = i + 1; j < bodies.size(); j++) {
-                PBody body1 = bodies.get(i);
-                PBody body2 = bodies.get(j);
+        PQuadTree tree = new PQuadTree(bodies);
+        Set<Pair<PBody, PBody>> pairs = tree.getPotentialIntersectingBodies();
+        System.out.println(pairs.size());
 
-                boolean isCollidable = (body1 instanceof PCollidable && body2 instanceof PCollidable) &&
+        for (Pair<PBody, PBody> pair : pairs) {
+            PBody body1 = pair.getValue0();
+            PBody body2 = pair.getValue1();
+
+            boolean isCollidable = (body1 instanceof PCollidable && body2 instanceof PCollidable) &&
                     (body1.isMoving() || body2.isMoving());
 
-                if (isCollidable) {
-                    PCollidable collidable1 = (PCollidable) body1;
-                    PCollidable collidable2 = (PCollidable) body2;
+            if (isCollidable) {
+                PCollidable collidable1 = (PCollidable) body1;
+                PCollidable collidable2 = (PCollidable) body2;
 
-                    PCollisionResult result = collidable1.hasCollidedWith(collidable2);
+                PCollisionResult result = collidable1.hasCollidedWith(collidable2);
 
-                    if (result.isHasCollided()) {
-                        pointsToDraw.add(result.getContactPt());
+                if (result.isHasCollided()) {
+                    pointsToDraw.add(result.getContactPt());
 
-                        if (body1.isMoving()) {
-                            body1.translate(result.getBody1Mtv());
-                        }
-                        if (body2.isMoving()) {
-                            body2.translate(result.getBody2Mtv());
-                        }
-
-                        if (result.getMtv().dot(body2.getCenterPt().minus(body1.getCenterPt())) < 0) {
-                            throw new IllegalArgumentException("MTV's direction should be from body1 to body2!");
-                        }
-
-                        positionalCorrection(body1, body2, result.getMtv());
-                        applyImpulse(body1, body2, result.getMtv(), result.getContactPt());
+                    if (body1.isMoving()) {
+                        body1.translate(result.getBody1Mtv());
                     }
+                    if (body2.isMoving()) {
+                        body2.translate(result.getBody2Mtv());
+                    }
+
+                    if (result.getMtv().dot(body2.getCenterPt().minus(body1.getCenterPt())) < 0) {
+                        throw new IllegalArgumentException("MTV's direction should be from body1 to body2!");
+                    }
+
+                    positionalCorrection(body1, body2, result.getMtv());
+                    applyImpulse(body1, body2, result.getMtv(), result.getContactPt());
                 }
             }
         }

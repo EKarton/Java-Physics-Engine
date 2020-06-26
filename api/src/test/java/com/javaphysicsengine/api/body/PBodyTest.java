@@ -34,6 +34,11 @@ public class PBodyTest {
 
             @Override
             public void translate(Vector displacement) { }
+
+            @Override
+            public PBoundingBox getBoundingBox() {
+                return null;
+            }
         };
     }
 
@@ -64,6 +69,11 @@ public class PBodyTest {
 
             @Override
             public void translate(Vector displacement) { }
+
+            @Override
+            public PBoundingBox getBoundingBox() {
+                return null;
+            }
         };
         anotherBody.setMass(1000);
         anotherBody.setCenterPt(new Vector(10, 10));
@@ -86,6 +96,11 @@ public class PBodyTest {
 
             @Override
             public void translate(Vector displacement) { }
+
+            @Override
+            public PBoundingBox getBoundingBox() {
+                return null;
+            }
         };
 
         assertEquals(1000, pBody.getMass(), 0.000001);

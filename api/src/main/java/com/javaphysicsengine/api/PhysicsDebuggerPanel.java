@@ -308,7 +308,7 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
 
         // Drawing the rendering efficiency
         g.setColor(Color.black);
-        g.drawString("Time Ellapsed for Rendering: " + numIterations, 50, 60);
+        g.drawString("Time Ellapsed for Rendering: " + renderingDuration, 50, 60);
 
         // Drawing the time
         g.drawString("Current Program Time: " + System.currentTimeMillis(), 50, 80);
@@ -328,8 +328,9 @@ public class PhysicsDebuggerPanel extends JPanel implements ActionListener {
         numIterations += 1;
 
         // Keeping track of the max simulation duration
-        if (simulationDuration > maxSimulationDuration)
+        if (simulationDuration > maxSimulationDuration) {
             maxSimulationDuration = simulationDuration;
+        }
 
         // Redraw the entire screen
         repaint();

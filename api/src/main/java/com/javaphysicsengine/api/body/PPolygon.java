@@ -49,6 +49,7 @@ public class PPolygon extends PBody implements PCollidable {
      * Gets the bounding box of this polygon
      * @return the bounding box
      */
+    @Override
     public PBoundingBox getBoundingBox() {
         return boundingBox;
     }

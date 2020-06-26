@@ -72,7 +72,7 @@ public class PWorldPerfTest {
     }
 
     @Benchmark
-    @BenchmarkMode(Mode.Throughput)
+    @BenchmarkMode(Mode.AverageTime)
     @OutputTimeUnit(TimeUnit.SECONDS)
     public void measureSimulate_onBoxes(PWorldCollapsingBoxesState state, Blackhole blackhole) {
         for (int i = 0; i < 400; i++) {

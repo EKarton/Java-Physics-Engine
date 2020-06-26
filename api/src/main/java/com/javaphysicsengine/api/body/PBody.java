@@ -240,6 +240,8 @@ public abstract class PBody {
         this.outlineColor = color;
     }
 
+    public abstract PBoundingBox getBoundingBox();
+
     /**
      * Draws the outline of the center point
      * Pre-condition: The param "windowHeight" must be greater than 0
