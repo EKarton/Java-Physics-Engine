@@ -1,109 +1,122 @@
-/*
-  Name: Vector
-  A class that stores a point (x and y coordinate), or a direction and magnitude
-  @author Emilio Kartono
-  @version September 13, 2015
-*/
-
 package com.javaphysicsengine.utils;
 
 public class Vector {
+
+    public static final double EQUALITY_ACCURACY = 0.0001;
+
     private double x;
     private double y;
-    private double length = -1;
 
-    /*
-      Post-condition: Creates a vector object from a x and y value
-      @param x The x coordiante of a vector
-      @param y The y coordinate of a vector
-    */
     public Vector(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    /*
-      Pre-condition: Vectors must not be of null values!
-      Post-condition: Subtracts the two vectors
-      @param v2 The first vector in the equation (v2 - v1)
-      @param v1 The second vector in the equation (v2 - v1)
-    */
-    public static Vector subtract(Vector v2, Vector v1) {
+    public Vector(Vector oldVector) {
+        this.x = oldVector.x;
+        this.y = oldVector.y;
+    }
+
+    public static Vector of(double x, double y) {
+        return new Vector(x, y);
+    }
+
+    public static Vector minus(Vector v2, Vector v1) {
         return new Vector(v2.getX() - v1.getX(), v2.getY() - v1.getY());
     }
 
-    public static double dotProduct(Vector v1, Vector v2) {
+    public Vector minus(Vector v1) {
+        return Vector.minus(this, v1);
+    }
+
+    public static Vector min(Vector... vectors) {
+        Vector minVector = Vector.of(Double.MAX_VALUE, Double.MAX_VALUE);
+        for (Vector v : vectors) {
+            minVector.setXY(Math.min(minVector.getX(), v.getX()), Math.min(minVector.getY(), v.getY()));
+        }
+        return minVector;
+    }
+
+    public static Vector max(Vector... vectors) {
+        Vector minVector = Vector.of(Double.MIN_VALUE, Double.MIN_VALUE);
+        for (Vector v : vectors) {
+            minVector.setXY(Math.max(minVector.getX(), v.getX()), Math.max(minVector.getY(), v.getY()));
+        }
+        return minVector;
+    }
+
+    public static double dot(Vector v1, Vector v2) {
         return (v1.getX() * v2.getX()) + (v1.getY() * v2.getY());
     }
 
-    public static Vector multiply(Vector v, double amount) {
-        return new Vector(v.getX() * amount, v.getY() * amount);
+    public double dot(Vector v2) {
+        return Vector.dot(this, v2);
+    }
+
+    public static Vector scale(Vector v, double amount) {
+        return new Vector(v.x * amount, v.y * amount);
+    }
+
+    public Vector scale(double amount) {
+        return Vector.scale(this, amount);
     }
 
     public static Vector add(Vector v1, Vector v2) {
         return new Vector(v1.getX() + v2.getX(), v1.getY() + v2.getY());
     }
 
-    /*
-      Post-condition: Calculates and returns the length of the vector to the origin (a.k.a magnitude of the vector)
-      @return Returns the length of this vector to the origin (0, 0)
-    */
-    public double getLength() {
-        // If the length was not computed before
-        if (length == -1)
-            length = Math.sqrt((x * x) + (y * y));
-
-        return length;
+    public Vector add(Vector v2) {
+        return Vector.add(this, v2);
     }
 
-    /*
-      Pre-condition: The length must be greater than 0
-      Post-condition: Resizes the vector with the given length
-    */
+    public static double cross(Vector v1, Vector v2) {
+        return v1.x * v2.y - v1.y * v2.x;
+    }
+
+    public double cross(Vector v2) {
+        return Vector.cross(this, v2);
+    }
+
+    public double norm1() {
+        return (x * x) + (y * y);
+    }
+
+    public double norm2() {
+        return Math.sqrt((x * x) + (y * y));
+    }
+
     public void setLength(double length) {
-        normalise();
+        normalized();
         x *= length;
         y *= length;
-        this.length = length;
     }
 
-    /*
-      Pre-condition: The x and y values of the vector must not be 0
-      Post-condition: Sets the length of the vector to 1
-    */
-    public void normalise() {
-        double curLengthOfVector = getLength();
+    public void normalized() {
+        double curLengthOfVector = norm2();
         x /= curLengthOfVector;
         y /= curLengthOfVector;
-        this.length = 1;
     }
 
-    /*
-      @return Returns the x component of the vector
-    */
+    public Vector normalize() {
+        double curLengthOfVector = norm2();
+        if (curLengthOfVector == 0) {
+            return Vector.of(0, 0);
+        }
+        return Vector.of(x / curLengthOfVector, y / curLengthOfVector);
+    }
+
     public double getX() {
         return this.x;
     }
 
-    /*
-      Post-condition: Set the x component of the vector
-      @param newX The x component of the new vector
-    */
     public void setX(double newX) {
         this.x = newX;
     }
 
-    /*
-      @return Returns the y component of the vector
-    */
     public double getY() {
         return this.y;
     }
 
-    /*
-      Post-condition: Sets the y component of the vector
-      @param newY The y component of the new vector
-    */
     public void setY(double newY) {
         this.y = newY;
     }
@@ -113,15 +126,34 @@ public class Vector {
         this.y = newY;
     }
 
+    public void setXY(Vector v) {
+        this.x = v.x;
+        this.y = v.y;
+    }
+
+    /**
+     * Determines if two vectors are identical, within the range of {@code Vector#EQUALITY_ACCURACY}
+     * @param object the object
+     * @return {@code true} if the two vectors are identical; else {@code false}
+     */
     @Override
     public boolean equals(Object object) {
         if (object instanceof Vector) {
             Vector vector = (Vector) object;
-            return this.x == vector.x && this.y == vector.y;
+
+            boolean isXEqual = Math.abs(this.x - vector.x) < EQUALITY_ACCURACY;
+            boolean isYEqual = Math.abs(this.y - vector.y) < EQUALITY_ACCURACY;
+            return isXEqual && isYEqual;
         }
         return false;
     }
 
+    /**
+     * Returns the contents of this vector in a string.
+     * Note that this should only be used for debugging purposes.
+     *
+     * @return The contents of this vector.
+     */
     public String toString() {
         return x + ", " + y;
     }

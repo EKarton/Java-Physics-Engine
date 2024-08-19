@@ -1,17 +1,10 @@
-/*
- * Purpose: To represent the bounding box of a shape
- * Original Creation Date: January 1 2016
- * @author Emilio Kartono
- * @version January 15 2016
- */
-
 package com.javaphysicsengine.api.body;
 
 import com.javaphysicsengine.utils.Vector;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
+import java.util.List;
 
 public class PBoundingBox {
     private double minX;
@@ -23,15 +16,29 @@ public class PBoundingBox {
      * Creates a bounding box based on a list of vertices from a polygon shape
      * @param vertices The vertices of a polygon
      */
-    public PBoundingBox(ArrayList<Vector> vertices) {
+    public PBoundingBox(List<Vector> vertices) {
         recomputeBoundaries(vertices);
+    }
+
+    /**
+     * Constructs a Bounding Box given known minX, minY, maxX, maxY values
+     * @param minX the min X value
+     * @param maxX the max X value
+     * @param minY the min Y value
+     * @param maxY the max Y value
+     */
+    public PBoundingBox(double minX, double maxX, double minY, double maxY) {
+        this.minX = minX;
+        this.maxX = maxX;
+        this.minY = minY;
+        this.maxY = maxY;
     }
 
     /**
      * Recomputes a bounding box based on a list of vertices from a polygon shape
      * @param vertices The vertices of a polygon
      */
-    public void recomputeBoundaries(ArrayList<Vector> vertices) {
+    public void recomputeBoundaries(List<Vector> vertices) {
         minX = Double.MAX_VALUE;
         maxX = -Double.MIN_VALUE;
         minY = Double.MAX_VALUE;
@@ -112,7 +119,7 @@ public class PBoundingBox {
 
     /**
      * Draws the bounding box outline on the screen
-     * Pre-condition: The "g" must not be null and the "windowHeight" must be greater than 0
+     *
      * @param g The Graphics Object
      * @param windowHeight The height of the window that will draw the bounding box
      */
@@ -123,5 +130,10 @@ public class PBoundingBox {
         g.drawLine((int) minX, (int) (windowHeight - maxY), (int) maxX, (int) (windowHeight - maxY));
         g.drawLine((int) maxX, (int) (windowHeight - maxY), (int) maxX, (int) (windowHeight - minY));
         g.drawLine((int) maxX, (int) (windowHeight - minY), (int) minX, (int) (windowHeight - minY));
+    }
+
+    @Override
+    public String toString() {
+        return "{ (" + minX + ", " + maxX + "), (" + minY + ", " + maxY + ") }";
     }
 }

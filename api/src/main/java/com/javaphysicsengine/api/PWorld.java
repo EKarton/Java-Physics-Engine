@@ -1,45 +1,32 @@
-/*
- * Purpose: A class that simulates a list of bodies and constraints based on physics
- * Original Creation Date: January 1 2016
- * @author Emilio Kartono
- * @version January 15 2016
- */
-
 package com.javaphysicsengine.api;
 
 import com.javaphysicsengine.api.body.PBody;
-import com.javaphysicsengine.api.body.PCircle;
+import com.javaphysicsengine.api.body.PCollidable;
 import com.javaphysicsengine.api.body.PConstraints;
-import com.javaphysicsengine.api.body.PPolygon;
-import com.javaphysicsengine.api.collision.PBoxBoxCollision;
-import com.javaphysicsengine.api.collision.PCircleCircleCollision;
-import com.javaphysicsengine.api.collision.PCirclePolyCollision;
-import com.javaphysicsengine.api.collision.PPolyPolyCollision;
+import com.javaphysicsengine.api.collision.PCollisionResult;
 import com.javaphysicsengine.utils.Vector;
+import org.javatuples.Pair;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class PWorld {
     // Physic properties about this world
-    private final double GRAVITY_ACCELERATION = -9.81;
+    private static final Vector GRAVITY = Vector.of(0, -9.81);
+    private static final double SCALE = 1;
 
     // List containing the physical bodies and joints
-    private ArrayList<PBody> bodies = new ArrayList<PBody>();
-    private ArrayList<PConstraints> constraints = new ArrayList<PConstraints>();
-    private double scale = 100;  // <- The number of pixels that represent 1 meter
-    private int heightOfWindow = 600;
+    private ArrayList<PBody> bodies = new ArrayList<>();
+    private ArrayList<PConstraints> constraints = new ArrayList<>();
+
+    public ConcurrentLinkedQueue<Vector> pointsToDraw = new ConcurrentLinkedQueue<>();
 
     /**
-     * Post-condition: Creates a PWorld object
-     */
-    public PWorld() {
-        this.heightOfWindow = 600;
-    }
-
-    /**
-     * Post-condition: Returns the list of bodies added to the world
+     * Returns the list of bodies added to the world
      * @return Returns the list of bodies added to the world
      */
     public ArrayList<PBody> getBodies() {
@@ -47,7 +34,7 @@ public class PWorld {
     }
 
     /**
-     * Post-condition: Returns the list of constraints added to the world
+     * Returns the list of constraints added to the world
      * @return Returns the list of constraints added to the world
      */
     public ArrayList<PConstraints> getConstraints() {
@@ -55,126 +42,31 @@ public class PWorld {
     }
 
     /**
-     * Post-condition: Adds the forces to all the bodies
+     * Draws the bodies and constraints to the screen
+     * @param g The Graphics Object
      */
-    private void addForces() {
-        for (PBody body : bodies) {
-            if (!body.isMoving())
-                continue;
+    public void draw(Graphics g) {
+        g.setColor(Color.BLACK);
+        for (PBody body : bodies)
+            body.drawOutline(g, 600);
 
-            // Adding gravitational force
-            body.getNetForce().setY(body.getNetForce().getY() + GRAVITY_ACCELERATION * body.getMass());
+        // Drawing the constraints
+        for (PConstraints constraint : constraints) {
+            constraint.drawConstraints(g, 600);
         }
 
-        // Adding forces from constraints
-        for (PConstraints constraint : constraints)
-            constraint.addTensionForce();
-    }
-
-    /**
-     * Post-condition: Translates all the bodies based on a certain time frame
-     * Pre-condition: "timeEllapsed" should be greater than 0
-     * @param timeEllapsed The time that has ellapsed
-     */
-    private void translateBodies(double timeEllapsed) {
-        for (PBody body : bodies) {
-            if (!body.isMoving())
-                continue;
-
-            // Getting the acceleration from force ( Force = mass * acceleration )
-            double accelerationX = body.getNetForce().getX() / body.getMass();
-            double accelerationY = body.getNetForce().getY() / body.getMass();
-
-            // Calculating the new velocity ( V2 = V1 + at)
-            body.getVelocity().setX(body.getVelocity().getX() + accelerationX * timeEllapsed);
-            body.getVelocity().setY(body.getVelocity().getY() + accelerationY * timeEllapsed);
-
-            // Getting the amount to translate by (Velocity = displacement / time)
-            double dx = body.getVelocity().getX() * timeEllapsed * scale;
-            double dy = body.getVelocity().getY() * timeEllapsed * scale;
-
-            // Translate the body
-            body.translate(new Vector(dx, dy));
+        // Draw all of the points
+        for (Vector pt : pointsToDraw) {
+            int topLeftX = (int) (pt.getX() - 2);
+            int topLeftY = 600 - (int) (pt.getY() + 2);
+            g.setColor(Color.GREEN);
+            g.fillOval(topLeftX, topLeftY, 2 * 2, 2 * 2);
         }
     }
 
     /**
-     * Post-condition: Calculates the impulse and applies them to two bodies
-     * Pre-condition: "body1", "body2", "mtd" should not be null
-     * @param body1 The first body involved in the collision
-     * @param body2 The second body involved in the collision
-     * @param mtd The MTD of the two bodies
-     */
-    private void calculateImpulse(PBody body1, PBody body2, Vector mtd) {
-        double body1InversedMass = 1 / body1.getMass();
-        double body2InversedMass = 1 / body2.getMass();
-
-        if (body1.isMoving() == false)
-            body1InversedMass = 0;
-
-        if (body2.isMoving() == false)
-            body2InversedMass = 0;
-
-        Vector rv = Vector.subtract(body2.getVelocity(), body1.getVelocity());
-        Vector normal = new Vector(mtd.getX(), mtd.getY());
-        normal.normalise();
-        double velAlongNormal = Vector.dotProduct(normal, rv);
-
-        // Getting the total impulse of the two bodies as a system
-        double coefficientOfResitution = 0.8;
-        double totalImpulse = -(1.0f + coefficientOfResitution) * velAlongNormal;
-        totalImpulse /= (body1InversedMass) + (body2InversedMass);
-
-        // Apply impulse to each object
-        Vector impulse = Vector.multiply(normal, totalImpulse);
-        body1.setVelocity(Vector.subtract(body1.getVelocity(), Vector.multiply(impulse, body1InversedMass)));
-        body2.setVelocity(Vector.add(body2.getVelocity(), Vector.multiply(impulse, body2InversedMass)));
-
-        //// System.out.println("Body 1 Velocity: " + body1.getVelocity() + " Body 2 Velocity: " + body2.getVelocity());
-    }
-
-    /**
-     * Post-condition: Moves the two bodies by a slight bit after a collision occured (to prevent gittering)
-     * Pre-condition: "body1", "body2", "mtd" should not be null
-     * @param body1 The first body involved in the collision
-     * @param body2 The second body involved in the collision
-     * @param mtd The MTD of the two bodies
-     */
-    private void positionalCorrection(PBody body1, PBody body2, Vector mtd) {
-        double body1InversedMass = 1 / body1.getMass();
-        double body2InversedMass = 1 / body2.getMass();
-
-        if (!body1.isMoving())
-            body1InversedMass = 0;
-
-        if (!body2.isMoving())
-            body2InversedMass = 0;
-
-        double penetrationDepth = mtd.getLength();
-        Vector normal = new Vector(mtd.getX(), mtd.getY());
-        normal.normalise();
-
-        final double percent = 0.01f; // usually 20% to 80%
-        final double slop = 0.1f; // usually 0.01 to 0.1
-        Vector correction = Vector.multiply(Vector.multiply(normal, percent), Math.max(penetrationDepth - slop, 0.0f) / (body1InversedMass + body2InversedMass));
-
-        // Move the first body by a certain amount
-        Vector body1Trans = new Vector(0, 0);
-        body1Trans.setX(-correction.getX() * body1InversedMass);
-        body1Trans.setY(-correction.getY() * body1InversedMass);
-        body1.translate(body1Trans);
-
-        // Move the second body by a certain amount
-        Vector body2Trans = new Vector(0, 0);
-        body2Trans.setX(correction.getX() * body2InversedMass);
-        body2Trans.setY(correction.getY() * body2InversedMass);
-        body2.translate(body2Trans);
-    }
-
-    /**
-     * Post-condition: Simulates the bodies for a certain time
-     * Pre-condition: "timeEllapsed" should be greater than 0
-     * @param timeEllapsed The time that has ellapsed
+     * Simulates the bodies for a certain time
+     * @param timeEllapsed The time that has ellapsed in seconds
      */
     public void simulate(double timeEllapsed) {
         // Clear all the forces from all the bodies
@@ -189,98 +81,200 @@ public class PWorld {
         // Translate the bodies based on the forces
         translateBodies(timeEllapsed);
 
-        // Check for collisions
-        for (int i = 0; i < bodies.size(); i++) {
-            for (int j = i + 1; j < bodies.size(); j++) {
-                PBody firstBody = bodies.get(i);
-                PBody secondBody = bodies.get(j);
+        PQuadTree tree = new PQuadTree(bodies);
+        for (Pair<PBody, PBody> pair : tree.getPotentialIntersectingBodies()) {
+            PBody body1 = pair.getValue0();
+            PBody body2 = pair.getValue1();
 
-                // If a circle and polygon collided
-                if (firstBody instanceof PCircle && secondBody instanceof PPolygon) {
-                    PCircle circle = (PCircle) firstBody;
-                    PPolygon poly = (PPolygon) secondBody;
+            boolean isCollidable = (body1 instanceof PCollidable && body2 instanceof PCollidable) &&
+                    (body1.isMoving() || body2.isMoving());
 
-                    Vector circleTrans = new Vector(0, 0);
-                    Vector polyTrans = new Vector(0, 0);
-                    Vector mtd = new Vector(0, 0);
+            if (isCollidable) {
+                PCollidable collidable1 = (PCollidable) body1;
+                PCollidable collidable2 = (PCollidable) body2;
 
-                    if (PCirclePolyCollision.doBodiesCollide(circle, poly, circleTrans, polyTrans, mtd)) {
-                        circle.translate(circleTrans);
-                        poly.translate(polyTrans);
-                        calculateImpulse(circle, poly, mtd);
-                        positionalCorrection(circle, poly, mtd);
+                PCollisionResult result = collidable1.hasCollidedWith(collidable2);
+
+                if (result.isHasCollided()) {
+                    pointsToDraw.add(result.getContactPt());
+
+                    if (body1.isMoving()) {
+                        body1.translate(result.getBody1Mtv());
                     }
-                }
-
-                // If a polygon and a circle collided
-                else if (firstBody instanceof PPolygon && secondBody instanceof PCircle) {
-                    PCircle circle = (PCircle) secondBody;
-                    PPolygon poly = (PPolygon) firstBody;
-
-                    Vector circleTrans = new Vector(0, 0);
-                    Vector polyTrans = new Vector(0, 0);
-                    Vector mtd = new Vector(0, 0);
-
-                    if (PCirclePolyCollision.doBodiesCollide(circle, poly, circleTrans, polyTrans, mtd)) {
-                        circle.translate(circleTrans);
-                        poly.translate(polyTrans);
-                        calculateImpulse(circle, poly, mtd);
-                        positionalCorrection(circle, poly, mtd);
+                    if (body2.isMoving()) {
+                        body2.translate(result.getBody2Mtv());
                     }
-                }
 
-                // If a circle and a circle collided
-                else if (firstBody instanceof PCircle && secondBody instanceof PCircle) {
-                    PCircle circle1 = (PCircle) firstBody;
-                    PCircle circle2 = (PCircle) secondBody;
-                    Vector mtd = new Vector(0, 0);
-                    Vector circle1TransVector = new Vector(0, 0);
-                    Vector circle2TransVector = new Vector(0, 0);
-
-                    if (PCircleCircleCollision.doBodiesCollide(circle1, circle2, circle1TransVector, circle2TransVector, mtd)) {
-                        // System.out.println("Circles collided!");
-                        circle1.translate(circle1TransVector);
-                        circle2.translate(circle2TransVector);
-                        calculateImpulse(circle1, circle2, mtd);
-                        positionalCorrection(circle1, circle2, mtd);
+                    if (result.getMtv().dot(body2.getCenterPt().minus(body1.getCenterPt())) < 0) {
+                        throw new IllegalArgumentException("MTV's direction should be from body1 to body2!");
                     }
-                }
 
-                // If a polygon and a polygon collided
-                else if (firstBody instanceof PPolygon && secondBody instanceof PPolygon) {
-                    PPolygon body1 = (PPolygon) firstBody;
-                    PPolygon body2 = (PPolygon) secondBody;
-
-                    if (PBoxBoxCollision.doBodiesCollide(body1.getBoundingBox(), body2.getBoundingBox())) {
-                        Vector poly1Trans = new Vector(0, 0);
-                        Vector poly2Trans = new Vector(0, 0);
-                        Vector mtd = new Vector(0, 0);
-
-                        if (PPolyPolyCollision.doBodiesCollide(body1, body2, poly1Trans, poly2Trans, mtd)) {
-                            //// System.out.println("Collision!! " + mtd);
-                            body1.translate(poly1Trans);
-                            body2.translate(poly2Trans);
-                            calculateImpulse(body1, body2, mtd);
-                            positionalCorrection(body1, body2, mtd);
-                        }
-                    }
+                    positionalCorrection(body1, body2, result.getMtv());
+                    applyImpulse(body1, body2, result.getMtv(), result.getContactPt());
                 }
             }
         }
     }
 
     /**
-     * Pre-condition: The "g" must not be null
-     * Post-condition: Draws the bodies and constraints to the screen
-     * @param g The Graphics Object
+     * Adds the forces to all the bodies
      */
-    public void draw(Graphics g) {
-        g.setColor(Color.BLACK);
-        for (PBody body : bodies)
-            body.drawOutline(g, 600);
+    private void addForces() {
+        for (PBody body : bodies) {
+            if (!body.isMoving()) {
+                continue;
+            }
 
-        // Drawing the constraints
-        for (PConstraints constraint : constraints)
-            constraint.drawConstraints(g, 600);
+            // Adding gravitational force
+            Vector gravitationalForce = GRAVITY.scale(body.getMass());
+            Vector newNetForce = body.getNetForce().add(gravitationalForce);
+            body.setNetForce(newNetForce);
+        }
+
+        // Adding forces from constraints
+        for (PConstraints constraint : constraints) {
+            constraint.addTensionForce();
+        }
+    }
+
+    /**
+     * Translates all the bodies based on a certain time frame
+     * @param timeEllapsed The time that has ellapsed
+     */
+    private void translateBodies(double timeEllapsed) {
+        for (PBody body : bodies) {
+            if (!body.isMoving()) {
+                continue;
+            }
+
+            // Getting the acceleration from force ( Force = mass * acceleration )
+            Vector acceleration = body.getNetForce().scale(1 / body.getMass());
+
+            // Calculating the new velocity ( V' = V + at)
+            Vector velocity = body.getVelocity().add(acceleration.scale(timeEllapsed));
+            body.setVelocity(velocity);
+
+            // Getting the amount to translate by (Velocity = displacement / time)
+            Vector translation = velocity.scale(timeEllapsed).scale(SCALE);
+            body.translate(translation);
+
+            // Calculating the new angular velocity (AngularVelocity' = AngularVelocity + torque * (1 / inertia) * time)
+            double angularVelocity = body.getAngularVelocity() + body.getTorque() * (1 / body.getInertia()) * timeEllapsed;
+            body.setAngularVelocity(angularVelocity);
+
+            // Rotate the body (angle += AngularVelocity' * time)
+            double newAngle = body.getAngle() + (body.getAngularVelocity() * timeEllapsed * SCALE);
+            body.rotate(newAngle);
+        }
+    }
+
+    /**
+     * Calculates and applies the impulse to the two bodies
+     * @param body1 The first body involved in the collision
+     * @param body2 The second body involved in the collision
+     * @param mtv The MTV of the two bodies
+     * @param
+     */
+    private void applyImpulse(PBody body1, PBody body2, Vector mtv, Vector contactPt) {
+
+        double body1InversedMass = body1.isMoving() ? 1 / body1.getMass() : 0;
+        double body2InversedMass = body2.isMoving() ? 1 / body2.getMass() : 0;
+
+        double body1InverseInertia = body1.isMoving() ? body1.getInertia() : 0;
+        double body2InverseInertia = body2.isMoving() ? body2.getInertia() : 0;
+
+        Vector r1 = contactPt.minus(body1.getCenterPt());
+        Vector r2 = contactPt.minus(body2.getCenterPt());
+
+        Vector newV1 = body1.getVelocity().add(Vector.of(-1 * body1.getAngularVelocity() * r1.getY(), body1.getAngularVelocity() * r1.getX()));
+        Vector newV2 = body2.getVelocity().add(Vector.of(-1 * body2.getAngularVelocity() * r2.getY(), body2.getAngularVelocity() * r2.getX()));
+        Vector relativeVelocity = newV2.minus(newV1);
+
+        Vector normal = mtv.normalize();
+        double velAlongNormal = relativeVelocity.dot(normal);
+
+        if(velAlongNormal > 0) {
+            return;
+        }
+
+        double r1CrossN = r1.cross(normal);
+        double r2CrossN = r2.cross(normal);
+
+        // Getting the total impulse of the two bodies as a system
+        double coefficientOfResitution = 0.2;
+        double totalImpulse = -(1 + coefficientOfResitution) * velAlongNormal;
+        totalImpulse /= (body1InversedMass + body2InversedMass +
+                r1CrossN * r1CrossN * body1InverseInertia +
+                r2CrossN * r2CrossN * body2InverseInertia);
+
+        Vector impulse = normal.scale(totalImpulse);
+
+        // Add impulse of each object
+        if (body1.isMoving()) {
+            body1.setVelocity(body1.getVelocity().minus(impulse.scale(body1InversedMass)));
+            body1.setAngularVelocity(body1.getAngularVelocity() - r1CrossN * totalImpulse * body1InverseInertia);
+        }
+
+        if (body2.isMoving()) {
+            body2.setVelocity(body2.getVelocity().add(impulse.scale(body2InversedMass)));
+            body2.setAngularVelocity(body2.getAngularVelocity() + r2CrossN * totalImpulse * body2InverseInertia);
+        }
+
+        Vector tangent = relativeVelocity.minus(normal.scale(relativeVelocity.dot(normal)));
+        tangent = tangent.normalize().scale(-1);
+
+        double r1CrossT = r1.cross(tangent);
+        double r2CrossT = r2.cross(tangent);
+
+        double newFriction = 0.1;
+        double tangentImpulse = -(1 + coefficientOfResitution) * relativeVelocity.dot(tangent) * newFriction;
+        tangentImpulse /= (body1InversedMass + body2InversedMass +
+                r1CrossT * r1CrossT * body1InverseInertia +
+                r2CrossT * r2CrossT * body2InverseInertia);
+
+        if (tangentImpulse > totalImpulse) {
+            tangentImpulse = totalImpulse;
+        }
+
+        impulse = tangent.scale(tangentImpulse);
+
+        if (body1.isMoving()) {
+            body1.setVelocity(body1.getVelocity().minus(impulse.scale(body1InversedMass)));
+            body1.setAngularVelocity(body1.getAngularVelocity() - r1CrossT * tangentImpulse * body1InverseInertia);
+        }
+
+        if (body2.isMoving()) {
+            body2.setVelocity(body2.getVelocity().add(impulse.scale(body2InversedMass)));
+            body2.setAngularVelocity(body2.getAngularVelocity() + r2CrossT * tangentImpulse * body2InverseInertia);
+        }
+    }
+
+    /**
+     * Moves the two bodies by a slight bit after a collision occured (to prevent gittering)
+     *
+     * @param body1 The first body involved in the collision
+     * @param body2 The second body involved in the collision
+     * @param mtv The MTD of the two bodies
+     */
+    private void positionalCorrection(PBody body1, PBody body2, Vector mtv) {
+        final double PERCENT = 0.2; // usually 20% to 80%
+        final double SLOP = 0.01; // usually 0.01 to 0.1
+
+        double body1InversedMass = body1.isMoving() ? 1 / body1.getMass() : 0;
+        double body2InversedMass = body2.isMoving() ? 1 / body2.getMass() : 0;
+
+        double penetrationDepth = mtv.norm2();
+        Vector normal = mtv.normalize();
+
+        double correctionDepth = Math.max(penetrationDepth - SLOP, 0) / (body1InversedMass + body2InversedMass) * PERCENT;
+        Vector correction = normal.scale(correctionDepth);
+
+        if (body1.isMoving()) {
+            body1.translate(correction.scale(-1 * body1InversedMass));
+        }
+
+        if (body2.isMoving()) {
+            body2.translate(correction.scale(body2InversedMass));
+        }
     }
 }

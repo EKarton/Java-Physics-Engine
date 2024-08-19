@@ -1,316 +1,201 @@
-/*
- * Purpose: To detect whether two polygons collide with each other (using SAT algorithm)
- * Original Creation Date: January 1 2016
- * @author Emilio Kartono
- * @version January 15 2016
- */
-
 package com.javaphysicsengine.api.collision;
 
 import com.javaphysicsengine.api.body.PPolygon;
 import com.javaphysicsengine.utils.Vector;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PPolyPolyCollision {
-    // Storing the addresses of the body1 and body2 properties (only references)
-    private static ArrayList<Vector> poly1Vertices;
-    private static ArrayList<Vector> poly2Vertices;
 
     /**
-     * Post-condition: Returns the point projected to a line defined by the slope and y intercept
-     * Pre-condition: "point" should not be null
-     * @param slopeOfNormal The slope of the line
-     * @param yInterceptOfNormal The y intercept of the line
-     * @return Returns the projected point
+     * A class used to store the min/max scalar values when projecting
+     * points onto a line
      */
-    protected static Vector projectPointToLine(double slopeOfNormal, double yInterceptOfNormal, Vector point) {
-        double perpendicularSlope = -1 / slopeOfNormal;
-        double b = point.getY() - (perpendicularSlope * point.getX());
+    private static class Bounds {
 
-        // Getting point of intersection
-        double x = (b - yInterceptOfNormal) / (slopeOfNormal - perpendicularSlope);
-        double y = (slopeOfNormal * x) + yInterceptOfNormal;
+        private final double min;
+        private final double max;
 
-        // Special cases where when the slope is infinity (Line is vertical), it will affect the intersection point
-        if (Double.isInfinite(Math.abs(slopeOfNormal))) {
-            x = 0;
-            y = point.getY();
+        public Bounds(double min, double max) {
+            this.min = min;
+            this.max = max;
         }
 
-        // Special case where when the line is horizontal, it will affect the intersection point
-        else if (Math.abs(slopeOfNormal) == 0) {
-            x = point.getX();
-            y = 0;
+        public double getMin() {
+            return min;
         }
 
-        return new Vector(x, y);
+        public double getMax() {
+            return max;
+        }
     }
 
     /**
-     * Post-condition: Returns true if two domains interect one another. Also returns the amount of overlap between them
-     * Pre-condition: "min1Values", "max1Values", "min2Values", "max2Values", "overlap" should not be null
-     * @param min1Values The minimum x and y values for the first domain
-     * @param max1Values The maximum x and y values for the first domain
-     * @param min2Values The minimum x and y values for the second domain
-     * @param max2Values The maximum x and y values for the seecond domain
-     * @param overlap The overlap between the two domains
-     * @return Returns true if the two domains overlap; else false. Also returns the amount of overlap in the "overlap" parameter
+     * Get the minimum and max. bounds when projecting the vertices onto a line
+     * @param vertices the vertices
+     * @param proj the line to project the vertices on
+     * @return the min/max distances away from the projected line
      */
-    protected static boolean isOverlap(Vector min1Values, Vector max1Values, Vector min2Values, Vector max2Values, Vector overlap) {
-        // Making the overlap to 0 when domain and ranges of poly1 and poly2 are not intersecting
-        overlap.setXY(0, 0);
+    private static Bounds getProjectionBounds(List<Vector> vertices, Vector proj) {
+        double minScalar = 1000000000;
+        double maxScalar = -1000000000;
 
-        // Checking if the x components overlap
-        double overlapX1 = max1Values.getX() - min2Values.getX(); //maxX1 - minX2;
-        double overlapX2 = max2Values.getX() - min1Values.getX(); //maxX2 - minX1;
-        if (overlapX1 < 0 || overlapX2 < 0)
-            return false;
+        for (Vector poly1Vertex : vertices) {
+            double scalarProj = proj.dot(poly1Vertex);
 
-        // Checking if the y components overlap
-        double overlapY1 = max1Values.getY() - min2Values.getY(); //maxY1 - minY2;
-        double overlapY2 = max2Values.getY() - min1Values.getY(); //maxY2 - minY1;
-        if (overlapY1 < 0 || overlapY2 < 0)
-            return false;
+            if (scalarProj < minScalar) {
+                minScalar = scalarProj;
+            }
 
-        // Calculating the best overlap by taking the min overlap for each component
-        overlap.setX(Math.min(overlapX1, overlapX2));
-        overlap.setY(Math.min(overlapY1, overlapY2));
-        return true;
+            if (scalarProj > maxScalar) {
+                maxScalar = scalarProj;
+            }
+        }
+
+        return new Bounds(minScalar, maxScalar);
     }
 
     /**
-     * Post-condition: Returns true if a separating line exist between the two polygons based on a normal.
-     *                  Also returns the MTD from the normal if there is no separating line
-     * Pre-condition: "bestOverlap" must not be null
-     * @param normalSlope The slope of the normal
-     * @param bestOverlap The MTD from the normal
-     * @return Returns true if there is a separating line between the two polygons based on a normal. Also returns the MTD from the "bestOverlap" parameter
+     * Computes the MTV for polygon2 using the separating axis theorem
+     * It also computes the contact point on polygon2
+     *
+     * @param poly1Vertices the vertices for polygon1
+     * @param poly2Vertices the vertices for polygon2
+     * @return the mtv
      */
-    protected static boolean isSeparatingLineExist(double normalSlope, Vector bestOverlap) {
-        // Storing the min/max x and y POI coordinates of poly1
-        Vector min1Values = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
-        Vector max1Values = new Vector(-Double.MIN_VALUE, -Double.MIN_VALUE);
+    private static Vector getSeparatingAxis(List<Vector> poly1Vertices, List<Vector> poly2Vertices) {
 
-        for (Vector vertex : poly1Vertices) {
-            // Getting the projected point of a vertex to the normal
-            Vector poi = projectPointToLine(normalSlope, 13, vertex);
-            // // System.out.println("    Vertex:" + vertex + " | POI:" + poi);
-
-            // Checking if the current POI is the new min/max x and y coordinate
-            if (poi.getX() < min1Values.getX()) min1Values.setX(poi.getX());
-            if (poi.getY() < min1Values.getY()) min1Values.setY(poi.getY());
-            if (poi.getX() > max1Values.getX()) max1Values.setX(poi.getX());
-            if (poi.getY() > max1Values.getY()) max1Values.setY(poi.getY());
-        }
-
-        // Storing the min/max x and y POI coordinates of poly2
-        Vector min2Values = new Vector(Double.MAX_VALUE, Double.MAX_VALUE);
-        Vector max2Values = new Vector(-Double.MIN_VALUE, -Double.MIN_VALUE);
-
-        for (Vector vertex : poly2Vertices) {
-            // Getting the projected point of a vertex to the normal
-            Vector poi = projectPointToLine(normalSlope, 13, vertex);
-            // // System.out.println("    Vertex:" + vertex + " | POI:" + poi);
-
-            // Checking if the current POI is the new min/max x and y coordinate
-            if (poi.getX() < min2Values.getX()) min2Values.setX(poi.getX());
-            if (poi.getY() < min2Values.getY()) min2Values.setY(poi.getY());
-            if (poi.getX() > max2Values.getX()) max2Values.setX(poi.getX());
-            if (poi.getY() > max2Values.getY()) max2Values.setY(poi.getY());
-        }
-
-        // Checking if the domain and ranges of polygons overlap (if it is, there is no separating line)
-        // // System.out.println("    Min1:" + min1Values + " | Max1" + max1Values + " | Min2:" + min2Values + " | Max2:" + max2Values);
-        return !isOverlap(min1Values, max1Values, min2Values, max2Values, bestOverlap);
-        // // System.out.println("    BestOverlap:" + bestOverlap);
-    }
-
-    /**
-     * Post-condition: Returns true if the two polygons are intersecting; else false.
-     *                  Also returns the MTD of the two polygons if they are interesecting
-     * @param mtd The MTD (minimum translation vector) of the two polygons
-     * @return Returns whether the two polygons are intersecting; and the MTD stored in the parameter "mtd"
-     */
-    protected static boolean isIntersecting(Vector mtd) {
-        mtd.setXY(0, 0); // Set MTD to 0 (just in case it is not intersecting)
-        Vector bestOverlap = null;
-        double bestOverlapDistance = Double.MAX_VALUE;
+        double bestMtd = 10000000;
+        Vector bestMtv = null;
 
         // Going through each side in poly1 and see if poly2 intersects it
-        // // System.out.println("Polygon 1:");
         for (int i = 0; i < poly1Vertices.size(); i++) {
-            // Getting the two points that make up a side
-            int sidePt1Index = i;
-            int sidePt2Index = i + 1;
-            if (i == poly1Vertices.size() - 1)
-                sidePt2Index = 0;
 
-            // Getting the normal slope
-            Vector sidePt1 = poly1Vertices.get(sidePt1Index);
-            Vector sidePt2 = poly1Vertices.get(sidePt2Index);
-            double normalSlope = -1 * ((sidePt2.getY() - sidePt1.getY()) / (sidePt2.getX() - sidePt1.getX()));
+            Vector sidePt1 = poly1Vertices.get(i);
+            Vector sidePt2 = i + 1 < poly1Vertices.size() ? poly1Vertices.get(i + 1) : poly1Vertices.get(0);
+            Vector edge = sidePt2.minus(sidePt1);
 
-            // // System.out.println("  SP1:" + sidePt1 + " | SP2:" + sidePt2 + " | NS:" + normalSlope);
+            Vector normal = Vector.of(edge.getY(), -1 * edge.getX()).normalize();
 
-            // Getting the current overlap from the current side
-            Vector curBestOverlap = new Vector(0, 0);
-            if (isSeparatingLineExist(normalSlope, curBestOverlap))  // <- SAT algorithm: If there is a separating line between the polygons, there is no collision
-                return false;
+            // Project all poly1's vertices onto the normal and get its bounds
+            Bounds bounds1 = getProjectionBounds(poly1Vertices, normal);
 
-            // Checking if the current overlap is the best overlap
-            double curBestOverlapDistance = (curBestOverlap.getX() * curBestOverlap.getX()) + (curBestOverlap.getY() * curBestOverlap.getY());
+            // Project all poly2's vertices onto the normal and get its bounds
+            Bounds bounds2 = getProjectionBounds(poly2Vertices, normal);
 
-            // // System.out.println("  CBO:" + curBestOverlap);
+            boolean isIntersecting = bounds1.getMin() < bounds2.getMax() && bounds1.getMax() > bounds2.getMin();
 
-            if (curBestOverlapDistance < bestOverlapDistance) {
-                bestOverlapDistance = curBestOverlapDistance;
-                bestOverlap = curBestOverlap;
+            if (isIntersecting) {
+                double mtd;
+
+                if (bounds1.getMin() < bounds2.getMax()) {
+                    mtd = bounds1.getMax() - bounds2.getMin();
+
+                } else {
+                    mtd = bounds2.getMax() - bounds1.getMin();
+                }
+
+                if (mtd < bestMtd) {
+                    bestMtd = mtd;
+                    bestMtv = normal.scale(mtd);
+                }
+
+            } else {
+                return null;
             }
         }
 
-        // Going through each side in poly2 and see if poly1 intersects it
-        // // System.out.println("\n\nPolygon 2:");
-        for (int i = 0; i < poly2Vertices.size(); i++) {
-            // Getting the two points that make up a side
-            int sidePt1Index = i;
-            int sidePt2Index = i + 1;
-            if (i == poly2Vertices.size() - 1)
-                sidePt2Index = 0;
+        return bestMtv;
+    }
 
-            // Getting the normal slope
-            Vector sidePt1 = poly2Vertices.get(sidePt1Index);
-            Vector sidePt2 = poly2Vertices.get(sidePt2Index);
-            double normalSlope = -1 / ((sidePt2.getY() - sidePt1.getY()) / (sidePt2.getX() - sidePt1.getX()));
+    /**
+     * Finds the contact point of the collision based on the polygon and its mtv
+     *
+     * The algorithm:
+     *  Construct a ray starting from poly1 and a direction mtv
+     *  For each point, project it onto the ray
+     *  For each projected point, find the projected point that is the farthest
+     *  Add the farthest projected point with body1Mtv
+     *
+     * @param poly1 the vertices of a moving polygon
+     * @param body1Mtv the mtv of that moving polygon
+     * @return the contact point
+     */
+    private static Vector getContactPt(PPolygon poly1, Vector body1Mtv) {
+        Vector origin = poly1.getCenterPt();
+        Vector rayDir = body1Mtv.normalize().scale(-1);
 
-            // // System.out.println("  SP1:" + sidePt1 + " | SP2:" + sidePt2 + " | NS:" + normalSlope);
+        double maxProj = -1000000000;
+        Vector maxProjPt = null;
 
-            // Getting the current overlap from the current side
-            Vector curBestOverlap = new Vector(0, 0);
-            if (isSeparatingLineExist(normalSlope, curBestOverlap))  // <- SAT algorithm: If there is a separating line between the polygons, there is no collision
-                return false;
+        for (Vector vertex : poly1.getVertices()) {
 
-            // Checking if the current overlap is the best overlap
-            double curBestOverlapDistance = (curBestOverlap.getX() * curBestOverlap.getX()) + (curBestOverlap.getY() * curBestOverlap.getY());
+            double scalarProj = rayDir.dot(vertex.minus(origin));
+            Vector projectedPt = origin.add(rayDir.normalize().scale(scalarProj));
 
-            // // System.out.println("  CBO:" + curBestOverlap);
-
-            if (curBestOverlapDistance < bestOverlapDistance) {
-                bestOverlapDistance = curBestOverlapDistance;
-                bestOverlap = curBestOverlap;
+            if (scalarProj > maxProj) {
+                maxProj = scalarProj;
+                maxProjPt = projectedPt;
             }
         }
 
-        mtd.setXY(bestOverlap.getX(), bestOverlap.getY());
-        return true;
+        return maxProjPt.add(body1Mtv);
     }
 
-    /**
-     * Post-condition: Returns the displacement the main circle should move by
-     * Pre-condition: "mtd", "mainPolyCenterPt", "otherPolyCenterPt", "mainPolyVelocity", "otherPolyVelocity" must not be null
-     * @param mtd The minimum translation vector from SAT algorithm
-     * @param mainPolyCenterPt The center point of the main circle
-     * @param otherPolyCenterPt The center point of the other circle
-     * @param mainPolyVelocity The velocity of the main circle
-     * @param otherPolyVelocity The velocity of the other circle
-     * @return Returns the displacement the main circle should move by
-     */
-    protected static Vector getTranslationVectors(Vector mtd, Vector mainPolyCenterPt, Vector otherPolyCenterPt, Vector mainPolyVelocity, Vector otherPolyVelocity) {
-        // Checking if the velocity of main polygon is 0
-        if (mainPolyVelocity.getX() == 0 && mainPolyVelocity.getY() == 0)
-            return new Vector(0, 0);
+    public static PCollisionResult doBodiesCollide(PPolygon body1, PPolygon body2) {
 
-        // Making sure the push vector is pushing the polygons away
-        Vector translationVector = new Vector(mtd.getX(), mtd.getY());
+        ArrayList<Vector> poly1Vertices = body1.getVertices();
+        ArrayList<Vector> poly2Vertices = body2.getVertices();
 
-        Vector displacementBetweenPolygons = Vector.subtract(mainPolyCenterPt, otherPolyCenterPt);
-        if (Vector.dotProduct(displacementBetweenPolygons, mtd) < 0) {
-            // // System.out.println("I am here!");
-            translationVector.setX(translationVector.getX() * -1);
-            translationVector.setY(translationVector.getY() * -1);
+        // The weighted velocities
+        double f1 = body1.isMoving() ? body1.getVelocity().norm2() / (body1.getVelocity().norm2() + body2.getVelocity().norm2()) : 0;
+        double f2 = body2.isMoving() ? body2.getVelocity().norm2() / (body1.getVelocity().norm2() + body2.getVelocity().norm2()) : 0;
+
+        // Note: with SAT we can terminate early as soon as there is a separating axis
+        Vector mtv1 = getSeparatingAxis(poly1Vertices, poly2Vertices);
+
+        if (mtv1 == null) {
+            return new PCollisionResult(false, null, null, null, null);
         }
 
-        // Get the ratio of the translation vector when both objects are moving
-        double curLength = translationVector.getLength();
-        double lengthOfMainVelocity = mainPolyVelocity.getLength();
-        double lengthOfOtherVelocity = otherPolyVelocity.getLength();
-        double newLength = curLength * (lengthOfMainVelocity / (lengthOfMainVelocity + lengthOfOtherVelocity));
+        Vector mtv2 = getSeparatingAxis(poly2Vertices, poly1Vertices);
 
-        translationVector.setLength(newLength);
-
-        // Checking if the new translation vector is a null (happens if the length is a 0)
-        if (Double.isNaN(translationVector.getX()) && Double.isNaN(translationVector.getY()))
-            translationVector.setXY(0, 0);
-
-        return translationVector;
-    }
-
-    /**
-     * Pre-condition: "body1", "body2", "body1TransVector", "body2TransVector", "mtd" must not be null
-     * Post-condition: Determines whether two polygons are colliding, and returns the displacements each polygon should move by as well as the minimum translation vector
-     * @param body1 The first polygon
-     * @param body2 The second polygon
-     * @param body1TransVector The displacement the circle should move by if they are colliding
-     * @param body2TransVector The displacement the polygon should move by if they are colliding
-     * @param mtd Returns the minimum translation vector from SAT algorithm
-     * @return Returns true if the two polygons are colliding; else false. Also returns the MTD which is stored in the "mtd" parameter
-     */
-    public static boolean doBodiesCollide(PPolygon body1, PPolygon body2, Vector body1TransVector, Vector body2TransVector, Vector mtd) {
-        // Saving the properties
-        poly1Vertices = body1.getVertices();
-        poly2Vertices = body2.getVertices();
-        Vector poly1CenterPt = body1.getCenterPt();
-        Vector poly2CenterPt = body2.getCenterPt();
-        Vector poly1Velocity = body1.getVelocity();
-        Vector poly2Velocity = body2.getVelocity();
-
-        // The translation vectors for both bodies will be 0 when there is no intersection
-        body1TransVector.setXY(0, 0);
-        body2TransVector.setXY(0, 0);
-
-        // Determining if the bodies intersect or not
-        if (isIntersecting(mtd)) {
-            // If the two objects are not touching, they are not colliding!
-            if (mtd.getX() == 0 && mtd.getY() == 0) {
-                // // System.out.println("They are not colliding!");
-                return false;
-            }
-            // // System.out.println("Are colliding!" + " -> " + mtd);
-
-            Vector body1Trans = getTranslationVectors(mtd, poly1CenterPt, poly2CenterPt, poly1Velocity, poly2Velocity);
-            Vector body2Trans = getTranslationVectors(mtd, poly2CenterPt, poly1CenterPt, poly2Velocity, poly1Velocity);
-
-            body1TransVector.setXY(body1Trans.getX(), body1Trans.getY());
-            body2TransVector.setXY(body2Trans.getX(), body2Trans.getY());
-
-            // // System.out.println("Body 1 Trans: " + body1Trans);
-            // // System.out.println("Body 2 Trans: " + body2Trans);
-            return true;
+        if (mtv2 == null) {
+            return new PCollisionResult(false, null, null, null, null);
         }
-        return false;
-    }
 
-    /**
-     * Tests the SAT algorithm to detect if two polygons are intersecting
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        PPolygon poly1 = new PPolygon("Hehe");
-        poly1.getVelocity().setX(5);
-        poly1.getVertices().add(new Vector(0, 0));
-        poly1.getVertices().add(new Vector(50, 0));
-        poly1.getVertices().add(new Vector(50, 50));
-        poly1.getVertices().add(new Vector(0, 50));
-        poly1.computeCenterOfMass();
+        Vector bestMtv;
+        Vector body1Mtv;
+        Vector body2Mtv;
 
-        PPolygon poly2 = new PPolygon("Hehe");
-        poly2.getVelocity().setX(-5);
-        poly2.getVertices().add(new Vector(25, 125));
-        poly2.getVertices().add(new Vector(75, 125));
-        poly2.getVertices().add(new Vector(75, 175));
-        poly2.getVertices().add(new Vector(25, 175));
-        poly2.computeCenterOfMass();
+        if (mtv2.norm1() <= mtv1.norm1()) {
+            bestMtv = mtv2;
+            body1Mtv = mtv2.scale(f1);
+            body2Mtv = mtv2.scale(-1).scale(f2);
 
-        doBodiesCollide(poly1, poly2, new Vector(0, 0), new Vector(0, 0), new Vector(0, 0));
+        } else {
+            bestMtv = mtv1.scale(-1);
+            body1Mtv = mtv1.scale(-1).scale(f1);
+            body2Mtv = mtv1.scale(f2);
+        }
+
+        Vector contactPt;
+        if (body2Mtv.norm1() > 0) {
+            contactPt = getContactPt(body2, body2Mtv);
+
+        } else if (body1Mtv.norm1() > 0) {
+            contactPt = getContactPt(body1, body1Mtv);
+
+        } else {
+            throw new IllegalArgumentException("HELP");
+        }
+
+        if (bestMtv.dot(body2.getCenterPt().minus(body1.getCenterPt())) < 0) {
+            bestMtv = bestMtv.scale(-1);
+        }
+
+
+        return new PCollisionResult(true, body1Mtv, body2Mtv, bestMtv, contactPt);
     }
 }

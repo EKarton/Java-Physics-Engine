@@ -1,21 +1,17 @@
-/*
- * Purpose: To represent the basic properties of all polygons
- * Original Creation Date: January 1 2016
- * @author Emilio Kartono
- * @version January 15 2016
- */
-
 package com.javaphysicsengine.api.body;
 
-import com.javaphysicsengine.utils.Trigonometry;
+import com.javaphysicsengine.api.collision.PBoxBoxCollision;
+import com.javaphysicsengine.api.collision.PCirclePolyCollision;
+import com.javaphysicsengine.api.collision.PCollisionResult;
+import com.javaphysicsengine.api.collision.PPolyPolyCollision;
 import com.javaphysicsengine.utils.Vector;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-public class PPolygon extends PBody {
-    // Fields representing the geometric and graphic structure of a polygon
-    private ArrayList<Vector> vertices = new ArrayList<Vector>();
+public class PPolygon extends PBody implements PCollidable {
+
+    private ArrayList<Vector> vertices = new ArrayList<>();
     private PBoundingBox boundingBox;
 
     /**
@@ -34,8 +30,10 @@ public class PPolygon extends PBody {
         super(existingPolygon);
 
         // Make a copy of its vertices
-        for (Vector vertexCopy : existingPolygon.vertices)
+        for (Vector vertexCopy : existingPolygon.vertices) {
             vertices.add(new Vector(vertexCopy.getX(), vertexCopy.getY()));
+        }
+
         this.computeCenterOfMass();
     }
 
@@ -51,6 +49,7 @@ public class PPolygon extends PBody {
      * Gets the bounding box of this polygon
      * @return the bounding box
      */
+    @Override
     public PBoundingBox getBoundingBox() {
         return boundingBox;
     }
@@ -59,30 +58,30 @@ public class PPolygon extends PBody {
      * Computes the center of mass
      */
     public void computeCenterOfMass() {
-        double minX = Double.MAX_VALUE;
-        double maxX = Double.MIN_VALUE;
-        double minY = Double.MAX_VALUE;
-        double maxY = Double.MIN_VALUE;
+        boundingBox = new PBoundingBox(vertices);
+        getCenterPt().setXY(
+                (boundingBox.getMinX() + boundingBox.getMaxX()) / 2,
+                (boundingBox.getMinY() + boundingBox.getMaxY()) / 2
+        );
+    }
 
+    @Override
+    public double getInertia() {
+        double inertia = 0;
         for (Vector vertex : vertices) {
-            if (vertex.getX() < minX) minX = vertex.getX();
-            if (vertex.getX() > maxX) maxX = vertex.getX();
-            if (vertex.getY() < minY) minY = vertex.getY();
-            if (vertex.getY() > maxY) maxY = vertex.getY();
+            inertia = vertex.minus(this.getCenterPt()).norm1();
         }
 
-        getCenterPt().setX((minX + maxX) / 2);
-        getCenterPt().setY((minY + maxY) / 2);
-
-        boundingBox = new PBoundingBox(vertices);
+        inertia = (inertia / vertices.size()) * getMass();
+        return inertia;
     }
 
     /**
      * Translates the polygon by an amount
-     * @param displacement The displacement to move the body by a certain amount
+     * @param displacement The amount to move the body by
      */
     public void translate(Vector displacement) {
-        // Moving all the vertices based on the displacement
+        // Moving all the vertices
         for (Vector vertex : vertices) {
             vertex.setX(vertex.getX() + displacement.getX());
             vertex.setY(vertex.getY() + displacement.getY());
@@ -100,29 +99,26 @@ public class PPolygon extends PBody {
     }
 
     /**
-     * Rotates the body.
-     * Pre-condition: the angle must be in degrees.
-     * @param newAngle The angle of the body
+     * Rotates the body in counter-clockwise direction
+     * @param newAngle The angle of the body in radians
      */
     public void rotate(double newAngle) {
-        // Rotate all the vertices around its center of mass
+        double amountToRotate = newAngle - this.getAngle();
+
         for (Vector vertex : vertices) {
-            // Shifting the vertex so that the centerPt is (0, 0)
-            vertex.setX(vertex.getX() - getCenterPt().getX());
-            vertex.setY(vertex.getY() - getCenterPt().getY());
+            Vector shiftedVertex = vertex.minus(this.getCenterPt());
 
-            // Getting the angle made by the vertex and the origin
-            double betaAngle = Math.abs(Trigonometry.inverseOfTan(vertex.getY() / vertex.getX()));
-            double alphaAngle = Trigonometry.convertBetaToThetaAngle(vertex.getX(), vertex.getY(), betaAngle);
+            double newX = Math.cos(amountToRotate) * shiftedVertex.getX() - Math.sin(amountToRotate) * shiftedVertex.getY();
+            double newY = Math.sin(amountToRotate) * shiftedVertex.getX() + Math.cos(amountToRotate) * shiftedVertex.getY();
 
-            // Getting the new rotated x and y coordinates based on the unit circle
-            double angleToRotateBy = alphaAngle - getAngle() + newAngle;
-            vertex.setY(Trigonometry.sin(angleToRotateBy) * vertex.getLength() + getCenterPt().getY());
-            vertex.setX(Trigonometry.cos(angleToRotateBy) * vertex.getLength() + getCenterPt().getX());
+            Vector rotatedVertex = Vector.of(newX, newY).add(this.getCenterPt());
+            vertex.setXY(rotatedVertex);
         }
 
-        if (boundingBox != null)
+        if (boundingBox != null) {
             boundingBox.recomputeBoundaries(vertices);
+        }
+
         super.setAngle(newAngle);
     }
 
@@ -132,7 +128,7 @@ public class PPolygon extends PBody {
      */
     public void move(Vector newCenterPt) {
         // Compute the displacement from the old centerPt to the new centerPt and call the translate()
-        Vector displacement = Vector.subtract(newCenterPt, getCenterPt());
+        Vector displacement = Vector.minus(newCenterPt, getCenterPt());
         translate(displacement);
     }
 
@@ -186,11 +182,30 @@ public class PPolygon extends PBody {
         }
 
         // Draw the polygon onto the screen
-        g.setColor(getOutlineColor());
+        g.setColor(this.getOutlineColor());
         g.drawPolygon(xCoords, yCoords, xCoords.length);
 
         // Draw the center of mass
         super.drawOutline(g, windowHeight);
+
+        // Draw the normals
+        for (int i = 0; i < vertices.size(); i++) {
+            Vector sidePt1 = vertices.get(i);
+            Vector sidePt2 = i + 1 < vertices.size() ? vertices.get(i + 1) : vertices.get(0);
+
+            Vector midPt = sidePt1.add(sidePt2).scale(0.5);
+
+            Vector normal = Vector.of(sidePt2.getY() - sidePt1.getY(), -1 * (sidePt2.getX() - sidePt1.getX())).normalize();
+            Vector endPt = normal.scale(10).add(midPt);
+
+            int x1 = (int) midPt.getX();
+            int y1 = windowHeight - (int) midPt.getY();
+            int x2 = (int) endPt.getX();
+            int y2 = windowHeight - (int) endPt.getY();
+
+            g.setColor(this.getNormalVectorColor());
+            g.drawLine(x1, y1, x2, y2);
+        }
     }
 
     /**
@@ -200,12 +215,46 @@ public class PPolygon extends PBody {
      */
     @Override
     public String toString() {
-        String propertiesLine = super.toString() + "Vertices:";
+        StringBuilder propertiesLine = new StringBuilder(super.toString() + "Vertices:");
         for (int i = 0; i < vertices.size(); i++) {
-            propertiesLine += vertices.get(i).getX() + " " + vertices.get(i).getY();
+            propertiesLine.append(vertices.get(i).getX())
+                    .append(" ")
+                    .append(vertices.get(i).getY());
+
             if (i < vertices.size() - 1)
-                propertiesLine += ",";
+                propertiesLine.append(",");
         }
-        return propertiesLine;
+        return propertiesLine.toString();
+    }
+
+    @Override
+    public PCollisionResult hasCollidedWith(PCollidable body) {
+        PCollisionResult result = new PCollisionResult(false, null, null, null, null);
+
+        if (body instanceof PCircle) {
+            PCircle circle = (PCircle) body;
+
+            if (PBoxBoxCollision.doBodiesCollide(circle.getBoundingBox(), this.getBoundingBox())) {
+                result = PCirclePolyCollision.doBodiesCollide(circle, this);
+
+                // Note: since we are not comparing this obj with the incoming obj, the directions are flipped
+                if (result.isHasCollided()) {
+                    result = new PCollisionResult(result.isHasCollided(), result.getBody2Mtv(),
+                            result.getBody1Mtv(), result.getMtv().scale(-1), result.getContactPt());
+                }
+            }
+
+        } else if (body instanceof PPolygon) {
+            PPolygon polygon = (PPolygon) body;
+
+            if (PBoxBoxCollision.doBodiesCollide(polygon.getBoundingBox(), this.getBoundingBox())) {
+                result = PPolyPolyCollision.doBodiesCollide(this, polygon);
+            }
+
+        } else {
+            throw new IllegalArgumentException("Body cannot detect and handle collisions!");
+        }
+
+        return result;
     }
 }

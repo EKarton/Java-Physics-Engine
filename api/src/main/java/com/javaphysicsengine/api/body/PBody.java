@@ -1,9 +1,3 @@
-/*
- * Purpose: To represent the basic properties of all physical objects with no specific geometric shape
- * Original Creation Date: January 1 2016
- * @author Emilio Kartono
- * @version January 15 2016
- */
 package com.javaphysicsengine.api.body;
 
 import com.javaphysicsengine.utils.Vector;
@@ -22,7 +16,10 @@ public abstract class PBody {
 
     private Vector netForce = new Vector(0, 0);
     private Vector velocity = new Vector(0, 0);
-    private double angle = 0;
+    private double angle = 0; // In radians
+
+    private double angularVelocity = 0; // In radians
+    private double torque = 0;
 
     private String name;
     private boolean isMoving = true;
@@ -30,6 +27,15 @@ public abstract class PBody {
     // The graphic properties of the object
     private Color outlineColor = Color.BLACK;
     private Color fillColor = Color.BLUE;
+    private Color normalVectorColor = Color.RED;
+
+    public Color getNormalVectorColor() {
+        return normalVectorColor;
+    }
+
+    public void setNormalVectorColor(Color normalVectorColor) {
+        this.normalVectorColor = normalVectorColor;
+    }
 
     /**
      * Creates a PBody object with a certain name attached
@@ -150,6 +156,24 @@ public abstract class PBody {
         this.angle = angle;
     }
 
+    public abstract double getInertia();
+
+    public double getAngularVelocity() {
+        return angularVelocity;
+    }
+
+    public void setAngularVelocity(double angularVelocity) {
+        this.angularVelocity = angularVelocity;
+    }
+
+    public double getTorque() {
+        return torque;
+    }
+
+    public void setTorque(double torque) {
+        this.torque = torque;
+    }
+
     /**
      * Determines if the body is movable
      * @return {@code true} if the body is movable; else {@code false}
@@ -184,8 +208,6 @@ public abstract class PBody {
      */
     public abstract void translate(Vector displacement);
 
-    // ========================================================================================================
-
     /**
      * Returns the fill color of the body
      * @return The fill color of the body
@@ -218,6 +240,8 @@ public abstract class PBody {
         this.outlineColor = color;
     }
 
+    public abstract PBoundingBox getBoundingBox();
+
     /**
      * Draws the outline of the center point
      * Pre-condition: The param "windowHeight" must be greater than 0
@@ -226,6 +250,9 @@ public abstract class PBody {
      */
     public void drawOutline(Graphics g, int windowHeight) {
         g.drawOval((int) getCenterPt().getX() - 2, windowHeight - (int) getCenterPt().getY() - 2, 4, 4);
+
+        // Draw the name
+        g.drawString(this.getName(), (int) this.getCenterPt().getX(), windowHeight - (int) this.getCenterPt().getY());
     }
 
     /**
